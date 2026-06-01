@@ -1,19 +1,18 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>SISTINE=Blog</title><link>https://SistineFibel-2006.github.io</link><description>无</description><copyright>SISTINE=Blog</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://github.githubassets.com/favicons/favicon.svg</url><title>avatar</title><link>https://SistineFibel-2006.github.io</link></image><lastBuildDate>Mon, 01 Jun 2026 14:48:36 +0000</lastBuildDate><managingEditor>SISTINE=Blog</managingEditor><ttl>60</ttl><webMaster>SISTINE=Blog</webMaster><item><title>跟 Nachia DP 博客学DP-1 : 部分和DP</title><link>https://SistineFibel-2006.github.io/post/gen-%20Nachia%20DP%20-bo-ke-xue-DP-1%20-%20-bu-fen-he-DP.html</link><description>### 跟 Nachia DP 博客学DP-1 : 部分和DP
+### 跟 Nachia DP 博客学DP-1 : 部分和DP
 
 Nachia 原文： [[DP 的俗称 | Mathenachia --- DP の俗称 | Mathenachia](https://www.mathenachia.blog/dp/)](https://www.mathenachia.blog/dp/)
 
-&gt; 给定序列 $A = (a_1, a_2, \dots, a_N)$ 与非负整数 $S$.
-&gt;
-&gt; 询问是否存在一个下标集合 $Set$，使得 $\sum_{i \in Set} a_i = S$
+> 给定序列 $A = (a_1, a_2, \dots, a_N)$ 与非负整数 $S$.
+>
+> 询问是否存在一个下标集合 $Set$，使得 $\sum_{i \in Set} a_i = S$
 
 这个问题是**部分和DP**的标准形式！状态可以这样设计：
 
-&gt; [!tip]
-&gt;
-&gt; $ dp[n][s] = $ （当 $A = (a_1, a_2, \dots, a_N)$，$S = s$ 的时候的部分和问题的解.
-&gt;
-&gt; 其中 ($0 \leq n \leq N, 0 \leq s \leq S$)
+> [!tip]
+>
+> $ dp[n][s] = $ （当 $A = (a_1, a_2, \dots, a_N)$，$S = s$ 的时候的部分和问题的解.
+>
+> 其中 ($0 \leq n \leq N, 0 \leq s \leq S$)
 
 通常这个二维数组的元素是布尔值，所以可以再添加维度，来扩展其额外信息！
 
@@ -45,7 +44,7 @@ Nachia 原文： [[DP 的俗称 | Mathenachia --- DP の俗称 | Mathenachia](ht
 ```cpp
 void Mainsol() {
 	INT(N, X);
-	v&lt;I&gt; v;
+	v<I> v;
 	rep(i, N) {
 		INT(A, B);
 		rep(B) v.pb(A);
@@ -55,11 +54,11 @@ void Mainsol() {
 	f[0][0] = 1;
 
 	rep(i, 0, sz(v)) rep(j, 0, X + 1) {
-		if(j &lt; v[i]) {
+		if(j < v[i]) {
 			if(f[i][j]) f[i + 1][j] = 1;
 			else f[i + 1][j] = 0;
 		}
-		if(j &gt;= v[i]) {
+		if(j >= v[i]) {
 			if(f[i][j] || f[i][j - v[i]]) f[i + 1][j] = 1;
 			else f[i + 1][j] = 0;
 		}
@@ -96,7 +95,7 @@ void Mainsol() {
 		rep(j, M + 1) {
 			chmin(f1[i + 1][j], f1[i][j]);
 			chmin(f1[i + 1][j], f0[i][j] + 1);
-			if(j + a[i] &lt;= M) {
+			if(j + a[i] <= M) {
 				chmin(f0[i + 1][j + a[i]], f0[i][j]);
 				chmin(f0[i + 1][j + a[i]], f1[i][j]);
 			}
@@ -109,4 +108,4 @@ void Mainsol() {
 		out(ans);
 	}
 }
-```。</description><guid isPermaLink="true">https://SistineFibel-2006.github.io/post/gen-%20Nachia%20DP%20-bo-ke-xue-DP-1%20-%20-bu-fen-he-DP.html</guid><pubDate>Mon, 01 Jun 2026 14:46:26 +0000</pubDate></item></channel></rss>
+```
