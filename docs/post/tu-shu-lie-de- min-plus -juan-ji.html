@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html data-color-mode="light" data-dark-theme="dark" data-light-theme="light" lang="zh-CN">
+<head>
+    <meta content="text/html; charset=utf-8" http-equiv="content-type" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link href='https://mirrors.sustech.edu.cn/cdnjs/ajax/libs/Primer/21.0.7/primer.css' rel='stylesheet' />
+    
+    <link rel="icon" href="https://github.githubassets.com/favicons/favicon.svg"><script>
+        let theme = localStorage.getItem("meek_theme") || "light";
+        document.documentElement.setAttribute("data-color-mode", theme);
+    </script>
+<meta name="description" content="## 凸数列的 `min-plus` 卷积 （未完结）
+
+Atcoder Algorithm Lectures 难度评级 4 / 10
+
+原文： [[凸数列的 min-plus 卷积 - AtCoderInfo --- 凸数列の min-plus 畳み込み - AtCoderInfo](https://info.atcoder.jp/entry/algorithm_lectures/min_plus_convolution)](https://info.atcoder.jp/entry/algorithm_lectures/min_plus_convolution)
+
+原解说视频链接： https://youtu.be/VnFJxcYBugU
+
+> [!tip]
+>
+> 本文是原文的翻译与扩展，具体的扩展内容是后续例题的题解与讲解，译者水平有限，可能有些许错误，还望海涵，也可与文章作者联系并提出建议与指出错误！
+
+
+### 1.概述
+
+对于两个整（实）数序列 $A=(A_0, A_1, \dots, A_N), \ \ B=(B_0, B_1, \dots, B_M)$, 由他们得到的新序列 $C = (C_0, C_1, \dots, C_{N + M})$ 满足：$C_k = \min_{i+j=k} (A_i + B_j)$  被叫做 **A与B的 min-plus** 卷积.
+
+当两个序列其中一方有 **凸性** 的时候，我们可以高效的进行这个卷积运算，而本文只讲解最简单的情况——两者均有凸性时的运算.
+
+### 2.预备知识
+
+无特别需要的前置知识，只会讲解基础的动态规划.
+
+### 3.凸数列
+
+> [!note]
+>
+> **【定义 1】**
+>
+> 对于一个数列 $A=(A_0, A_1, \dots, A_N)$ 与任意的下标 $i\in [0, N - 1)$，都有不等式 $A_{i+1}- A_i \leq A_{i + 2} - A_{i + 1}$ 成立，我们就称 $A$ 是 **下凸（Convex Below）** 的；如果都有不等式 $A_{i+1}- A_i \ge A_{i + 2} - A_{i + 1}$ 成立，我们就称 $A$ 是 **上凸（Convex Above）** 的. 
+>
+> 上凸也被叫做凹，下凸也被叫做凸.
+
+##### 3.1. 具体例子
+
+如果对于数列 $A$，我们画出其散点相联结的 **折线图**.
+
+下凸的条件其实就对应了折线图中 **斜率广义单增（单调不递减）** 的性质.
+
+这里给出几组凸数列的例子，可以对照观看:
+
+- $A=(0,0,0,1,2,4) $是下凸的，不是上凸的.
+- $B=(4,1,0,1,4)$ 是下凸的，不是上凸的.
+- $C=(0,2,4,5,5,4)$ 是上凸的，不是下凸的.
+- $D=(4,3,2,1,0)$ 既是下凸的，也是上凸的.
+- $E=(1)$ 既是下凸的，也是上凸的.
+- $F=(3,1,3,0,2)$既不是下凸的，也不是上凸的.
+
+![img](https://img.atcoder.jp/aal-image-library/d497019e37bca8837eb1da8f54b0273f.png)
+
+![img](https://img.atcoder.jp/aal-image-library/e9aec0a6c254784a924923b9c64f30a3.png)
+
+### 4. 凸数列的 `min-plus` 卷积
+
+#### 4.1. 数列的 `min-plus` 卷积
+
+> [!note]
+>
+> **【定义 2】**
+>
+> 对于两个整（实）数序列 $A=(A_0, A_1, \dots, A_N), \ \ B=(B_0, B_1, \dots, B_M)$, 由他们得到的新序列 $C = (C_0, C_1, \dots, C_{N + M})$ 满足：$ C_k = \min_{i+j=k} (A_i + B_j)$  被叫做 **A与B的 min-plus** 卷积   （**min-plus convolution**）.
+
+例如，当 $A = (5,1,4,2,2)$ 与 $B = (1,3,2)$ 时，他们的 `min-plus` 卷积就是： $C=(6,2,4,3,3,4,4)$.
+
+<img width='329' height='119' alt='Image' src='https://github.com/user-attachments/assets/c1081116-538b-496b-a381-6c5ae2832051' />
+
+也就是这个图片里面，斜着取每一斜线最小值. （当然对于第三个数，不取 (3,1) 位置的 4 而是取 (2, 2) 位置的 4 也是等价的，这里为了保证都先按照列优先取）
+
+这也正是 `min-plus convolution` 用定义算的方法，复杂度显然是 $O(N \cdot M)$ 的.  根据参考文献，在一般情况下，我们认为很难实现大幅度的加速 （当 $\epsilon > 0$ 时，预计无法在 $O((N \cdot M)^{1-\epsilon})$ 时间内求解）.
+
+#### 4.2. 下凸（凸）序列的 `min-plus` 卷积
+
+不妨设 $A, B$ 是凸序列，我们旨在证明这些序列的 `min-plus` 卷积相关性质.
+
+> [!IMPORTANT]
+>
+> **【定理 3】**
+>
+> 当 $A=(A_0,A_1,\dots,A_N), \ \  B=(B_0,B_1,\dots,B_N)$ 都是凸序列的时候，他们两个的 `min-plus` 卷积可以在 $O(N + M)$ 时间内计算.  此外，卷积得到的新序列也是凸的.
+
+因为我们有序列的增量单调不递减，所以我们不妨设 $A_0=0, B_0=0$，如果证明在这个条件下成立，那么自然可以推广到首项不为 $0$ 的情况.
+
+我们设 $A, B$ 的**增量序列**（也可称 **差分序列**）是 $a, b$.  也就是 $a_i=A_{i+1}-A_i, \ \ b_j = B_{j+1}-B_j$，我们也可以用一个形象的例子来解释 $A_i, B_j$ :
+
+- 假设袋子 A 中有 $N$ 个物品，其价值为 $a_0, a_1, \dots, a_{N-1}$ 。">
+<meta property="og:title" content="凸数列的 min-plus 卷积">
+<meta property="og:description" content="## 凸数列的 `min-plus` 卷积 （未完结）
+
+Atcoder Algorithm Lectures 难度评级 4 / 10
+
+原文： [[凸数列的 min-plus 卷积 - AtCoderInfo --- 凸数列の min-plus 畳み込み - AtCoderInfo](https://info.atcoder.jp/entry/algorithm_lectures/min_plus_convolution)](https://info.atcoder.jp/entry/algorithm_lectures/min_plus_convolution)
+
+原解说视频链接： https://youtu.be/VnFJxcYBugU
+
+> [!tip]
+>
+> 本文是原文的翻译与扩展，具体的扩展内容是后续例题的题解与讲解，译者水平有限，可能有些许错误，还望海涵，也可与文章作者联系并提出建议与指出错误！
+
+
+### 1.概述
+
+对于两个整（实）数序列 $A=(A_0, A_1, \dots, A_N), \ \ B=(B_0, B_1, \dots, B_M)$, 由他们得到的新序列 $C = (C_0, C_1, \dots, C_{N + M})$ 满足：$C_k = \min_{i+j=k} (A_i + B_j)$  被叫做 **A与B的 min-plus** 卷积.
+
+当两个序列其中一方有 **凸性** 的时候，我们可以高效的进行这个卷积运算，而本文只讲解最简单的情况——两者均有凸性时的运算.
+
+### 2.预备知识
+
+无特别需要的前置知识，只会讲解基础的动态规划.
+
+### 3.凸数列
+
+> [!note]
+>
+> **【定义 1】**
+>
+> 对于一个数列 $A=(A_0, A_1, \dots, A_N)$ 与任意的下标 $i\in [0, N - 1)$，都有不等式 $A_{i+1}- A_i \leq A_{i + 2} - A_{i + 1}$ 成立，我们就称 $A$ 是 **下凸（Convex Below）** 的；如果都有不等式 $A_{i+1}- A_i \ge A_{i + 2} - A_{i + 1}$ 成立，我们就称 $A$ 是 **上凸（Convex Above）** 的. 
+>
+> 上凸也被叫做凹，下凸也被叫做凸.
+
+##### 3.1. 具体例子
+
+如果对于数列 $A$，我们画出其散点相联结的 **折线图**.
+
+下凸的条件其实就对应了折线图中 **斜率广义单增（单调不递减）** 的性质.
+
+这里给出几组凸数列的例子，可以对照观看:
+
+- $A=(0,0,0,1,2,4) $是下凸的，不是上凸的.
+- $B=(4,1,0,1,4)$ 是下凸的，不是上凸的.
+- $C=(0,2,4,5,5,4)$ 是上凸的，不是下凸的.
+- $D=(4,3,2,1,0)$ 既是下凸的，也是上凸的.
+- $E=(1)$ 既是下凸的，也是上凸的.
+- $F=(3,1,3,0,2)$既不是下凸的，也不是上凸的.
+
+![img](https://img.atcoder.jp/aal-image-library/d497019e37bca8837eb1da8f54b0273f.png)
+
+![img](https://img.atcoder.jp/aal-image-library/e9aec0a6c254784a924923b9c64f30a3.png)
+
+### 4. 凸数列的 `min-plus` 卷积
+
+#### 4.1. 数列的 `min-plus` 卷积
+
+> [!note]
+>
+> **【定义 2】**
+>
+> 对于两个整（实）数序列 $A=(A_0, A_1, \dots, A_N), \ \ B=(B_0, B_1, \dots, B_M)$, 由他们得到的新序列 $C = (C_0, C_1, \dots, C_{N + M})$ 满足：$ C_k = \min_{i+j=k} (A_i + B_j)$  被叫做 **A与B的 min-plus** 卷积   （**min-plus convolution**）.
+
+例如，当 $A = (5,1,4,2,2)$ 与 $B = (1,3,2)$ 时，他们的 `min-plus` 卷积就是： $C=(6,2,4,3,3,4,4)$.
+
+<img width='329' height='119' alt='Image' src='https://github.com/user-attachments/assets/c1081116-538b-496b-a381-6c5ae2832051' />
+
+也就是这个图片里面，斜着取每一斜线最小值. （当然对于第三个数，不取 (3,1) 位置的 4 而是取 (2, 2) 位置的 4 也是等价的，这里为了保证都先按照列优先取）
+
+这也正是 `min-plus convolution` 用定义算的方法，复杂度显然是 $O(N \cdot M)$ 的.  根据参考文献，在一般情况下，我们认为很难实现大幅度的加速 （当 $\epsilon > 0$ 时，预计无法在 $O((N \cdot M)^{1-\epsilon})$ 时间内求解）.
+
+#### 4.2. 下凸（凸）序列的 `min-plus` 卷积
+
+不妨设 $A, B$ 是凸序列，我们旨在证明这些序列的 `min-plus` 卷积相关性质.
+
+> [!IMPORTANT]
+>
+> **【定理 3】**
+>
+> 当 $A=(A_0,A_1,\dots,A_N), \ \  B=(B_0,B_1,\dots,B_N)$ 都是凸序列的时候，他们两个的 `min-plus` 卷积可以在 $O(N + M)$ 时间内计算.  此外，卷积得到的新序列也是凸的.
+
+因为我们有序列的增量单调不递减，所以我们不妨设 $A_0=0, B_0=0$，如果证明在这个条件下成立，那么自然可以推广到首项不为 $0$ 的情况.
+
+我们设 $A, B$ 的**增量序列**（也可称 **差分序列**）是 $a, b$.  也就是 $a_i=A_{i+1}-A_i, \ \ b_j = B_{j+1}-B_j$，我们也可以用一个形象的例子来解释 $A_i, B_j$ :
+
+- 假设袋子 A 中有 $N$ 个物品，其价值为 $a_0, a_1, \dots, a_{N-1}$ 。">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://SistineFibel-2006.github.io/post/tu-shu-lie-de-%20min-plus%20-juan-ji.html">
+<meta property="og:image" content="https://github.githubassets.com/favicons/favicon.svg">
+<title>凸数列的 min-plus 卷积</title>
+<link href="//unpkg.com/@wooorm/starry-night@2.1.1/style/both.css" rel="stylesheet" />
+
+
+</head>
+<style>
+body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;padding: 45px;font-size: 16px;font-family: sans-serif;line-height: 1.25;}
+#header{display:flex;padding-bottom:8px;border-bottom: 1px solid var(--borderColor-muted, var(--color-border-muted));margin-bottom: 16px;}
+#footer {margin-top:64px; text-align: center;font-size: small;}
+
+</style>
+
+<style>
+.postTitle{margin: auto 0;font-size:40px;font-weight:bold;}
+.title-right{display:flex;margin:auto 0 0 auto;}
+.title-right .circle{padding: 14px 16px;margin-right:8px;}
+#postBody{border-bottom: 1px solid var(--color-border-default);padding-bottom:36px;}
+#postBody hr{height:2px;}
+#cmButton{height:48px;margin-top:48px;}
+#comments{margin-top:64px;}
+.g-emoji{font-size:24px;}
+@media (max-width: 600px) {
+    body {padding: 8px;}
+    .postTitle{font-size:24px;}
+}
+.copy-feedback {
+    display: none;
+    position: absolute;
+    top: 10px;
+    right: 50px;
+    color: var(--color-fg-on-emphasis);
+    background-color: var(--color-fg-muted);
+    border-radius: 3px;
+    padding: 5px 8px;
+    font-size: 12px;
+}
+</style>
+<style>.markdown-alert{padding:0.5rem 1rem;margin-bottom:1rem;border-left:.25em solid var(--borderColor-default,var(--color-border-default));}.markdown-alert .markdown-alert-title {display:flex;font-weight:var(--base-text-weight-medium,500);align-items:center;line-height:1;}.markdown-alert>:first-child {margin-top:0;}.markdown-alert>:last-child {margin-bottom:0;}</style><style>.markdown-alert.markdown-alert-note {border-left-color:var(--borderColor-accent-emphasis, var(--color-accent-emphasis));background-color:var(--color-accent-subtle);}.markdown-alert.markdown-alert-note .markdown-alert-title {color: var(--fgColor-accent,var(--color-accent-fg));}</style><style>.markdown-alert.markdown-alert-tip {border-left-color:var(--borderColor-success-emphasis, var(--color-success-emphasis));background-color:var(--color-success-subtle);}.markdown-alert.markdown-alert-tip .markdown-alert-title {color: var(--fgColor-success,var(--color-success-fg));}</style><style>.markdown-alert.markdown-alert-important {border-left-color:var(--borderColor-done-emphasis, var(--color-done-emphasis));background-color:var(--color-done-subtle);}.markdown-alert.markdown-alert-important .markdown-alert-title {color: var(--fgColor-done,var(--color-done-fg));}</style>
+
+
+
+<body>
+    <div id="header">
+<h1 class="postTitle">凸数列的 min-plus 卷积</h1>
+<div class="title-right">
+    <a href="https://SistineFibel-2006.github.io" id="buttonHome" class="btn btn-invisible circle" title="首页">
+        <svg class="octicon" width="16" height="16">
+            <path id="pathHome" fill-rule="evenodd"></path>
+        </svg>
+    </a>
+    
+    <a href="https://github.com/SistineFibel-2006/SistineFibel-2006.github.io/issues/2" target="_blank" class="btn btn-invisible circle" title="Issue">
+        <svg class="octicon" width="16" height="16">
+            <path id="pathIssue" fill-rule="evenodd"></path>
+        </svg>
+    </a>
+    
+
+    <a class="btn btn-invisible circle" onclick="modeSwitch();" title="切换主题">
+        <svg class="octicon" width="16" height="16" >
+            <path id="themeSwitch" fill-rule="evenodd"></path>
+        </svg>
+    </a>
+
+</div>
+</div>
+    <div id="content">
+<div class="markdown-body" id="postBody"><h2>凸数列的 <code class="notranslate">min-plus</code> 卷积 （未完结）</h2>
+<p>Atcoder Algorithm Lectures 难度评级 4 / 10</p>
+<p>原文： [<a href="https://info.atcoder.jp/entry/algorithm_lectures/min_plus_convolution" rel="nofollow">凸数列的 min-plus 卷积 - AtCoderInfo --- 凸数列の min-plus 畳み込み - AtCoderInfo</a>](<a href="https://info.atcoder.jp/entry/algorithm_lectures/min_plus_convolution" rel="nofollow">https://info.atcoder.jp/entry/algorithm_lectures/min_plus_convolution</a>)</p>
+<p>原解说视频链接： <a href="https://youtu.be/VnFJxcYBugU" rel="nofollow">https://youtu.be/VnFJxcYBugU</a></p>
+<div class="markdown-alert markdown-alert-tip"><p class="markdown-alert-title"><svg data-component="Octicon" class="octicon octicon-light-bulb mr-2" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path d="M8 1.5c-2.363 0-4 1.69-4 3.75 0 .984.424 1.625.984 2.304l.214.253c.223.264.47.556.673.848.284.411.537.896.621 1.49a.75.75 0 0 1-1.484.211c-.04-.282-.163-.547-.37-.847a8.456 8.456 0 0 0-.542-.68c-.084-.1-.173-.205-.268-.32C3.201 7.75 2.5 6.766 2.5 5.25 2.5 2.31 4.863 0 8 0s5.5 2.31 5.5 5.25c0 1.516-.701 2.5-1.328 3.259-.095.115-.184.22-.268.319-.207.245-.383.453-.541.681-.208.3-.33.565-.37.847a.751.751 0 0 1-1.485-.212c.084-.593.337-1.078.621-1.489.203-.292.45-.584.673-.848.075-.088.147-.173.213-.253.561-.679.985-1.32.985-2.304 0-2.06-1.637-3.75-4-3.75ZM5.75 12h4.5a.75.75 0 0 1 0 1.5h-4.5a.75.75 0 0 1 0-1.5ZM6 15.25a.75.75 0 0 1 .75-.75h2.5a.75.75 0 0 1 0 1.5h-2.5a.75.75 0 0 1-.75-.75Z"></path></svg>Tip</p>
+<p>本文是原文的翻译与扩展，具体的扩展内容是后续例题的题解与讲解，译者水平有限，可能有些许错误，还望海涵，也可与文章作者联系并提出建议与指出错误！</p>
+</div>
+<h3>1.概述</h3>
+<p>对于两个整（实）数序列 $A=(A_0, A_1, \dots, A_N), \ \ B=(B_0, B_1, \dots, B_M)$, 由他们得到的新序列 $C = (C_0, C_1, \dots, C_{N + M})$ 满足：$C_k = \min_{i+j=k} (A_i + B_j)$  被叫做 <strong>A与B的 min-plus</strong> 卷积.</p>
+<p>当两个序列其中一方有 <strong>凸性</strong> 的时候，我们可以高效的进行这个卷积运算，而本文只讲解最简单的情况——两者均有凸性时的运算.</p>
+<h3>2.预备知识</h3>
+<p>无特别需要的前置知识，只会讲解基础的动态规划.</p>
+<h3>3.凸数列</h3>
+<div class="markdown-alert markdown-alert-note"><p class="markdown-alert-title"><svg data-component="Octicon" class="octicon octicon-info mr-2" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8Zm8-6.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13ZM6.5 7.75A.75.75 0 0 1 7.25 7h1a.75.75 0 0 1 .75.75v2.75h.25a.75.75 0 0 1 0 1.5h-2a.75.75 0 0 1 0-1.5h.25v-2h-.25a.75.75 0 0 1-.75-.75ZM8 6a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"></path></svg>Note</p>
+<p><strong>【定义 1】</strong></p>
+<p>对于一个数列 $A=(A_0, A_1, \dots, A_N)$ 与任意的下标 $i\in [0, N - 1)$，都有不等式 $A_{i+1}- A_i \leq A_{i + 2} - A_{i + 1}$ 成立，我们就称 $A$ 是 <strong>下凸（Convex Below）</strong> 的；如果都有不等式 $A_{i+1}- A_i \ge A_{i + 2} - A_{i + 1}$ 成立，我们就称 $A$ 是 <strong>上凸（Convex Above）</strong> 的.</p>
+<p>上凸也被叫做凹，下凸也被叫做凸.</p>
+</div>
+<h5>3.1. 具体例子</h5>
+<p>如果对于数列 $A$，我们画出其散点相联结的 <strong>折线图</strong>.</p>
+<p>下凸的条件其实就对应了折线图中 <strong>斜率广义单增（单调不递减）</strong> 的性质.</p>
+<p>这里给出几组凸数列的例子，可以对照观看:</p>
+<ul>
+<li>
+$A=(0,0,0,1,2,4) $是下凸的，不是上凸的.</li>
+<li>
+$B=(4,1,0,1,4)$ 是下凸的，不是上凸的.</li>
+<li>
+$C=(0,2,4,5,5,4)$ 是上凸的，不是下凸的.</li>
+<li>
+$D=(4,3,2,1,0)$ 既是下凸的，也是上凸的.</li>
+<li>
+$E=(1)$ 既是下凸的，也是上凸的.</li>
+<li>
+$F=(3,1,3,0,2)$既不是下凸的，也不是上凸的.</li>
+</ul>
+<p><a target="_blank" rel="noopener noreferrer nofollow" href="https://camo.githubusercontent.com/744406ed7987c8fb776564256ed355eaaaa16bc949316cc4bf07afb2bdd5fe2b/68747470733a2f2f696d672e6174636f6465722e6a702f61616c2d696d6167652d6c6962726172792f64343937303139653337626361383833376562316461386635346230323733662e706e67"><img src="https://camo.githubusercontent.com/744406ed7987c8fb776564256ed355eaaaa16bc949316cc4bf07afb2bdd5fe2b/68747470733a2f2f696d672e6174636f6465722e6a702f61616c2d696d6167652d6c6962726172792f64343937303139653337626361383833376562316461386635346230323733662e706e67" alt="img" data-canonical-src="https://img.atcoder.jp/aal-image-library/d497019e37bca8837eb1da8f54b0273f.png" style="max-width: 100%;"></a></p>
+<p><a target="_blank" rel="noopener noreferrer nofollow" href="https://camo.githubusercontent.com/893965c762079a72917f456b8d25f2878957b16828dea89b1ab2761c19744402/68747470733a2f2f696d672e6174636f6465722e6a702f61616c2d696d6167652d6c6962726172792f65396165633061366332353437383461393234393233623963363466333061332e706e67"><img src="https://camo.githubusercontent.com/893965c762079a72917f456b8d25f2878957b16828dea89b1ab2761c19744402/68747470733a2f2f696d672e6174636f6465722e6a702f61616c2d696d6167652d6c6962726172792f65396165633061366332353437383461393234393233623963363466333061332e706e67" alt="img" data-canonical-src="https://img.atcoder.jp/aal-image-library/e9aec0a6c254784a924923b9c64f30a3.png" style="max-width: 100%;"></a></p>
+<h3>4. 凸数列的 <code class="notranslate">min-plus</code> 卷积</h3>
+<h4>4.1. 数列的 <code class="notranslate">min-plus</code> 卷积</h4>
+<div class="markdown-alert markdown-alert-note"><p class="markdown-alert-title"><svg data-component="Octicon" class="octicon octicon-info mr-2" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8Zm8-6.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13ZM6.5 7.75A.75.75 0 0 1 7.25 7h1a.75.75 0 0 1 .75.75v2.75h.25a.75.75 0 0 1 0 1.5h-2a.75.75 0 0 1 0-1.5h.25v-2h-.25a.75.75 0 0 1-.75-.75ZM8 6a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"></path></svg>Note</p>
+<p><strong>【定义 2】</strong></p>
+<p>对于两个整（实）数序列 $A=(A_0, A_1, \dots, A_N), \ \ B=(B_0, B_1, \dots, B_M)$, 由他们得到的新序列 $C = (C_0, C_1, \dots, C_{N + M})$ 满足：$ C_k = \min_{i+j=k} (A_i + B_j)$  被叫做 <strong>A与B的 min-plus</strong> 卷积   （<strong>min-plus convolution</strong>）.</p>
+</div>
+<p>例如，当 $A = (5,1,4,2,2)$ 与 $B = (1,3,2)$ 时，他们的 <code class="notranslate">min-plus</code> 卷积就是： $C=(6,2,4,3,3,4,4)$.</p>
+<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/c1081116-538b-496b-a381-6c5ae2832051"><img width="329" height="119" alt="Image" src="https://github.com/user-attachments/assets/c1081116-538b-496b-a381-6c5ae2832051" style="max-width: 100%; height: auto; max-height: 119px;; aspect-ratio: 329 / 119; background-color: var(--bgColor-muted); border-radius: 6px" class="js-gh-image-fallback"></a></p>
+<p>也就是这个图片里面，斜着取每一斜线最小值. （当然对于第三个数，不取 (3,1) 位置的 4 而是取 (2, 2) 位置的 4 也是等价的，这里为了保证都先按照列优先取）</p>
+<p>这也正是 <code class="notranslate">min-plus convolution</code> 用定义算的方法，复杂度显然是 $O(N \cdot M)$ 的.  根据参考文献，在一般情况下，我们认为很难实现大幅度的加速 （当 $\epsilon &amp;gt; 0$ 时，预计无法在 $O((N \cdot M)^{1-\epsilon})$ 时间内求解）.</p>
+<h4>4.2. 下凸（凸）序列的 <code class="notranslate">min-plus</code> 卷积</h4>
+<p>不妨设 $A, B$ 是凸序列，我们旨在证明这些序列的 <code class="notranslate">min-plus</code> 卷积相关性质.</p>
+<div class="markdown-alert markdown-alert-important"><p class="markdown-alert-title"><svg data-component="Octicon" class="octicon octicon-report mr-2" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path d="M0 1.75C0 .784.784 0 1.75 0h12.5C15.216 0 16 .784 16 1.75v9.5A1.75 1.75 0 0 1 14.25 13H8.06l-2.573 2.573A1.458 1.458 0 0 1 3 14.543V13H1.75A1.75 1.75 0 0 1 0 11.25Zm1.75-.25a.25.25 0 0 0-.25.25v9.5c0 .138.112.25.25.25h2a.75.75 0 0 1 .75.75v2.19l2.72-2.72a.749.749 0 0 1 .53-.22h6.5a.25.25 0 0 0 .25-.25v-9.5a.25.25 0 0 0-.25-.25Zm7 2.25v2.5a.75.75 0 0 1-1.5 0v-2.5a.75.75 0 0 1 1.5 0ZM9 9a1 1 0 1 1-2 0 1 1 0 0 1 2 0Z"></path></svg>Important</p>
+<p><strong>【定理 3】</strong></p>
+<p>当 $A=(A_0,A_1,\dots,A_N), \ \  B=(B_0,B_1,\dots,B_N)$ 都是凸序列的时候，他们两个的 <code class="notranslate">min-plus</code> 卷积可以在 $O(N + M)$ 时间内计算.  此外，卷积得到的新序列也是凸的.</p>
+</div>
+<p>因为我们有序列的增量单调不递减，所以我们不妨设 $A_0=0, B_0=0$，如果证明在这个条件下成立，那么自然可以推广到首项不为 $0$ 的情况.</p>
+<p>我们设 $A, B$ 的<strong>增量序列</strong>（也可称 <strong>差分序列</strong>）是 $a, b$.  也就是 $a_i=A_{i+1}-A_i, \ \ b_j = B_{j+1}-B_j$，我们也可以用一个形象的例子来解释 $A_i, B_j$ :</p>
+<ul>
+<li>
+<p>假设袋子 A 中有 $N$ 个物品，其价值为 $a_0, a_1, \dots, a_{N-1}$ 。 $A_i$ 是从这些物品中总共选择 $i$ 个时，总价值的最小值.</p>
+</li>
+<li>
+<p>假设袋子 B 中有 $N$ 个物品，其价值为 $b_0, b_1, \dots, b_{N-1}$ 。 $B_i$ 是从这些物品中总共选择 $i$ 个时，总价值的最小值.</p>
+</li>
+</ul>
+<p>因为我们定义了 $A, B$ 是凸函数，所以这里 $a, b$ 是  <strong>广义单增</strong> 的，因此他们的 <code class="notranslate">min-plus</code> 卷积可以这样解释：</p>
+<ul>
+<li>
+$A_i + B_j$ 是从袋子 A 中选择 $i$ 个物品、从袋子 B 中选择 $j$ 个物品时候，总价值的最小值.</li>
+<li>
+$C_k = \min_{i+j=k} (A_i+B_j)$ 就是从袋子 A 与 B 总共选取 $k$ 个物品时候，总价值的最小值.</li>
+</ul>
+<p>将 $A_0$,$B_0$ 一般化后，可以发现 <code class="notranslate">min-plus</code> 卷积可以按如下方式计算</p>
+<ul>
+<li>设 $a_i=A_{i+1}-A_i, \ \ b_j = B_{j+1}-B_j$
+</li>
+<li>把这些合并后升序排序，记为 $c_0, c_1, \dots, c_{N+M-1}$
+</li>
+<li>这个时候就有 $C_k = (A_0+B_0) + \sum_{i=0}^{k-1} c_i$
+</li>
+</ul>
+<p>这里有合并后升序排序的操作，但是因为 $a, b$ 都是广义单增的，所以可以用 $O(N + M)$ 算出来！通过取前缀和，$A, B$ 的 <code class="notranslate">min-plus</code> 卷积可以在 $O(N + M)$ 的时间内算出来.</p>
+<p>同样地，$C$ 的凸性质也很好证明，因为 $C_k$ 的差分序列显然也是广义单增的. ■</p>
+<h5>图解</h5>
+<p>$A = (2,0,0,1,2)$ 与 $B=(0,0,1,3)$ 做 <code class="notranslate">min-plus</code> 卷积的结果 $C = (2,0,0,0,1,2,3,5)$</p>
+<p><a target="_blank" rel="noopener noreferrer nofollow" href="https://camo.githubusercontent.com/969c67622c313b882b0d6423bb381139644a00f20eb528b85c360424f3776116/68747470733a2f2f696d672e6174636f6465722e6a702f61616c2d696d6167652d6c6962726172792f31346361643833343639626233643532643832636331353332333964306332632e706e67"><img src="https://camo.githubusercontent.com/969c67622c313b882b0d6423bb381139644a00f20eb528b85c360424f3776116/68747470733a2f2f696d672e6174636f6465722e6a702f61616c2d696d6167652d6c6962726172792f31346361643833343639626233643532643832636331353332333964306332632e706e67" alt="img" data-canonical-src="https://img.atcoder.jp/aal-image-library/14cad83469bb3d52d82cc153239d0c2c.png" style="max-width: 100%;"></a></p>
+<h5>提醒</h5>
+<p>同样地，如果两个序列都是凹序列，那么同样可以适用 <code class="notranslate">max-plus</code> 卷积， <strong>【定理 3】</strong> 也同样成立.</p>
+<h4>4.3. 实现例子</h4>
+<p>可以在这里尝试这个模板： [<a href="https://judge.yosupo.jp/problem/min_plus_convolution_convex_convex" rel="nofollow">Library Checker</a>](<a href="https://judge.yosupo.jp/problem/min_plus_convolution_convex_convex" rel="nofollow">https://judge.yosupo.jp/problem/min_plus_convolution_convex_convex</a>)</p>
+<ul>
+<li>
+<p>与上文相同的实现： <a href="https://judge.yosupo.jp/submission/347758" rel="nofollow">https://judge.yosupo.jp/submission/347758</a></p>
+</li>
+<li>
+<p>与上文本质相同的实现，但是隐式计算了差分序列： <a href="https://judge.yosupo.jp/submission/320371" rel="nofollow">https://judge.yosupo.jp/submission/320371</a></p>
+</li>
+</ul>
+<div class="highlight highlight-source-c++"><pre class="notranslate"><span class="pl-c"><span class="pl-c">//</span> maspy 的代码，即 [链接1] 中的代码</span>
+#<span class="pl-k">include</span> <span class="pl-s"><span class="pl-pds">&lt;</span>bits/stdc++.h<span class="pl-pds">&gt;</span></span>
+<span class="pl-k">using</span> <span class="pl-k">namespace</span> <span class="pl-en">std</span><span class="pl-k">;</span>
+#<span class="pl-k">define</span> <span class="pl-en">FOR</span>(<span class="pl-v">i, a</span>) <span class="pl-k">for</span> (<span class="pl-k">int</span> i = <span class="pl-c1">0</span>; i &lt; (a); ++i)
+<span class="pl-k">template </span>&lt;<span class="pl-k">typename</span> T&gt;
+<span class="pl-k">using</span> vc = vector&lt;T&gt;;
+
+<span class="pl-k">void</span> <span class="pl-en">solve</span>() {
+  <span class="pl-k">int</span> N, M;
+  cin &gt;&gt; N &gt;&gt; M;
+  vc&lt;<span class="pl-k">int</span>&gt; <span class="pl-c1">A</span>(N), <span class="pl-c1">B</span>(M);
+  <span class="pl-c1">FOR</span>(i, N) cin &gt;&gt; A[i];
+  <span class="pl-c1">FOR</span>(j, M) cin &gt;&gt; B[j];
+
+  <span class="pl-k">int</span> c0 = A[<span class="pl-c1">0</span>] + B[<span class="pl-c1">0</span>];
+  vc&lt;<span class="pl-k">int</span>&gt; <span class="pl-c1">a</span>(N - <span class="pl-c1">1</span>), <span class="pl-c1">b</span>(M - <span class="pl-c1">1</span>);
+  <span class="pl-c1">FOR</span>(i, N - <span class="pl-c1">1</span>) a[i] = A[i + <span class="pl-c1">1</span>] - A[i];
+  <span class="pl-c1">FOR</span>(j, M - <span class="pl-c1">1</span>) b[j] = B[j + <span class="pl-c1">1</span>] - B[j];
+
+  vc&lt;<span class="pl-k">int</span>&gt; <span class="pl-c1">c</span>(N + M - <span class="pl-c1">2</span>);
+  <span class="pl-c"><span class="pl-c">//</span> also works:</span>
+  <span class="pl-c"><span class="pl-c">//</span> merge(a.begin(), a.end(), b.begin(), b.end(), c.begin());</span>
+  {
+    <span class="pl-k">int</span> i = <span class="pl-c1">0</span>, j = <span class="pl-c1">0</span>;
+    <span class="pl-k">for</span> (<span class="pl-k">int</span> k = <span class="pl-c1">0</span>; k &lt; (N + M - <span class="pl-c1">2</span>); ++k) {
+      <span class="pl-k">if</span> (j == M - <span class="pl-c1">1</span> || (i &lt; N - <span class="pl-c1">1</span> &amp;&amp; a[i] &lt; b[j])) {
+        c[k] = a[i++];
+      } <span class="pl-k">else</span> {
+        c[k] = b[j++];
+      }
+    }
+  }
+
+  vc&lt;<span class="pl-k">int</span>&gt; <span class="pl-c1">C</span>(N + M - <span class="pl-c1">1</span>);
+  C[<span class="pl-c1">0</span>] = c0;
+  <span class="pl-k">for</span> (<span class="pl-k">int</span> k = <span class="pl-c1">0</span>; k &lt; N + M - <span class="pl-c1">2</span>; ++k) C[k + <span class="pl-c1">1</span>] = C[k] + c[k];
+
+  <span class="pl-k">for</span> (<span class="pl-k">int</span> i = <span class="pl-c1">0</span>; i &lt; N + M - <span class="pl-c1">1</span>; ++i) {
+    <span class="pl-k">if</span> (i) cout &lt;&lt; <span class="pl-s"><span class="pl-pds">"</span> <span class="pl-pds">"</span></span>;
+    cout &lt;&lt; C[i];
+  }
+  cout &lt;&lt; <span class="pl-s"><span class="pl-pds">"</span><span class="pl-cce">\n</span><span class="pl-pds">"</span></span>;
+}
+
+<span class="pl-k">int</span> <span class="pl-en">main</span>() {
+  <span class="pl-c1">ios::sync_with_stdio</span>(<span class="pl-c1">false</span>);
+  cin.<span class="pl-c1">tie</span>(<span class="pl-c1">nullptr</span>);
+  <span class="pl-c1">solve</span>();
+}</pre></div>
+<h3>5. 利用差分序列加速 DP</h3>
+<p>在算法竞赛中，经常有可以用 <code class="notranslate">min-plus</code> 卷积表示的 DP.  此时，不仅需要理解 <code class="notranslate">min-plus</code> 卷积可以在线性时间内计算，还需要理解它相当于差分序列的合并，从而可能实现 DP 的加速.</p>
+<p>让我们看看下面这个题：</p>
+<blockquote>
+<p><strong>【问题 4】</strong></p>
+<p>给定整数序列 $A = (A_1, A_2, \dots, A_N)$ ，对于每个 $k = 0, 1, \dots, N$，求出从 $A$ 中刚好取出 $k$ 个元素的时候，其总和可能的最小值.</p>
+</blockquote>
+<p>诚然这个题很无聊，其实排个序然后前缀和就结束了，时间复杂度是 $O(N\cdot \log N)$ 的.</p>
+<p>另一方面，这个题其实也可以考虑用 DP 来求解： 设 $dp[i] = $ 恰好选择 $i$ 个元素时候的最小总和，然后逐步添加新的 $A_i$ 来更新 DP 表，例如下面这个：</p>
+<div class="highlight highlight-source-c++"><pre class="notranslate">vector&lt;<span class="pl-k">int</span>&gt; dp = {<span class="pl-c1">0</span>};
+<span class="pl-k">const</span> <span class="pl-k">int</span> INF = INT_MAX / <span class="pl-c1">4</span>;
+<span class="pl-k">for</span> (<span class="pl-k">int</span> x : A) {
+  vector&lt;<span class="pl-k">int</span>&gt; <span class="pl-c1">newdp</span>(dp.<span class="pl-c1">size</span>() + <span class="pl-c1">1</span>, INF);
+  <span class="pl-k">for</span> (<span class="pl-k">int</span> i = <span class="pl-c1">0</span>; i &lt; dp.<span class="pl-c1">size</span>(); ++i) {
+    newdp[i] = <span class="pl-c1">min</span>(newdp[i], dp[i]);          <span class="pl-c"><span class="pl-c">//</span> not use x</span>
+    newdp[i + <span class="pl-c1">1</span>] = <span class="pl-c1">min</span>(newdp[i + <span class="pl-c1">1</span>], dp[i] + x);  <span class="pl-c"><span class="pl-c">//</span> use x</span>
+  }
+  <span class="pl-c1">swap</span>(dp, newdp);
+}</pre></div>
+<p>这是  $ Θ(N^2)$ 的，乍一看好像很难变成 $O(N \cdot \log N)$ 的.</p>
+<p>实际上这个 DP 也是一个 <code class="notranslate">min-plus</code> 卷积，如果我们把数列 $B = (0, A[i])$ 的话，其实就会发现，$newdp$ 本质上就是 $dp$ 与 $B$ 的 <code class="notranslate">min-plus</code> 卷积.  所以说，如果理解了凸序列的 <code class="notranslate">min-plus</code> 卷积其实就是差分序列的合并，那么从这个 DP 解法中可以看出：</p>
+<ul>
+<li>DP 表始终是下凸的.</li>
+<li>考虑差分序列的时候，DP 表的更新实际上就是插入 $A[i]$ （或者说代码里的 $x$）这个操作.</li>
+</ul>
+<p>这样实际上可以推导出与贪心法相同的解法，从 DP 推导出的.</p>
+<p>当然这个例子过于简单了，可能很难以理解 <code class="notranslate">min-plus</code> 卷积的用处，下面还有新的一些题目:</p>
+<h3>6.相关问题</h3>
+<ol>
+<li><a href="https://judge.yosupo.jp/problem/min_plus_convolution_convex_convex" rel="nofollow">https://judge.yosupo.jp/problem/min_plus_convolution_convex_convex</a></li>
+<li><a href="https://atcoder.jp/contests/abc407/tasks/abc407_e" rel="nofollow">https://atcoder.jp/contests/abc407/tasks/abc407_e</a></li>
+<li><a href="https://atcoder.jp/contests/joisp2025/tasks/joisp2025_l" rel="nofollow">https://atcoder.jp/contests/joisp2025/tasks/joisp2025_l</a></li>
+<li><a href="https://codeforces.com/contest/2179/problem/E" rel="nofollow">https://codeforces.com/contest/2179/problem/E</a></li>
+<li><a href="https://www.openjudges.com/p/P10641" rel="nofollow">https://www.openjudges.com/p/P10641</a></li>
+<li><a href="https://codeforces.com/contest/2079/problem/B" rel="nofollow">https://codeforces.com/contest/2079/problem/B</a></li>
+</ol>
+<h3>7.总结</h3>
+<p>本文通过简单的贪心算法，推导了凸序列的 <code class="notranslate">min-plus</code> 卷积算法。理解其机制后，不仅能计算给定凸序列的 <code class="notranslate">min-plus</code> 卷积，还能通过巧妙管理序列，推导出更进阶的解法。特别是当动态规划解法呈现为 <code class="notranslate">min-plus</code> 卷积形式时，通过将数据存储方式改为保持差序列，可以实现加速，请留意这一点。</p>
+<p>本文内容还与（以实数为定义域的）凸函数的卷积、<code class="notranslate">slope trick</code>、凸图形的 <code class="notranslate">Minkowski</code> 和等概念相关联。此外，关于仅单侧数列具有凸性时的 <code class="notranslate">min-plus</code> 卷积，也计划在未来进行讲解.</p>
+<h3>8.参考文献</h3>
+<ol>
+<li>errorgorn．[Tutorial] Knapsack, Subset Sum and the (max,+) Convolution．Codeforces Blog．<a href="https://codeforces.com/blog/entry/98663%EF%BC%8E%EF%BC%88%E9%96%B2%E8%A6%A7%E6%97%A5" rel="nofollow">https://codeforces.com/blog/entry/98663．（閲覧日</a>: 2026-03-31）．</li>
+<li>Marek Cygan, Marcin Mucha, Karol Węgrzycki, Michał Włodarczyk．On Problems Equivalent to (min,+)-Convolution．ACM Transactions on Algorithms．Vol. 15．No. 1．pp. 1–25．2019．DOI: 10.1145/3293465．<a href="https://doi.org/10.1145/3293465%EF%BC%8E" rel="nofollow">https://doi.org/10.1145/3293465．</a></li>
+</ol>
+<h3>补充：</h3>
+<h4>习题2:  <a href="https://atcoder.jp/contests/abc407/tasks/abc407_e" rel="nofollow">https://atcoder.jp/contests/abc407/tasks/abc407_e</a></h4>
+<p>考虑 $dp[i] =  $ 比目前至少需要的左括号数量多 $i$ 个左括号时候的最优解收益.</p>
+<p>这样的话</p>
+<ul>
+<li>$newdp[i] = \max(dp[i], dp[i - 1] + a)$</li>
+<li>从 DP 表删除第一个元素，因为所至少需要的左括号会 $+ 1$
+</li>
+</ul>
+<p>第一个操作就是下面这两个序列的 <code class="notranslate">max-plus</code> 卷积：</p>
+<ul>
+<li>$dp$</li>
+<li>
+$[0, a]$ （$a$就是当前的权值 $A_i$ ）</li>
+</ul>
+<p>因为 DP 表始终是上凸的，所以考虑折线图，相当于</p>
+<ul>
+<li>插入一条斜率为 $a$、$x$ 宽度为 $1$ 的线段.</li>
+<li>删除左边斜率最大的线段.</li>
+</ul>
+<p>这样一来，使用 priority_queue 维护这一操作并不断更新就可以了.</p>
+<div class="highlight highlight-source-c++"><pre class="notranslate"><span class="pl-k">void</span> <span class="pl-en">Mainsol</span>() {
+	<span class="pl-c1">INT</span>(N);
+	priority_queue&lt;ll&gt; pq;
+	<span class="pl-c1">VEC</span>(ll, A, <span class="pl-c1">2</span> * N);
+	ll sum = <span class="pl-c1">0</span>;
+	<span class="pl-c1">rep</span>(i, <span class="pl-c1">2</span> * N) {
+		pq.<span class="pl-c1">push</span>(A[i]);
+		<span class="pl-k">if</span>(i % <span class="pl-c1">2</span> == <span class="pl-c1">0</span>) { <span class="pl-c"><span class="pl-c">//</span> 新的一组转移</span>
+			sum += pq.<span class="pl-c1">top</span>();
+			pq.<span class="pl-c1">pop</span>();
+		}
+	}
+	<span class="pl-c1">out</span>(sum);
+}</pre></div>
+<p>本质就是每两步不断取能取的最大增量，这样既可以保证串本身合法，也能保证增量前缀最大化，换句话说，整体满足凸性.</p>
+<h4>习题3：<a href="https://atcoder.jp/contests/joisp2025/tasks/joisp2025_l" rel="nofollow">https://atcoder.jp/contests/joisp2025/tasks/joisp2025_l</a></h4>
+<p>本题不能使用 <code class="notranslate">min-plus</code> 卷积取得满分，但也可以取得相对不错的分数</p></div>
+<div style="font-size:small;margin-top:8px;float:right;"></div>
+
+<button class="btn btn-block" type="button" onclick="openComments()" id="cmButton">评论</button>
+<div class="comments" id="comments"></div>
+
+</div>
+    <div id="footer"><div id="footer1">Copyright © <span id="copyrightYear"></span> <a href="https://SistineFibel-2006.github.io">SISTINE=Blog</a></div>
+<div id="footer2">
+    <span id="runday"></span><span>Powered by <a href="https://meekdai.com/Gmeek.html" target="_blank">Gmeek</a></span>
+</div>
+
+<script>
+var now=new Date();
+document.getElementById("copyrightYear").innerHTML=now.getFullYear();
+
+if(""!=""){
+    var startSite=new Date("");
+    var diff=now.getTime()-startSite.getTime();
+    var diffDay=Math.floor(diff/(1000*60*60*24));
+    document.getElementById("runday").innerHTML="网站运行 "+diffDay+" 天"+" • ";
+}
+</script></div>
+</body>
+<script>
+var IconList={'sun': 'M8 10.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5zM8 12a4 4 0 100-8 4 4 0 000 8zM8 0a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0V.75A.75.75 0 018 0zm0 13a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0v-1.5A.75.75 0 018 13zM2.343 2.343a.75.75 0 011.061 0l1.06 1.061a.75.75 0 01-1.06 1.06l-1.06-1.06a.75.75 0 010-1.06zm9.193 9.193a.75.75 0 011.06 0l1.061 1.06a.75.75 0 01-1.06 1.061l-1.061-1.06a.75.75 0 010-1.061zM16 8a.75.75 0 01-.75.75h-1.5a.75.75 0 010-1.5h1.5A.75.75 0 0116 8zM3 8a.75.75 0 01-.75.75H.75a.75.75 0 010-1.5h1.5A.75.75 0 013 8zm10.657-5.657a.75.75 0 010 1.061l-1.061 1.06a.75.75 0 11-1.06-1.06l1.06-1.06a.75.75 0 011.06 0zm-9.193 9.193a.75.75 0 010 1.06l-1.06 1.061a.75.75 0 11-1.061-1.06l1.06-1.061a.75.75 0 011.061 0z', 'moon': 'M9.598 1.591a.75.75 0 01.785-.175 7 7 0 11-8.967 8.967.75.75 0 01.961-.96 5.5 5.5 0 007.046-7.046.75.75 0 01.175-.786zm1.616 1.945a7 7 0 01-7.678 7.678 5.5 5.5 0 107.678-7.678z', 'sync': 'M1.705 8.005a.75.75 0 0 1 .834.656 5.5 5.5 0 0 0 9.592 2.97l-1.204-1.204a.25.25 0 0 1 .177-.427h3.646a.25.25 0 0 1 .25.25v3.646a.25.25 0 0 1-.427.177l-1.38-1.38A7.002 7.002 0 0 1 1.05 8.84a.75.75 0 0 1 .656-.834ZM8 2.5a5.487 5.487 0 0 0-4.131 1.869l1.204 1.204A.25.25 0 0 1 4.896 6H1.25A.25.25 0 0 1 1 5.75V2.104a.25.25 0 0 1 .427-.177l1.38 1.38A7.002 7.002 0 0 1 14.95 7.16a.75.75 0 0 1-1.49.178A5.5 5.5 0 0 0 8 2.5Z', 'home': 'M6.906.664a1.749 1.749 0 0 1 2.187 0l5.25 4.2c.415.332.657.835.657 1.367v7.019A1.75 1.75 0 0 1 13.25 15h-3.5a.75.75 0 0 1-.75-.75V9H7v5.25a.75.75 0 0 1-.75.75h-3.5A1.75 1.75 0 0 1 1 13.25V6.23c0-.531.242-1.034.657-1.366l5.25-4.2Zm1.25 1.171a.25.25 0 0 0-.312 0l-5.25 4.2a.25.25 0 0 0-.094.196v7.019c0 .138.112.25.25.25H5.5V8.25a.75.75 0 0 1 .75-.75h3.5a.75.75 0 0 1 .75.75v5.25h2.75a.25.25 0 0 0 .25-.25V6.23a.25.25 0 0 0-.094-.195Z', 'github': 'M8 0c4.42 0 8 3.58 8 8a8.013 8.013 0 0 1-5.45 7.59c-.4.08-.55-.17-.55-.38 0-.27.01-1.13.01-2.2 0-.75-.25-1.23-.54-1.48 1.78-.2 3.65-.88 3.65-3.95 0-.88-.31-1.59-.82-2.15.08-.2.36-1.02-.08-2.12 0 0-.67-.22-2.2.82-.64-.18-1.32-.27-2-.27-.68 0-1.36.09-2 .27-1.53-1.03-2.2-.82-2.2-.82-.44 1.1-.16 1.92-.08 2.12-.51.56-.82 1.28-.82 2.15 0 3.06 1.86 3.75 3.64 3.95-.23.2-.44.55-.51 1.07-.46.21-1.61.55-2.33-.66-.15-.24-.6-.83-1.23-.82-.67.01-.27.38.01.53.34.19.73.9.82 1.13.16.45.68 1.31 2.69.94 0 .67.01 1.3.01 1.49 0 .21-.15.45-.55.38A7.995 7.995 0 0 1 0 8c0-4.42 3.58-8 8-8Z', 'copy': 'M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 0 1 0 1.5h-1.5a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-1.5a.75.75 0 0 1 1.5 0v1.5A1.75 1.75 0 0 1 9.25 16h-7.5A1.75 1.75 0 0 1 0 14.25Z M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0 1 14.25 11h-7.5A1.75 1.75 0 0 1 5 9.25Zm1.75-.25a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-7.5a.25.25 0 0 0-.25-.25Z', 'check': 'M13.78 4.22a.75.75 0 0 1 0 1.06l-7.25 7.25a.75.75 0 0 1-1.06 0L2.22 9.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018L6 10.94l6.72-6.72a.75.75 0 0 1 1.06 0Z'};
+var utterancesLoad=0;
+
+let themeSettings={
+    "dark": ["dark","moon","#00f0ff","dark-blue"],
+    "light": ["light","sun","#ff5000","github-light"],
+    "auto": ["auto","sync","","preferred-color-scheme"]
+};
+function changeTheme(mode, icon, color, utheme){
+    document.documentElement.setAttribute("data-color-mode",mode);
+    document.getElementById("themeSwitch").setAttribute("d",value=IconList[icon]);
+    document.getElementById("themeSwitch").parentNode.style.color=color;
+    if(utterancesLoad==1){utterancesTheme(utheme);}
+}
+function modeSwitch(){
+    let currentMode=document.documentElement.getAttribute('data-color-mode');
+    let newMode = currentMode === "light" ? "dark" : currentMode === "dark" ? "auto" : "light";
+    localStorage.setItem("meek_theme", newMode);
+    if(themeSettings[newMode]){
+        changeTheme(...themeSettings[newMode]);
+    }
+}
+function utterancesTheme(theme){
+    const message={type:'set-theme',theme: theme};
+    const iframe=document.getElementsByClassName('utterances-frame')[0];
+    iframe.contentWindow.postMessage(message,'https://utteranc.es');
+}
+if(themeSettings[theme]){changeTheme(...themeSettings[theme]);}
+console.log("\n %c Gmeek last https://github.com/Meekdai/Gmeek \n","padding:5px 0;background:#02d81d;color:#fff");
+</script>
+
+<script>
+document.getElementById("pathHome").setAttribute("d",IconList["home"]);
+document.getElementById("pathIssue").setAttribute("d",IconList["github"]);
+
+
+
+function openComments(){
+    cm=document.getElementById("comments");
+    cmButton=document.getElementById("cmButton");
+    cmButton.disabled=true;
+    cmButton.innerHTML="loading";
+    span=document.createElement("span");
+    span.setAttribute("class","AnimatedEllipsis");
+    cmButton.appendChild(span);
+
+    script=document.createElement("script");
+    script.setAttribute("src","https://utteranc.es/client.js");
+    script.setAttribute("repo","SistineFibel-2006/SistineFibel-2006.github.io");
+    script.setAttribute("issue-term","title");
+    
+    if(localStorage.getItem("meek_theme")=="dark"){script.setAttribute("theme","dark-blue");}
+    else if(localStorage.getItem("meek_theme")=="light") {script.setAttribute("theme","github-light");}
+    else{script.setAttribute("theme","preferred-color-scheme");}
+    
+    script.setAttribute("crossorigin","anonymous");
+    script.setAttribute("async","");
+    cm.appendChild(script);
+
+    int=self.setInterval("iFrameLoading()",200);
+}
+
+function iFrameLoading(){
+    var utterances=document.getElementsByClassName('utterances');
+    if(utterances.length==1){
+        if(utterances[0].style.height!=""){
+            utterancesLoad=1;
+            int=window.clearInterval(int);
+            document.getElementById("cmButton").style.display="none";
+            console.log("utterances Load OK");
+        }
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    const createClipboardHTML = (codeContent, additionalClasses = '') => `
+        <pre class="notranslate"><code class="notranslate">${codeContent}</code></pre>
+        <div class="clipboard-container position-absolute right-0 top-0 ${additionalClasses}">
+            <clipboard-copy class="ClipboardButton btn m-2 p-0" role="button" style="display: inherit;">
+                <svg height="16" width="16" class="octicon octicon-copy m-2"><path d="${IconList["copy"]}"></path></svg>
+                <svg height="16" width="16" class="octicon octicon-check color-fg-success m-2 d-none"><path d="${IconList["check"]}"></path></svg>
+            </clipboard-copy>
+            <div class="copy-feedback">Copied!</div>
+        </div>
+    `;
+
+    const handleCodeElements = (selector = '') => {
+        document.querySelectorAll(selector).forEach(codeElement => {
+            const codeContent = codeElement.innerHTML;
+            const newStructure = document.createElement('div');
+            newStructure.className = 'snippet-clipboard-content position-relative overflow-auto';
+            newStructure.innerHTML = createClipboardHTML(codeContent);
+
+            const parentElement = codeElement.parentElement;
+            if (selector.includes('highlight')) {
+                parentElement.insertBefore(newStructure, codeElement.nextSibling);
+                parentElement.removeChild(codeElement);
+            } else {
+                parentElement.parentElement.replaceChild(newStructure, parentElement);
+            }
+        });
+    };
+
+    handleCodeElements('pre.notranslate > code.notranslate');
+    handleCodeElements('div.highlight > pre.notranslate');
+
+    let currentFeedback = null;
+    document.querySelectorAll('clipboard-copy').forEach(copyButton => {
+        copyButton.addEventListener('click', () => {
+            const codeContent = copyButton.closest('.snippet-clipboard-content').innerText;
+            const tempTextArea = document.createElement('textarea');
+            tempTextArea.value = codeContent;
+            document.body.appendChild(tempTextArea);
+            tempTextArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempTextArea);
+
+            const copyIcon = copyButton.querySelector('.octicon-copy');
+            const checkIcon = copyButton.querySelector('.octicon-check');
+            const copyFeedback = copyButton.nextElementSibling;
+
+            if (currentFeedback && currentFeedback !== copyFeedback) {currentFeedback.style.display = 'none';}
+            currentFeedback = copyFeedback;
+
+            copyIcon.classList.add('d-none');
+            checkIcon.classList.remove('d-none');
+            copyFeedback.style.display = 'block';
+            copyButton.style.borderColor = 'var(--color-success-fg)';
+
+            setTimeout(() => {
+                copyIcon.classList.remove('d-none');
+                checkIcon.classList.add('d-none');
+                copyFeedback.style.display = 'none';
+                copyButton.style.borderColor = '';
+            }, 2000);
+        });
+    });
+});
+
+</script>
+<script>MathJax = {tex: {inlineMath: [["$", "$"]]}};</script><script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+</html>
