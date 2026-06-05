@@ -1,5 +1,11 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>SISTINE=Blog</title><link>https://SistineFibel-2006.github.io</link><description>无</description><copyright>SISTINE=Blog</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://github.githubassets.com/favicons/favicon.svg</url><title>avatar</title><link>https://SistineFibel-2006.github.io</link></image><lastBuildDate>Thu, 04 Jun 2026 10:22:40 +0000</lastBuildDate><managingEditor>SISTINE=Blog</managingEditor><ttl>60</ttl><webMaster>SISTINE=Blog</webMaster><item><title>CFR1098D - 1900</title><link>https://SistineFibel-2006.github.io/post/CFR1098D%20-%201900.html</link><description>### CFR1098-D
+<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>SISTINE=Blog</title><link>https://SistineFibel-2006.github.io</link><description>无</description><copyright>SISTINE=Blog</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://github.githubassets.com/favicons/favicon.svg</url><title>avatar</title><link>https://SistineFibel-2006.github.io</link></image><lastBuildDate>Fri, 05 Jun 2026 05:27:35 +0000</lastBuildDate><managingEditor>SISTINE=Blog</managingEditor><ttl>60</ttl><webMaster>SISTINE=Blog</webMaster><item><title>P16231 [蓝桥杯 2026 省 A] 基因研究 **蓝 -- 自动机DP</title><link>https://SistineFibel-2006.github.io/post/P16231%20%5B-lan-qiao-bei-%202026%20-sheng-%20A%5D%20-ji-yin-yan-jiu-%20---lan-%20--%20-zi-dong-ji-DP.html</link><description>### P16231 [蓝桥杯 2026 省 A] 基因研究 solution
+
+### 题目分析
+
+通过观察性质，我们会发现这是比较典型的**自动机DP**，具体如何发现的呢？
+
+这是因为，对于一个串来说，在他的后面添加新的字符之后能产生的合法新串与不合法新串，与其所在的位置无关，换句话说：**线性时不变转移**。</description><guid isPermaLink="true">https://SistineFibel-2006.github.io/post/P16231%20%5B-lan-qiao-bei-%202026%20-sheng-%20A%5D%20-ji-yin-yan-jiu-%20---lan-%20--%20-zi-dong-ji-DP.html</guid><pubDate>Fri, 05 Jun 2026 05:27:06 +0000</pubDate></item><item><title>CFR1098D - 1900</title><link>https://SistineFibel-2006.github.io/post/CFR1098D%20-%201900.html</link><description>### CFR1098-D
 
 [Problem - D - Codeforces](https://codeforces.com/contest/2228/problem/D)
 
