@@ -1,5 +1,35 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>SISTINE=Blog</title><link>https://SistineFibel-2006.github.io</link><description>QQ3034019410——Atcoder:SistineFibel</description><copyright>SISTINE=Blog</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://github.githubassets.com/favicons/favicon.svg</url><title>avatar</title><link>https://SistineFibel-2006.github.io</link></image><lastBuildDate>Tue, 23 Jun 2026 09:49:34 +0000</lastBuildDate><managingEditor>SISTINE=Blog</managingEditor><ttl>60</ttl><webMaster>SISTINE=Blog</webMaster><item><title>OCAML CS3110 - Unit 3 Practice</title><link>https://SistineFibel-2006.github.io/post/OCAML%20CS3110%20-%20Unit%203%20Practice.html</link><description>### OCAML CS3110 - Unit 3 Practice
+<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>SISTINE=Blog</title><link>https://SistineFibel-2006.github.io</link><description>QQ3034019410——Atcoder:SistineFibel</description><copyright>SISTINE=Blog</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://github.githubassets.com/favicons/favicon.svg</url><title>avatar</title><link>https://SistineFibel-2006.github.io</link></image><lastBuildDate>Tue, 23 Jun 2026 15:14:45 +0000</lastBuildDate><managingEditor>SISTINE=Blog</managingEditor><ttl>60</ttl><webMaster>SISTINE=Blog</webMaster><item><title>跟 Nachia DP 博客学DP-5 : Bit DP</title><link>https://SistineFibel-2006.github.io/post/gen-%20Nachia%20DP%20-bo-ke-xue-DP-5%20-%20Bit%20DP.html</link><description>### 跟 Nachia DP 博客学DP-5 : Bit DP
+
+Nachia 原文： [DP 的俗称 | Mathenachia --- DP の俗称 | Mathenachia](https://www.mathenachia.blog/dp/)
+
+状态压缩 DP 是一种常用于需要从 $n$ 个元素的排列（共有 $n!$ 中可能性）中寻找最优解的 DP .  常用的框架如下：
+
+&gt; [!tip]
+&gt;
+&gt; $dp[S] :=$ 对于全集 $U$ 的子集 $S$，在**顺序最佳化**后， $S$ 的最小成本
+&gt;
+&gt; 其中 $(S \subset U)$，$U$ 指的是 $n$ 个元素的排列.
+
+常用的递推关系如下：
+
+- $dp[S] = \min_{i\in S} (dp[S \setminus \set{i}] + cost(S \setminus \set{i}, i))$
+
+该递推式子指的是：对于集合 $S$，我们希望计算其中元素经过顺序优化后的成本 $dp[S]$，但需要根据该顺序中 **最后的元素** 是什么来分类讨论：
+
+- 当 $S$ 的最后一个元素是 $i$ 时，关于 $S$ 中除去最后一个 $i$ 的子集的最优解是 $dp[S -\setminus\set{i}]$ .  如果将 $S \setminus \set{i}$ 加上 $i$ 的成本记为 $cost(S \setminus \set i, i)$，那么最终的最小成本就是 $dp[S \setminus \set i] + cost(S \setminus \set i, i)$
+
+之后，对于所有 $i \in S$ 尝试这个情况，然后采用成本最小的方案即可.  于是我们有：
+
+&gt; [!tip]
+&gt;
+&gt; **[转移方程]**： $dp[S] = \min_{i\in S} (dp[S \setminus \set{i}] + cost(S \setminus \set{i}, i))$
+&gt;
+&gt; **[初始值]**：$dp[0]=0$
+&gt;
+&gt; **[最终的最小成本（解）]**：$dp[(1&lt;&lt;n)-1]$
+
+状压 DP 框架所解决的一个经典问题便是著名的 TSP 问题 （*Traveling salesman problem*, 旅行商问题）。</description><guid isPermaLink="true">https://SistineFibel-2006.github.io/post/gen-%20Nachia%20DP%20-bo-ke-xue-DP-5%20-%20Bit%20DP.html</guid><pubDate>Tue, 23 Jun 2026 15:14:07 +0000</pubDate></item><item><title>OCAML CS3110 - Unit 3 Practice</title><link>https://SistineFibel-2006.github.io/post/OCAML%20CS3110%20-%20Unit%203%20Practice.html</link><description>### OCAML CS3110 - Unit 3 Practice
 
 ```ocaml
 let l1 = [1; 2; 3; 4; 5]
