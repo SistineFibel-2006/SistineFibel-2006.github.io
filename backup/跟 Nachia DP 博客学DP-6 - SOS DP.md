@@ -10,7 +10,6 @@ Nachia 原文： [DP 的俗称 | Mathenachia --- DP の俗称 | Mathenachia](htt
 >
 > 这里是证明：
 >
-> > [!note]
 > >
 > > 对于一个元素 $x \in A$，对于一个集合对 $(B, C)$ 满足 $(C \subsetneq B \subset A)$，这个 $x$ 只可能是下面3种互斥状态中的一个：
 > >
