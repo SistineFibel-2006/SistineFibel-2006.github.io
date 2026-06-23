@@ -1,5 +1,242 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>SISTINE=Blog</title><link>https://SistineFibel-2006.github.io</link><description>QQ3034019410——Atcoder:SistineFibel</description><copyright>SISTINE=Blog</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://github.githubassets.com/favicons/favicon.svg</url><title>avatar</title><link>https://SistineFibel-2006.github.io</link></image><lastBuildDate>Fri, 05 Jun 2026 05:36:39 +0000</lastBuildDate><managingEditor>SISTINE=Blog</managingEditor><ttl>60</ttl><webMaster>SISTINE=Blog</webMaster><item><title>P16231 [蓝桥杯 2026 省 A] 基因研究 **蓝 -- 自动机DP</title><link>https://SistineFibel-2006.github.io/post/P16231%20%5B-lan-qiao-bei-%202026%20-sheng-%20A%5D%20-ji-yin-yan-jiu-%20---lan-%20--%20-zi-dong-ji-DP.html</link><description>### P16231 [蓝桥杯 2026 省 A] 基因研究 solution
+<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>SISTINE=Blog</title><link>https://SistineFibel-2006.github.io</link><description>QQ3034019410——Atcoder:SistineFibel</description><copyright>SISTINE=Blog</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://github.githubassets.com/favicons/favicon.svg</url><title>avatar</title><link>https://SistineFibel-2006.github.io</link></image><lastBuildDate>Tue, 23 Jun 2026 09:49:34 +0000</lastBuildDate><managingEditor>SISTINE=Blog</managingEditor><ttl>60</ttl><webMaster>SISTINE=Blog</webMaster><item><title>OCAML CS3110 - Unit 3 Practice</title><link>https://SistineFibel-2006.github.io/post/OCAML%20CS3110%20-%20Unit%203%20Practice.html</link><description>### OCAML CS3110 - Unit 3 Practice
+
+```ocaml
+let l1 = [1; 2; 3; 4; 5]
+let l2 = 1 :: 2 :: 3 :: 4 :: 5 :: []
+let l3 = [1] @ [2; 3; 4] @ [5]
+
+let rec product (xs : 'a list) : int = 
+  match xs with
+  | [] -&gt; 1
+  | h :: t -&gt; h * product t
+
+let rec concat (xs : string list) : string = 
+  match xs with
+  | [] -&gt; ''
+  | h :: t -&gt; h ^ concat t
+
+(* patten match *)
+
+let rec pat1 = function
+| [] -&gt; false
+| h :: _ -&gt; h = 'bigred'
+
+let pat2 = function
+| _ :: _ :: [] | _ :: _ :: _ :: _ :: [] -&gt; true
+| _ -&gt; false
+
+let pat3 = function
+| x :: y :: [] -&gt; x = y
+| _ -&gt; false
+
+(* library *)
+
+let fiveth (xs : int list) : int = 
+  if List.length xs &gt;= 5 then List.nth xs 4 else 0
+
+let downlist (xs : int list) : int list = 
+  List.sort Stdlib.compare xs |&gt; List.rev 
+
+(* library puzzle *)
+
+let lastele xs = 
+  List.nth (List.rev xs) 0 
+
+let haszero (xs : int list) =
+  List.exists (fun x -&gt; x = 0) xs
+
+(* take drop *)
+
+let rec take n xs : int list =
+  match n with 
+  | 0 -&gt; []
+  | _ -&gt; begin
+      match xs with 
+      | [] -&gt; []
+      | h :: t -&gt; h :: take (n - 1) t
+    end
+
+let rec drop n xs : int list =
+  match n with 
+  | 0 -&gt; xs
+  | _ -&gt; begin
+      match xs with 
+      | [] -&gt; []
+      | h :: t -&gt; drop (n - 1) t
+    end
+
+(* unimodal *)
+
+let rec is_dec (xs : int list) : bool =
+  match xs with
+  | [] | [_] -&gt; true
+  | h1 :: (h2 :: t1 as t) -&gt; h1 &gt;= h2 &amp;&amp; is_dec t
+
+let rec is_inc_dec = function
+  | [] | [_] -&gt; true
+  | a :: (b :: t) as t1 -&gt; 
+    if a &lt;= b then is_inc_dec t else is_dec t1  
+
+let is_unimodal xs = is_inc_dec xs
+
+(* powerset *)
+
+let rec powerset (xs : int list) : int list list = 
+  let ss = List.sort Stdlib.compare xs in
+  match ss with
+  | [] -&gt; [[]]
+  | h :: t -&gt; let p = powerset t in 
+    List.map (List.cons h) p @ p 
+
+(* print int list rec *)
+let rec print_int_list (xs : int list) : unit = 
+  match xs with 
+  | [] -&gt; ()
+  | h :: t -&gt; print_endline @@ string_of_int h; print_int_list t
+
+(* print int list iter *)
+
+let print_int_list' xs =
+  List.iter (fun x -&gt; print_endline @@ string_of_int x) xs
+
+(* student *)
+
+type student = {first_name : string; last_name : string; gpa : float}
+
+let a1 : student = {first_name = 'Line'; last_name = 'BuBu'; gpa = 3.1}
+
+let student_name stu = 
+  (stu.first_name, stu.last_name)
+
+let student_create f l g : student = 
+  {first_name = f; last_name = l; gpa = g}
+
+(* pokerecord *)
+
+type poketype = Normal | Fire | Water
+type pokemen = {name : string; hp : int; ptype : poketype}
+
+let charizard = {name = 'charizard'; hp = 78; ptype = Fire}
+let squirtle = {name = 'squirtle'; hp = 44; ptype = Water}
+
+(* safe hd and tl *)
+
+let safe_hd = function
+  | [] -&gt; None
+  | h :: _ -&gt; Some h 
+
+let rec safe_tl = function
+  | [] -&gt; None
+  | _ :: t -&gt; match t with 
+    | [] -&gt; failwith 'can't be trigged' 
+    | h :: [] -&gt; Some h
+    | _ -&gt; safe_tl t
+
+(* pokefun *)
+
+let rec max_hp (xs : pokemen list) : pokemen option = 
+  match xs with 
+  | [] -&gt; None
+  | h :: t -&gt; match max_hp t with
+    | None -&gt; Some h
+    | Some h1 -&gt; Some (if h1.hp &gt;= h.hp then h1 else h)
+
+(* date before *)
+
+type date = int * int * int
+let is_before (x : date) (y : date) : bool = 
+  let (x1,x2,x3) = x in 
+  let (y1,y2,y3) = y in 
+  x1 &lt; y1 || (x1 = y1 &amp;&amp; x2 &lt; y2) || (x1 = y1 &amp;&amp; x2 = y2 &amp;&amp; x3 &lt; y3) 
+
+
+(* earliest date *)
+
+let rec earliest (xs : date list) : date option = 
+  match xs with 
+  | [] -&gt; None
+  | h :: t -&gt; match earliest t with
+    | None -&gt; Some h
+    | Some h1 -&gt; Some (if is_before h1 h then h1 else h)
+
+(* assoc list *)
+
+let insert k v lst = (k, v) :: lst
+let rec lookup k = function
+| [] -&gt; None
+| (k', v) :: t -&gt; if k = k' then Some v else lookup k t
+
+let mp = insert 1 'one' (insert 2 'two' (insert 3 'three' []))
+let ck2 = lookup 2 mp
+let ck4 = lookup 4 mp
+
+(* cards *)
+
+type suit = Hearts | Spades | Clubs | Diamonds
+type rank = Number of int | Ace | Jack | Queen | King 
+type card = {suit : suit; rank : rank}
+
+(* quadrant *)
+
+type quad = I | II | III | IV 
+type sign = Neg | Zero | Pos 
+
+let sign (x : int) : sign = 
+  if x = 0 then Zero else if x &gt; 0 then Pos else Neg
+
+let quadrant (point : int * int) : quad option = 
+  let (x, y) = point in 
+  match sign x, sign y with
+  | Pos, Pos -&gt; Some I 
+  | Neg, Pos -&gt; Some II 
+  | Neg, Neg -&gt; Some III 
+  | Pos, Neg -&gt; Some IV 
+  | _ -&gt; None 
+
+let quadrant_when (point : int * int) : quad option = 
+  let (x, y) = point in
+  match x, y  with 
+  | x, y when x &gt; 0 &amp;&amp; y &gt; 0 -&gt; Some I
+  | x, y when x &lt; 0 &amp;&amp; y &gt; 0 -&gt; Some II 
+  | x, y when x &lt; 0 &amp;&amp; y &lt; 0 -&gt; Some III 
+  | x, y when x &gt; 0 &amp;&amp; y &lt; 0 -&gt; Some IV 
+  | _ -&gt; None 
+
+(* depth *)
+
+type 'a tree = Nil | Node of 'a * 'a tree * 'a tree
+
+let rec depth (tree : 'a tree) : int = 
+match tree with 
+| Nil -&gt; 0
+| Node (_, l, r) -&gt; max (1 + depth l) (1 + depth r)
+
+(* shape *)
+let rec shape (a : 'a tree) (b : 'a tree) : bool = 
+match a, b with
+| Nil, Nil -&gt; true
+| Node (_, l1, r1) , Node (_, l2, r2) -&gt; shape l1 l2 &amp;&amp; shape r1 r2
+| _ -&gt; false
+
+(* list max exn *)
+let rec list_max = function
+| [] -&gt; failwith 'empty'
+| h :: [] -&gt; h
+| h :: t -&gt; max h @@ list_max t
+
+(* list max exn string *)
+let list_max_string (xs : int list) : string = 
+match xs with 
+| [] -&gt; 'empty'
+| _ -&gt; string_of_int @@ list_max xs
+
+(* is_bst *)
+let is_bst : ('a * 'b) tree -&gt; bool = fun xs -&gt; 
+  failwith 'TODO'
+```
+
+。</description><guid isPermaLink="true">https://SistineFibel-2006.github.io/post/OCAML%20CS3110%20-%20Unit%203%20Practice.html</guid><pubDate>Tue, 23 Jun 2026 09:49:07 +0000</pubDate></item><item><title>P16231 [蓝桥杯 2026 省 A] 基因研究 **蓝 -- 自动机DP</title><link>https://SistineFibel-2006.github.io/post/P16231%20%5B-lan-qiao-bei-%202026%20-sheng-%20A%5D%20-ji-yin-yan-jiu-%20---lan-%20--%20-zi-dong-ji-DP.html</link><description>### P16231 [蓝桥杯 2026 省 A] 基因研究 solution
 
 ### 题目分析
 

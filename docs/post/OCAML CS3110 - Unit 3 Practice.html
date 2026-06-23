@@ -1,0 +1,959 @@
+<!DOCTYPE html>
+<html data-color-mode="light" data-dark-theme="dark" data-light-theme="light" lang="zh-CN">
+<head>
+    <meta content="text/html; charset=utf-8" http-equiv="content-type" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link href='https://mirrors.sustech.edu.cn/cdnjs/ajax/libs/Primer/21.0.7/primer.css' rel='stylesheet' />
+    <script src='https://blog.meekdai.com/Gmeek/plugins/GmeekVercount.js'></script>
+    <link rel="icon" href="https://github.githubassets.com/favicons/favicon.svg"><script>
+        let theme = localStorage.getItem("meek_theme") || "light";
+        document.documentElement.setAttribute("data-color-mode", theme);
+    </script>
+<meta name="description" content="### OCAML CS3110 - Unit 3 Practice
+
+```ocaml
+let l1 = [1; 2; 3; 4; 5]
+let l2 = 1 :: 2 :: 3 :: 4 :: 5 :: []
+let l3 = [1] @ [2; 3; 4] @ [5]
+
+let rec product (xs : 'a list) : int = 
+  match xs with
+  | [] -> 1
+  | h :: t -> h * product t
+
+let rec concat (xs : string list) : string = 
+  match xs with
+  | [] -> ''
+  | h :: t -> h ^ concat t
+
+(* patten match *)
+
+let rec pat1 = function
+| [] -> false
+| h :: _ -> h = 'bigred'
+
+let pat2 = function
+| _ :: _ :: [] | _ :: _ :: _ :: _ :: [] -> true
+| _ -> false
+
+let pat3 = function
+| x :: y :: [] -> x = y
+| _ -> false
+
+(* library *)
+
+let fiveth (xs : int list) : int = 
+  if List.length xs >= 5 then List.nth xs 4 else 0
+
+let downlist (xs : int list) : int list = 
+  List.sort Stdlib.compare xs |> List.rev 
+
+(* library puzzle *)
+
+let lastele xs = 
+  List.nth (List.rev xs) 0 
+
+let haszero (xs : int list) =
+  List.exists (fun x -> x = 0) xs
+
+(* take drop *)
+
+let rec take n xs : int list =
+  match n with 
+  | 0 -> []
+  | _ -> begin
+      match xs with 
+      | [] -> []
+      | h :: t -> h :: take (n - 1) t
+    end
+
+let rec drop n xs : int list =
+  match n with 
+  | 0 -> xs
+  | _ -> begin
+      match xs with 
+      | [] -> []
+      | h :: t -> drop (n - 1) t
+    end
+
+(* unimodal *)
+
+let rec is_dec (xs : int list) : bool =
+  match xs with
+  | [] | [_] -> true
+  | h1 :: (h2 :: t1 as t) -> h1 >= h2 && is_dec t
+
+let rec is_inc_dec = function
+  | [] | [_] -> true
+  | a :: (b :: t) as t1 -> 
+    if a <= b then is_inc_dec t else is_dec t1  
+
+let is_unimodal xs = is_inc_dec xs
+
+(* powerset *)
+
+let rec powerset (xs : int list) : int list list = 
+  let ss = List.sort Stdlib.compare xs in
+  match ss with
+  | [] -> [[]]
+  | h :: t -> let p = powerset t in 
+    List.map (List.cons h) p @ p 
+
+(* print int list rec *)
+let rec print_int_list (xs : int list) : unit = 
+  match xs with 
+  | [] -> ()
+  | h :: t -> print_endline @@ string_of_int h; print_int_list t
+
+(* print int list iter *)
+
+let print_int_list' xs =
+  List.iter (fun x -> print_endline @@ string_of_int x) xs
+
+(* student *)
+
+type student = {first_name : string; last_name : string; gpa : float}
+
+let a1 : student = {first_name = 'Line'; last_name = 'BuBu'; gpa = 3.1}
+
+let student_name stu = 
+  (stu.first_name, stu.last_name)
+
+let student_create f l g : student = 
+  {first_name = f; last_name = l; gpa = g}
+
+(* pokerecord *)
+
+type poketype = Normal | Fire | Water
+type pokemen = {name : string; hp : int; ptype : poketype}
+
+let charizard = {name = 'charizard'; hp = 78; ptype = Fire}
+let squirtle = {name = 'squirtle'; hp = 44; ptype = Water}
+
+(* safe hd and tl *)
+
+let safe_hd = function
+  | [] -> None
+  | h :: _ -> Some h 
+
+let rec safe_tl = function
+  | [] -> None
+  | _ :: t -> match t with 
+    | [] -> failwith 'can't be trigged' 
+    | h :: [] -> Some h
+    | _ -> safe_tl t
+
+(* pokefun *)
+
+let rec max_hp (xs : pokemen list) : pokemen option = 
+  match xs with 
+  | [] -> None
+  | h :: t -> match max_hp t with
+    | None -> Some h
+    | Some h1 -> Some (if h1.hp >= h.hp then h1 else h)
+
+(* date before *)
+
+type date = int * int * int
+let is_before (x : date) (y : date) : bool = 
+  let (x1,x2,x3) = x in 
+  let (y1,y2,y3) = y in 
+  x1 < y1 || (x1 = y1 && x2 < y2) || (x1 = y1 && x2 = y2 && x3 < y3) 
+
+
+(* earliest date *)
+
+let rec earliest (xs : date list) : date option = 
+  match xs with 
+  | [] -> None
+  | h :: t -> match earliest t with
+    | None -> Some h
+    | Some h1 -> Some (if is_before h1 h then h1 else h)
+
+(* assoc list *)
+
+let insert k v lst = (k, v) :: lst
+let rec lookup k = function
+| [] -> None
+| (k', v) :: t -> if k = k' then Some v else lookup k t
+
+let mp = insert 1 'one' (insert 2 'two' (insert 3 'three' []))
+let ck2 = lookup 2 mp
+let ck4 = lookup 4 mp
+
+(* cards *)
+
+type suit = Hearts | Spades | Clubs | Diamonds
+type rank = Number of int | Ace | Jack | Queen | King 
+type card = {suit : suit; rank : rank}
+
+(* quadrant *)
+
+type quad = I | II | III | IV 
+type sign = Neg | Zero | Pos 
+
+let sign (x : int) : sign = 
+  if x = 0 then Zero else if x > 0 then Pos else Neg
+
+let quadrant (point : int * int) : quad option = 
+  let (x, y) = point in 
+  match sign x, sign y with
+  | Pos, Pos -> Some I 
+  | Neg, Pos -> Some II 
+  | Neg, Neg -> Some III 
+  | Pos, Neg -> Some IV 
+  | _ -> None 
+
+let quadrant_when (point : int * int) : quad option = 
+  let (x, y) = point in
+  match x, y  with 
+  | x, y when x > 0 && y > 0 -> Some I
+  | x, y when x < 0 && y > 0 -> Some II 
+  | x, y when x < 0 && y < 0 -> Some III 
+  | x, y when x > 0 && y < 0 -> Some IV 
+  | _ -> None 
+
+(* depth *)
+
+type 'a tree = Nil | Node of 'a * 'a tree * 'a tree
+
+let rec depth (tree : 'a tree) : int = 
+match tree with 
+| Nil -> 0
+| Node (_, l, r) -> max (1 + depth l) (1 + depth r)
+
+(* shape *)
+let rec shape (a : 'a tree) (b : 'a tree) : bool = 
+match a, b with
+| Nil, Nil -> true
+| Node (_, l1, r1) , Node (_, l2, r2) -> shape l1 l2 && shape r1 r2
+| _ -> false
+
+(* list max exn *)
+let rec list_max = function
+| [] -> failwith 'empty'
+| h :: [] -> h
+| h :: t -> max h @@ list_max t
+
+(* list max exn string *)
+let list_max_string (xs : int list) : string = 
+match xs with 
+| [] -> 'empty'
+| _ -> string_of_int @@ list_max xs
+
+(* is_bst *)
+let is_bst : ('a * 'b) tree -> bool = fun xs -> 
+  failwith 'TODO'
+```
+
+。">
+<meta property="og:title" content="OCAML CS3110 - Unit 3 Practice">
+<meta property="og:description" content="### OCAML CS3110 - Unit 3 Practice
+
+```ocaml
+let l1 = [1; 2; 3; 4; 5]
+let l2 = 1 :: 2 :: 3 :: 4 :: 5 :: []
+let l3 = [1] @ [2; 3; 4] @ [5]
+
+let rec product (xs : 'a list) : int = 
+  match xs with
+  | [] -> 1
+  | h :: t -> h * product t
+
+let rec concat (xs : string list) : string = 
+  match xs with
+  | [] -> ''
+  | h :: t -> h ^ concat t
+
+(* patten match *)
+
+let rec pat1 = function
+| [] -> false
+| h :: _ -> h = 'bigred'
+
+let pat2 = function
+| _ :: _ :: [] | _ :: _ :: _ :: _ :: [] -> true
+| _ -> false
+
+let pat3 = function
+| x :: y :: [] -> x = y
+| _ -> false
+
+(* library *)
+
+let fiveth (xs : int list) : int = 
+  if List.length xs >= 5 then List.nth xs 4 else 0
+
+let downlist (xs : int list) : int list = 
+  List.sort Stdlib.compare xs |> List.rev 
+
+(* library puzzle *)
+
+let lastele xs = 
+  List.nth (List.rev xs) 0 
+
+let haszero (xs : int list) =
+  List.exists (fun x -> x = 0) xs
+
+(* take drop *)
+
+let rec take n xs : int list =
+  match n with 
+  | 0 -> []
+  | _ -> begin
+      match xs with 
+      | [] -> []
+      | h :: t -> h :: take (n - 1) t
+    end
+
+let rec drop n xs : int list =
+  match n with 
+  | 0 -> xs
+  | _ -> begin
+      match xs with 
+      | [] -> []
+      | h :: t -> drop (n - 1) t
+    end
+
+(* unimodal *)
+
+let rec is_dec (xs : int list) : bool =
+  match xs with
+  | [] | [_] -> true
+  | h1 :: (h2 :: t1 as t) -> h1 >= h2 && is_dec t
+
+let rec is_inc_dec = function
+  | [] | [_] -> true
+  | a :: (b :: t) as t1 -> 
+    if a <= b then is_inc_dec t else is_dec t1  
+
+let is_unimodal xs = is_inc_dec xs
+
+(* powerset *)
+
+let rec powerset (xs : int list) : int list list = 
+  let ss = List.sort Stdlib.compare xs in
+  match ss with
+  | [] -> [[]]
+  | h :: t -> let p = powerset t in 
+    List.map (List.cons h) p @ p 
+
+(* print int list rec *)
+let rec print_int_list (xs : int list) : unit = 
+  match xs with 
+  | [] -> ()
+  | h :: t -> print_endline @@ string_of_int h; print_int_list t
+
+(* print int list iter *)
+
+let print_int_list' xs =
+  List.iter (fun x -> print_endline @@ string_of_int x) xs
+
+(* student *)
+
+type student = {first_name : string; last_name : string; gpa : float}
+
+let a1 : student = {first_name = 'Line'; last_name = 'BuBu'; gpa = 3.1}
+
+let student_name stu = 
+  (stu.first_name, stu.last_name)
+
+let student_create f l g : student = 
+  {first_name = f; last_name = l; gpa = g}
+
+(* pokerecord *)
+
+type poketype = Normal | Fire | Water
+type pokemen = {name : string; hp : int; ptype : poketype}
+
+let charizard = {name = 'charizard'; hp = 78; ptype = Fire}
+let squirtle = {name = 'squirtle'; hp = 44; ptype = Water}
+
+(* safe hd and tl *)
+
+let safe_hd = function
+  | [] -> None
+  | h :: _ -> Some h 
+
+let rec safe_tl = function
+  | [] -> None
+  | _ :: t -> match t with 
+    | [] -> failwith 'can't be trigged' 
+    | h :: [] -> Some h
+    | _ -> safe_tl t
+
+(* pokefun *)
+
+let rec max_hp (xs : pokemen list) : pokemen option = 
+  match xs with 
+  | [] -> None
+  | h :: t -> match max_hp t with
+    | None -> Some h
+    | Some h1 -> Some (if h1.hp >= h.hp then h1 else h)
+
+(* date before *)
+
+type date = int * int * int
+let is_before (x : date) (y : date) : bool = 
+  let (x1,x2,x3) = x in 
+  let (y1,y2,y3) = y in 
+  x1 < y1 || (x1 = y1 && x2 < y2) || (x1 = y1 && x2 = y2 && x3 < y3) 
+
+
+(* earliest date *)
+
+let rec earliest (xs : date list) : date option = 
+  match xs with 
+  | [] -> None
+  | h :: t -> match earliest t with
+    | None -> Some h
+    | Some h1 -> Some (if is_before h1 h then h1 else h)
+
+(* assoc list *)
+
+let insert k v lst = (k, v) :: lst
+let rec lookup k = function
+| [] -> None
+| (k', v) :: t -> if k = k' then Some v else lookup k t
+
+let mp = insert 1 'one' (insert 2 'two' (insert 3 'three' []))
+let ck2 = lookup 2 mp
+let ck4 = lookup 4 mp
+
+(* cards *)
+
+type suit = Hearts | Spades | Clubs | Diamonds
+type rank = Number of int | Ace | Jack | Queen | King 
+type card = {suit : suit; rank : rank}
+
+(* quadrant *)
+
+type quad = I | II | III | IV 
+type sign = Neg | Zero | Pos 
+
+let sign (x : int) : sign = 
+  if x = 0 then Zero else if x > 0 then Pos else Neg
+
+let quadrant (point : int * int) : quad option = 
+  let (x, y) = point in 
+  match sign x, sign y with
+  | Pos, Pos -> Some I 
+  | Neg, Pos -> Some II 
+  | Neg, Neg -> Some III 
+  | Pos, Neg -> Some IV 
+  | _ -> None 
+
+let quadrant_when (point : int * int) : quad option = 
+  let (x, y) = point in
+  match x, y  with 
+  | x, y when x > 0 && y > 0 -> Some I
+  | x, y when x < 0 && y > 0 -> Some II 
+  | x, y when x < 0 && y < 0 -> Some III 
+  | x, y when x > 0 && y < 0 -> Some IV 
+  | _ -> None 
+
+(* depth *)
+
+type 'a tree = Nil | Node of 'a * 'a tree * 'a tree
+
+let rec depth (tree : 'a tree) : int = 
+match tree with 
+| Nil -> 0
+| Node (_, l, r) -> max (1 + depth l) (1 + depth r)
+
+(* shape *)
+let rec shape (a : 'a tree) (b : 'a tree) : bool = 
+match a, b with
+| Nil, Nil -> true
+| Node (_, l1, r1) , Node (_, l2, r2) -> shape l1 l2 && shape r1 r2
+| _ -> false
+
+(* list max exn *)
+let rec list_max = function
+| [] -> failwith 'empty'
+| h :: [] -> h
+| h :: t -> max h @@ list_max t
+
+(* list max exn string *)
+let list_max_string (xs : int list) : string = 
+match xs with 
+| [] -> 'empty'
+| _ -> string_of_int @@ list_max xs
+
+(* is_bst *)
+let is_bst : ('a * 'b) tree -> bool = fun xs -> 
+  failwith 'TODO'
+```
+
+。">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://SistineFibel-2006.github.io/post/OCAML%20CS3110%20-%20Unit%203%20Practice.html">
+<meta property="og:image" content="https://github.githubassets.com/favicons/favicon.svg">
+<title>OCAML CS3110 - Unit 3 Practice</title>
+<link href="//unpkg.com/@wooorm/starry-night@2.1.1/style/both.css" rel="stylesheet" />
+
+
+</head>
+<style>
+body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;padding: 45px;font-size: 16px;font-family: sans-serif;line-height: 1.25;}
+#header{display:flex;padding-bottom:8px;border-bottom: 1px solid var(--borderColor-muted, var(--color-border-muted));margin-bottom: 16px;}
+#footer {margin-top:64px; text-align: center;font-size: small;}
+
+</style>
+
+<style>
+.postTitle{margin: auto 0;font-size:40px;font-weight:bold;}
+.title-right{display:flex;margin:auto 0 0 auto;}
+.title-right .circle{padding: 14px 16px;margin-right:8px;}
+#postBody{border-bottom: 1px solid var(--color-border-default);padding-bottom:36px;}
+#postBody hr{height:2px;}
+#cmButton{height:48px;margin-top:48px;}
+#comments{margin-top:64px;}
+.g-emoji{font-size:24px;}
+@media (max-width: 600px) {
+    body {padding: 8px;}
+    .postTitle{font-size:24px;}
+}
+.copy-feedback {
+    display: none;
+    position: absolute;
+    top: 10px;
+    right: 50px;
+    color: var(--color-fg-on-emphasis);
+    background-color: var(--color-fg-muted);
+    border-radius: 3px;
+    padding: 5px 8px;
+    font-size: 12px;
+}
+</style>
+
+
+
+
+<body>
+    <div id="header">
+<h1 class="postTitle">OCAML CS3110 - Unit 3 Practice</h1>
+<div class="title-right">
+    <a href="https://SistineFibel-2006.github.io" id="buttonHome" class="btn btn-invisible circle" title="首页">
+        <svg class="octicon" width="16" height="16">
+            <path id="pathHome" fill-rule="evenodd"></path>
+        </svg>
+    </a>
+    
+    <a href="https://github.com/SistineFibel-2006/SistineFibel-2006.github.io/issues/5" target="_blank" class="btn btn-invisible circle" title="Issue">
+        <svg class="octicon" width="16" height="16">
+            <path id="pathIssue" fill-rule="evenodd"></path>
+        </svg>
+    </a>
+    
+
+    <a class="btn btn-invisible circle" onclick="modeSwitch();" title="切换主题">
+        <svg class="octicon" width="16" height="16" >
+            <path id="themeSwitch" fill-rule="evenodd"></path>
+        </svg>
+    </a>
+
+</div>
+</div>
+    <div id="content">
+<div class="markdown-body" id="postBody"><h3>OCAML CS3110 - Unit 3 Practice</h3>
+<div class="highlight highlight-source-ocaml"><pre class="notranslate"><span class="pl-k">let</span> l1 <span class="pl-k">=</span> [<span class="pl-c1">1</span>; <span class="pl-c1">2</span>; <span class="pl-c1">3</span>; <span class="pl-c1">4</span>; <span class="pl-c1">5</span>]
+<span class="pl-k">let</span> l2 <span class="pl-k">=</span> <span class="pl-c1">1</span> :: <span class="pl-c1">2</span> :: <span class="pl-c1">3</span> :: <span class="pl-c1">4</span> :: <span class="pl-c1">5</span> :: <span class="pl-c1">[]</span>
+<span class="pl-k">let</span> l3 <span class="pl-k">=</span> [<span class="pl-c1">1</span>] <span class="pl-k">@</span> [<span class="pl-c1">2</span>; <span class="pl-c1">3</span>; <span class="pl-c1">4</span>] <span class="pl-k">@</span> [<span class="pl-c1">5</span>]
+
+<span class="pl-k">let</span> <span class="pl-k">rec </span><span class="pl-en">product</span> (<span class="pl-v">xs</span> <span class="pl-k">: 'a list</span>) : <span class="pl-k">int </span><span class="pl-k">=</span> 
+  <span class="pl-k">match</span> xs <span class="pl-k">with</span><span class="pl-k"></span>
+  <span class="pl-k">|</span> <span class="pl-c1">[]</span> -&gt; <span class="pl-c1">1</span>
+  <span class="pl-k">|</span> <span class="pl-v">h</span> :: <span class="pl-v">t</span> -&gt; h <span class="pl-k">*</span> product t
+
+<span class="pl-k">let</span> <span class="pl-k">rec </span><span class="pl-en">concat</span> (<span class="pl-v">xs</span> <span class="pl-k">: string list</span>) : <span class="pl-k">string </span><span class="pl-k">=</span> 
+  <span class="pl-k">match</span> xs <span class="pl-k">with</span><span class="pl-k"></span>
+  <span class="pl-k">|</span> <span class="pl-c1">[]</span> -&gt; <span class="pl-s"><span class="pl-pds">"</span><span class="pl-pds">"</span></span>
+  <span class="pl-k">|</span> <span class="pl-v">h</span> :: <span class="pl-v">t</span> -&gt; h <span class="pl-k">^</span> concat t
+
+<span class="pl-c"><span class="pl-c">(*</span> patten match <span class="pl-c">*)</span></span>
+
+<span class="pl-k">let</span> <span class="pl-k">rec </span><span class="pl-en">pat1</span> <span class="pl-k">=</span> <span class="pl-k">function</span><span class="pl-k"></span>
+| <span class="pl-c1">[]</span> -&gt; <span class="pl-c1">false</span>
+<span class="pl-k">|</span> <span class="pl-v">h</span> :: <span class="pl-c1">_</span> -&gt; h <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">"</span>bigred<span class="pl-pds">"</span></span>
+
+<span class="pl-k">let</span> <span class="pl-en">pat2</span> <span class="pl-k">=</span> <span class="pl-k">function</span><span class="pl-k"></span>
+| <span class="pl-c1">_</span> :: <span class="pl-c1">_</span> :: <span class="pl-c1">[]</span> <span class="pl-k">|</span> <span class="pl-c1">_</span> :: <span class="pl-c1">_</span> :: <span class="pl-c1">_</span> :: <span class="pl-c1">_</span> :: <span class="pl-c1">[]</span> -&gt; <span class="pl-c1">true</span>
+<span class="pl-k">|</span> <span class="pl-c1">_</span> -&gt; <span class="pl-c1">false</span>
+
+<span class="pl-k">let</span> <span class="pl-en">pat3</span> <span class="pl-k">=</span> <span class="pl-k">function</span><span class="pl-k"></span>
+| <span class="pl-v">x</span> :: <span class="pl-v">y</span> :: <span class="pl-c1">[]</span> -&gt; x <span class="pl-k">=</span> y
+<span class="pl-k">|</span> <span class="pl-c1">_</span> -&gt; <span class="pl-c1">false</span>
+
+<span class="pl-c"><span class="pl-c">(*</span> library <span class="pl-c">*)</span></span>
+
+<span class="pl-k">let</span> <span class="pl-en">fiveth</span> (<span class="pl-v">xs</span> <span class="pl-k">: int list</span>) : <span class="pl-k">int </span><span class="pl-k">=</span> 
+  <span class="pl-k">if</span> <span class="pl-c1">List.</span>length xs <span class="pl-k">&gt;</span><span class="pl-k">=</span> <span class="pl-c1">5</span> <span class="pl-k">then</span> <span class="pl-c1">List.</span>nth xs <span class="pl-c1">4</span> <span class="pl-k">else</span> <span class="pl-c1">0</span>
+
+<span class="pl-k">let</span> <span class="pl-en">downlist</span> (<span class="pl-v">xs</span> <span class="pl-k">: int list</span>) : <span class="pl-k">int list </span><span class="pl-k">=</span> 
+  <span class="pl-c1">List.</span>sort <span class="pl-c1">Stdlib.</span>compare xs <span class="pl-k">|&gt;</span> <span class="pl-c1">List.</span>rev 
+
+<span class="pl-c"><span class="pl-c">(*</span> library puzzle <span class="pl-c">*)</span></span>
+
+<span class="pl-k">let</span> <span class="pl-en">lastele</span> <span class="pl-v">xs</span> <span class="pl-k">=</span> 
+  <span class="pl-c1">List.</span>nth (<span class="pl-c1">List.</span>rev xs) <span class="pl-c1">0</span> 
+
+<span class="pl-k">let</span> <span class="pl-en">haszero</span> (<span class="pl-v">xs</span> <span class="pl-k">: int list</span>) <span class="pl-k">=</span>
+  <span class="pl-c1">List.</span>exists (<span class="pl-k">fun</span> <span class="pl-v">x</span> -&gt; x <span class="pl-k">=</span> <span class="pl-c1">0</span>) xs
+
+<span class="pl-c"><span class="pl-c">(*</span> take drop <span class="pl-c">*)</span></span>
+
+<span class="pl-k">let</span> <span class="pl-k">rec </span><span class="pl-en">take</span> <span class="pl-v">n</span> <span class="pl-v">xs</span> : <span class="pl-k">int list </span><span class="pl-k">=</span>
+  <span class="pl-k">match</span> n <span class="pl-k">with</span><span class="pl-k"> </span>
+  <span class="pl-k">|</span> <span class="pl-c1">0</span> -&gt; <span class="pl-c1">[]</span>
+  <span class="pl-k">|</span> <span class="pl-c1">_</span> -&gt; <span class="pl-k">begin</span>
+      <span class="pl-k">match</span> xs <span class="pl-k">with</span><span class="pl-k"> </span>
+      <span class="pl-k">|</span> <span class="pl-c1">[]</span> -&gt; <span class="pl-c1">[]</span>
+      <span class="pl-k">|</span> <span class="pl-v">h</span> :: <span class="pl-v">t</span> -&gt; h :: take (n <span class="pl-k">-</span> <span class="pl-c1">1</span>) t
+    <span class="pl-k">end</span>
+
+<span class="pl-k">let</span> <span class="pl-k">rec </span><span class="pl-en">drop</span> <span class="pl-v">n</span> <span class="pl-v">xs</span> : <span class="pl-k">int list </span><span class="pl-k">=</span>
+  <span class="pl-k">match</span> n <span class="pl-k">with</span><span class="pl-k"> </span>
+  <span class="pl-k">|</span> <span class="pl-c1">0</span> -&gt; xs
+  <span class="pl-k">|</span> <span class="pl-c1">_</span> -&gt; <span class="pl-k">begin</span>
+      <span class="pl-k">match</span> xs <span class="pl-k">with</span><span class="pl-k"> </span>
+      <span class="pl-k">|</span> <span class="pl-c1">[]</span> -&gt; <span class="pl-c1">[]</span>
+      <span class="pl-k">|</span> <span class="pl-v">h</span> :: <span class="pl-v">t</span> -&gt; drop (n <span class="pl-k">-</span> <span class="pl-c1">1</span>) t
+    <span class="pl-k">end</span>
+
+<span class="pl-c"><span class="pl-c">(*</span> unimodal <span class="pl-c">*)</span></span>
+
+<span class="pl-k">let</span> <span class="pl-k">rec </span><span class="pl-en">is_dec</span> (<span class="pl-v">xs</span> <span class="pl-k">: int list</span>) : <span class="pl-k">bool </span><span class="pl-k">=</span>
+  <span class="pl-k">match</span> xs <span class="pl-k">with</span><span class="pl-k"></span>
+  <span class="pl-k">|</span> <span class="pl-c1">[]</span> <span class="pl-k">|</span> [_] -&gt; <span class="pl-c1">true</span>
+  <span class="pl-k">|</span> <span class="pl-v">h1</span> :: (<span class="pl-v">h2</span> :: <span class="pl-v">t1</span> <span class="pl-v">as</span> <span class="pl-v">t</span>) -&gt; h1 <span class="pl-k">&gt;</span><span class="pl-k">=</span> h2 <span class="pl-k">&amp;&amp;</span> is_dec t
+
+<span class="pl-k">let</span> <span class="pl-k">rec </span><span class="pl-en">is_inc_dec</span> <span class="pl-k">=</span> <span class="pl-k">function</span><span class="pl-k"></span>
+  <span class="pl-k">|</span> <span class="pl-c1">[]</span> <span class="pl-k">|</span> [_] -&gt; <span class="pl-c1">true</span>
+  <span class="pl-k">|</span> <span class="pl-v">a</span> :: (<span class="pl-v">b</span> :: <span class="pl-v">t</span>) <span class="pl-v">as</span> <span class="pl-v">t1</span> -&gt; 
+    <span class="pl-k">if</span> a <span class="pl-k">&lt;</span><span class="pl-k">=</span> b <span class="pl-k">then</span> is_inc_dec t <span class="pl-k">else</span> is_dec t1  
+
+<span class="pl-k">let</span> <span class="pl-en">is_unimodal</span> <span class="pl-v">xs</span> <span class="pl-k">=</span> is_inc_dec xs
+
+<span class="pl-c"><span class="pl-c">(*</span> powerset <span class="pl-c">*)</span></span>
+
+<span class="pl-k">let</span> <span class="pl-k">rec </span><span class="pl-en">powerset</span> (<span class="pl-v">xs</span> <span class="pl-k">: int list</span>) : <span class="pl-k">int list list </span><span class="pl-k">=</span> 
+  <span class="pl-k">let</span> ss <span class="pl-k">=</span> <span class="pl-c1">List.</span>sort <span class="pl-c1">Stdlib.</span>compare xs <span class="pl-k">in</span>
+  <span class="pl-k">match</span> ss <span class="pl-k">with</span><span class="pl-k"></span>
+  <span class="pl-k">|</span> <span class="pl-c1">[]</span> -&gt; [[]]
+  <span class="pl-k">|</span> <span class="pl-v">h</span> :: <span class="pl-v">t</span> -&gt; <span class="pl-k">let</span> p <span class="pl-k">=</span> powerset t <span class="pl-k">in</span> 
+    <span class="pl-c1">List.</span>map (<span class="pl-c1">List.</span>cons h) p <span class="pl-k">@</span> p 
+
+<span class="pl-c"><span class="pl-c">(*</span> print int list rec <span class="pl-c">*)</span></span>
+<span class="pl-k">let</span> <span class="pl-k">rec </span><span class="pl-en">print_int_list</span> (<span class="pl-v">xs</span> <span class="pl-k">: int list</span>) : <span class="pl-k">unit </span><span class="pl-k">=</span> 
+  <span class="pl-k">match</span> xs <span class="pl-k">with</span><span class="pl-k"> </span>
+  <span class="pl-k">|</span> <span class="pl-c1">[]</span> -&gt; <span class="pl-c1">()</span>
+  <span class="pl-k">|</span> <span class="pl-v">h</span> :: <span class="pl-v">t</span> -&gt; print_endline <span class="pl-k">@@</span> string_of_int h; print_int_list t
+
+<span class="pl-c"><span class="pl-c">(*</span> print int list iter <span class="pl-c">*)</span></span>
+
+<span class="pl-k">let</span> <span class="pl-en">print_int_list'</span> <span class="pl-v">xs</span> <span class="pl-k">=</span>
+  <span class="pl-c1">List.</span>iter (<span class="pl-k">fun</span> <span class="pl-v">x</span> -&gt; print_endline <span class="pl-k">@@</span> string_of_int x) xs
+
+<span class="pl-c"><span class="pl-c">(*</span> student <span class="pl-c">*)</span></span>
+
+<span class="pl-k">type</span> <span class="pl-k">student </span>= {<span class="pl-s1">first_name</span> : <span class="pl-k">string</span><span class="pl-k">;</span> <span class="pl-s1">last_name</span> : <span class="pl-k">string</span><span class="pl-k">;</span> <span class="pl-s1">gpa</span> : <span class="pl-k">float</span>}
+
+<span class="pl-k">let</span> <span class="pl-en">a1</span> : <span class="pl-k">student </span><span class="pl-k">=</span> {first_name <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">"</span>Line<span class="pl-pds">"</span></span>; last_name <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">"</span>BuBu<span class="pl-pds">"</span></span>; gpa <span class="pl-k">=</span> <span class="pl-c1">3.1</span>}
+
+<span class="pl-k">let</span> <span class="pl-en">student_name</span> <span class="pl-v">stu</span> <span class="pl-k">=</span> 
+  (stu.first_name, stu.last_name)
+
+<span class="pl-k">let</span> <span class="pl-en">student_create</span> <span class="pl-v">f</span> <span class="pl-v">l</span> <span class="pl-v">g</span> : <span class="pl-k">student </span><span class="pl-k">=</span> 
+  {first_name <span class="pl-k">=</span> f; last_name <span class="pl-k">=</span> l; gpa <span class="pl-k">=</span> g}
+
+<span class="pl-c"><span class="pl-c">(*</span> pokerecord <span class="pl-c">*)</span></span>
+
+<span class="pl-k">type</span> <span class="pl-k">poketype </span>= <span class="pl-en">Normal</span> | <span class="pl-en">Fire</span> | <span class="pl-en">Water</span>
+<span class="pl-k">type</span> <span class="pl-k">pokemen </span>= {<span class="pl-s1">name</span> : <span class="pl-k">string</span><span class="pl-k">;</span> <span class="pl-s1">hp</span> : <span class="pl-k">int</span><span class="pl-k">;</span> <span class="pl-s1">ptype</span> : <span class="pl-k">poketype</span>}
+
+<span class="pl-k">let</span> charizard <span class="pl-k">=</span> {name <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">"</span>charizard<span class="pl-pds">"</span></span>; hp <span class="pl-k">=</span> <span class="pl-c1">78</span>; ptype <span class="pl-k">=</span> <span class="pl-en">Fire</span>}
+<span class="pl-k">let</span> squirtle <span class="pl-k">=</span> {name <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">"</span>squirtle<span class="pl-pds">"</span></span>; hp <span class="pl-k">=</span> <span class="pl-c1">44</span>; ptype <span class="pl-k">=</span> <span class="pl-en">Water</span>}
+
+<span class="pl-c"><span class="pl-c">(*</span> safe hd and tl <span class="pl-c">*)</span></span>
+
+<span class="pl-k">let</span> <span class="pl-en">safe_hd</span> <span class="pl-k">=</span> <span class="pl-k">function</span><span class="pl-k"></span>
+  <span class="pl-k">|</span> <span class="pl-c1">[]</span> -&gt; <span class="pl-en">None</span>
+  <span class="pl-k">|</span> <span class="pl-v">h</span> :: <span class="pl-c1">_</span> -&gt; <span class="pl-en">Some</span> h 
+
+<span class="pl-k">let</span> <span class="pl-k">rec </span><span class="pl-en">safe_tl</span> <span class="pl-k">=</span> <span class="pl-k">function</span><span class="pl-k"></span>
+  <span class="pl-k">|</span> <span class="pl-c1">[]</span> -&gt; <span class="pl-en">None</span>
+  <span class="pl-k">|</span> <span class="pl-c1">_</span> :: <span class="pl-v">t</span> -&gt; <span class="pl-k">match</span> t <span class="pl-k">with</span><span class="pl-k"> </span>
+    <span class="pl-k">|</span> <span class="pl-c1">[]</span> -&gt; failwith <span class="pl-s"><span class="pl-pds">"</span>can't be trigged<span class="pl-pds">"</span></span> 
+    <span class="pl-k">|</span> <span class="pl-v">h</span> :: <span class="pl-c1">[]</span> -&gt; <span class="pl-en">Some</span> h
+    <span class="pl-k">|</span> <span class="pl-c1">_</span> -&gt; safe_tl t
+
+<span class="pl-c"><span class="pl-c">(*</span> pokefun <span class="pl-c">*)</span></span>
+
+<span class="pl-k">let</span> <span class="pl-k">rec </span><span class="pl-en">max_hp</span> (<span class="pl-v">xs</span> <span class="pl-k">: pokemen list</span>) : <span class="pl-k">pokemen option </span><span class="pl-k">=</span> 
+  <span class="pl-k">match</span> xs <span class="pl-k">with</span><span class="pl-k"> </span>
+  <span class="pl-k">|</span> <span class="pl-c1">[]</span> -&gt; <span class="pl-en">None</span>
+  <span class="pl-k">|</span> <span class="pl-v">h</span> :: <span class="pl-v">t</span> -&gt; <span class="pl-k">match</span> max_hp t <span class="pl-k">with</span><span class="pl-k"></span>
+    <span class="pl-k">|</span> <span class="pl-en">None</span> -&gt; <span class="pl-en">Some</span> h
+    <span class="pl-k">|</span> <span class="pl-en">Some</span> <span class="pl-v">h1</span> -&gt; <span class="pl-en">Some</span> (<span class="pl-k">if</span> h1.hp <span class="pl-k">&gt;</span><span class="pl-k">=</span> h.hp <span class="pl-k">then</span> h1 <span class="pl-k">else</span> h)
+
+<span class="pl-c"><span class="pl-c">(*</span> date before <span class="pl-c">*)</span></span>
+
+<span class="pl-k">type</span> <span class="pl-k">date </span>= <span class="pl-k">int</span> <span class="pl-k">*</span> <span class="pl-k">int</span> <span class="pl-k">*</span> <span class="pl-k">int</span>
+<span class="pl-k">let</span> <span class="pl-en">is_before</span> (<span class="pl-v">x</span> <span class="pl-k">: date</span>) (<span class="pl-v">y</span> <span class="pl-k">: date</span>) : <span class="pl-k">bool </span><span class="pl-k">=</span> 
+  <span class="pl-k">let</span> (x1,x2,x3) <span class="pl-k">=</span> x <span class="pl-k">in</span> 
+  <span class="pl-k">let</span> (y1,y2,y3) <span class="pl-k">=</span> y <span class="pl-k">in</span> 
+  x1 <span class="pl-k">&lt;</span> y1 <span class="pl-k">||</span> (x1 <span class="pl-k">=</span> y1 <span class="pl-k">&amp;&amp;</span> x2 <span class="pl-k">&lt;</span> y2) <span class="pl-k">||</span> (x1 <span class="pl-k">=</span> y1 <span class="pl-k">&amp;&amp;</span> x2 <span class="pl-k">=</span> y2 <span class="pl-k">&amp;&amp;</span> x3 <span class="pl-k">&lt;</span> y3) 
+
+
+<span class="pl-c"><span class="pl-c">(*</span> earliest date <span class="pl-c">*)</span></span>
+
+<span class="pl-k">let</span> <span class="pl-k">rec </span><span class="pl-en">earliest</span> (<span class="pl-v">xs</span> <span class="pl-k">: date list</span>) : <span class="pl-k">date option </span><span class="pl-k">=</span> 
+  <span class="pl-k">match</span> xs <span class="pl-k">with</span><span class="pl-k"> </span>
+  <span class="pl-k">|</span> <span class="pl-c1">[]</span> -&gt; <span class="pl-en">None</span>
+  <span class="pl-k">|</span> <span class="pl-v">h</span> :: <span class="pl-v">t</span> -&gt; <span class="pl-k">match</span> earliest t <span class="pl-k">with</span><span class="pl-k"></span>
+    <span class="pl-k">|</span> <span class="pl-en">None</span> -&gt; <span class="pl-en">Some</span> h
+    <span class="pl-k">|</span> <span class="pl-en">Some</span> <span class="pl-v">h1</span> -&gt; <span class="pl-en">Some</span> (<span class="pl-k">if</span> is_before h1 h <span class="pl-k">then</span> h1 <span class="pl-k">else</span> h)
+
+<span class="pl-c"><span class="pl-c">(*</span> assoc list <span class="pl-c">*)</span></span>
+
+<span class="pl-k">let</span> <span class="pl-en">insert</span> <span class="pl-v">k</span> <span class="pl-v">v</span> <span class="pl-v">lst</span> <span class="pl-k">=</span> (k, v) :: lst
+<span class="pl-k">let</span> <span class="pl-k">rec </span><span class="pl-en">lookup</span> <span class="pl-v">k</span> <span class="pl-k">=</span> <span class="pl-k">function</span><span class="pl-k"></span>
+| <span class="pl-c1">[]</span> -&gt; <span class="pl-en">None</span>
+<span class="pl-k">|</span> (<span class="pl-v">k'</span>, <span class="pl-v">v</span>) :: <span class="pl-v">t</span> -&gt; <span class="pl-k">if</span> k <span class="pl-k">=</span> k' <span class="pl-k">then</span> <span class="pl-en">Some</span> v <span class="pl-k">else</span> lookup k t
+
+<span class="pl-k">let</span> mp <span class="pl-k">=</span> insert <span class="pl-c1">1</span> <span class="pl-s"><span class="pl-pds">"</span>one<span class="pl-pds">"</span></span> (insert <span class="pl-c1">2</span> <span class="pl-s"><span class="pl-pds">"</span>two<span class="pl-pds">"</span></span> (insert <span class="pl-c1">3</span> <span class="pl-s"><span class="pl-pds">"</span>three<span class="pl-pds">"</span></span> <span class="pl-c1">[]</span>))
+<span class="pl-k">let</span> ck2 <span class="pl-k">=</span> lookup <span class="pl-c1">2</span> mp
+<span class="pl-k">let</span> ck4 <span class="pl-k">=</span> lookup <span class="pl-c1">4</span> mp
+
+<span class="pl-c"><span class="pl-c">(*</span> cards <span class="pl-c">*)</span></span>
+
+<span class="pl-k">type</span> <span class="pl-k">suit </span>= <span class="pl-en">Hearts</span> | <span class="pl-en">Spades</span> | <span class="pl-en">Clubs</span> | <span class="pl-en">Diamonds</span>
+<span class="pl-k">type</span> <span class="pl-k">rank </span>= <span class="pl-en">Number</span> <span class="pl-k">of</span> <span class="pl-k">int</span> | <span class="pl-en">Ace</span> | <span class="pl-en">Jack</span> | <span class="pl-en">Queen</span> | <span class="pl-en">King</span> 
+<span class="pl-k">type</span> <span class="pl-k">card </span>= {<span class="pl-s1">suit</span> : <span class="pl-k">suit</span><span class="pl-k">;</span> <span class="pl-s1">rank</span> : <span class="pl-k">rank</span>}
+
+<span class="pl-c"><span class="pl-c">(*</span> quadrant <span class="pl-c">*)</span></span>
+
+<span class="pl-k">type</span> <span class="pl-k">quad </span>= <span class="pl-en">I</span> | <span class="pl-en">II</span> | <span class="pl-en">III</span> | <span class="pl-en">IV</span> 
+<span class="pl-k">type</span> <span class="pl-k">sign </span>= <span class="pl-en">Neg</span> | <span class="pl-en">Zero</span> | <span class="pl-en">Pos</span> 
+
+<span class="pl-k">let</span> <span class="pl-en">sign</span> (<span class="pl-v">x</span> <span class="pl-k">: int</span>) : <span class="pl-k">sign </span><span class="pl-k">=</span> 
+  <span class="pl-k">if</span> x <span class="pl-k">=</span> <span class="pl-c1">0</span> <span class="pl-k">then</span> <span class="pl-en">Zero</span> <span class="pl-k">else</span> <span class="pl-k">if</span> x <span class="pl-k">&gt;</span> <span class="pl-c1">0</span> <span class="pl-k">then</span> <span class="pl-en">Pos</span> <span class="pl-k">else</span> <span class="pl-en">Neg</span>
+
+<span class="pl-k">let</span> <span class="pl-en">quadrant</span> (<span class="pl-v">point</span> <span class="pl-k">: int * int</span>) : <span class="pl-k">quad option </span><span class="pl-k">=</span> 
+  <span class="pl-k">let</span> (x, y) <span class="pl-k">=</span> point <span class="pl-k">in</span> 
+  <span class="pl-k">match</span> sign x, sign y <span class="pl-k">with</span><span class="pl-k"></span>
+  <span class="pl-k">|</span> <span class="pl-en">Pos</span>, <span class="pl-en">Pos</span> -&gt; <span class="pl-en">Some</span> <span class="pl-en">I</span> 
+  <span class="pl-k">|</span> <span class="pl-en">Neg</span>, <span class="pl-en">Pos</span> -&gt; <span class="pl-en">Some</span> <span class="pl-en">II</span> 
+  <span class="pl-k">|</span> <span class="pl-en">Neg</span>, <span class="pl-en">Neg</span> -&gt; <span class="pl-en">Some</span> <span class="pl-en">III</span> 
+  <span class="pl-k">|</span> <span class="pl-en">Pos</span>, <span class="pl-en">Neg</span> -&gt; <span class="pl-en">Some</span> <span class="pl-en">IV</span> 
+  <span class="pl-k">|</span> <span class="pl-c1">_</span> -&gt; <span class="pl-en">None</span> 
+
+<span class="pl-k">let</span> <span class="pl-en">quadrant_when</span> (<span class="pl-v">point</span> <span class="pl-k">: int * int</span>) : <span class="pl-k">quad option </span><span class="pl-k">=</span> 
+  <span class="pl-k">let</span> (x, y) <span class="pl-k">=</span> point <span class="pl-k">in</span>
+  <span class="pl-k">match</span> x, y  <span class="pl-k">with</span><span class="pl-k"> </span>
+  <span class="pl-k">|</span> <span class="pl-v">x</span>, <span class="pl-v">y</span> <span class="pl-k">when</span> x <span class="pl-k">&gt;</span> <span class="pl-c1">0</span> <span class="pl-k">&amp;&amp;</span> y <span class="pl-k">&gt;</span> <span class="pl-c1">0</span> -&gt; <span class="pl-en">Some</span> <span class="pl-en">I</span>
+  <span class="pl-k">|</span> <span class="pl-v">x</span>, <span class="pl-v">y</span> <span class="pl-k">when</span> x <span class="pl-k">&lt;</span> <span class="pl-c1">0</span> <span class="pl-k">&amp;&amp;</span> y <span class="pl-k">&gt;</span> <span class="pl-c1">0</span> -&gt; <span class="pl-en">Some</span> <span class="pl-en">II</span> 
+  <span class="pl-k">|</span> <span class="pl-v">x</span>, <span class="pl-v">y</span> <span class="pl-k">when</span> x <span class="pl-k">&lt;</span> <span class="pl-c1">0</span> <span class="pl-k">&amp;&amp;</span> y <span class="pl-k">&lt;</span> <span class="pl-c1">0</span> -&gt; <span class="pl-en">Some</span> <span class="pl-en">III</span> 
+  <span class="pl-k">|</span> <span class="pl-v">x</span>, <span class="pl-v">y</span> <span class="pl-k">when</span> x <span class="pl-k">&gt;</span> <span class="pl-c1">0</span> <span class="pl-k">&amp;&amp;</span> y <span class="pl-k">&lt;</span> <span class="pl-c1">0</span> -&gt; <span class="pl-en">Some</span> <span class="pl-en">IV</span> 
+  <span class="pl-k">|</span> <span class="pl-c1">_</span> -&gt; <span class="pl-en">None</span> 
+
+<span class="pl-c"><span class="pl-c">(*</span> depth <span class="pl-c">*)</span></span>
+
+<span class="pl-k">type</span> <span class="pl-k">'a tree </span>= <span class="pl-en">Nil</span> | <span class="pl-en">Node</span> <span class="pl-k">of</span> <span class="pl-k">'a</span> <span class="pl-k">*</span> <span class="pl-k">'a</span> <span class="pl-k">tree</span> <span class="pl-k">*</span> <span class="pl-k">'a</span> <span class="pl-k">tree</span>
+
+<span class="pl-k">let</span> <span class="pl-k">rec </span><span class="pl-en">depth</span> (<span class="pl-v">tree</span> <span class="pl-k">: 'a tree</span>) : <span class="pl-k">int </span><span class="pl-k">=</span> 
+<span class="pl-k">match</span> tree <span class="pl-k">with</span><span class="pl-k"> </span>
+| <span class="pl-en">Nil</span> -&gt; <span class="pl-c1">0</span>
+<span class="pl-k">|</span> <span class="pl-en">Node</span> (<span class="pl-v">_</span>, <span class="pl-v">l</span>, <span class="pl-v">r</span>) -&gt; max (<span class="pl-c1">1</span> <span class="pl-k">+</span> depth l) (<span class="pl-c1">1</span> <span class="pl-k">+</span> depth r)
+
+<span class="pl-c"><span class="pl-c">(*</span> shape <span class="pl-c">*)</span></span>
+<span class="pl-k">let</span> <span class="pl-k">rec </span><span class="pl-en">shape</span> (<span class="pl-v">a</span> <span class="pl-k">: 'a tree</span>) (<span class="pl-v">b</span> <span class="pl-k">: 'a tree</span>) : <span class="pl-k">bool </span><span class="pl-k">=</span> 
+<span class="pl-k">match</span> a, b <span class="pl-k">with</span><span class="pl-k"></span>
+| <span class="pl-en">Nil</span>, <span class="pl-en">Nil</span> -&gt; <span class="pl-c1">true</span>
+<span class="pl-k">|</span> <span class="pl-en">Node</span> (<span class="pl-v">_</span>, <span class="pl-v">l1</span>, <span class="pl-v">r1</span>) , <span class="pl-en">Node</span> (<span class="pl-v">_</span>, <span class="pl-v">l2</span>, <span class="pl-v">r2</span>) -&gt; shape l1 l2 <span class="pl-k">&amp;&amp;</span> shape r1 r2
+<span class="pl-k">|</span> <span class="pl-c1">_</span> -&gt; <span class="pl-c1">false</span>
+
+<span class="pl-c"><span class="pl-c">(*</span> list max exn <span class="pl-c">*)</span></span>
+<span class="pl-k">let</span> <span class="pl-k">rec </span><span class="pl-en">list_max</span> <span class="pl-k">=</span> <span class="pl-k">function</span><span class="pl-k"></span>
+| <span class="pl-c1">[]</span> -&gt; failwith <span class="pl-s"><span class="pl-pds">"</span>empty<span class="pl-pds">"</span></span>
+<span class="pl-k">|</span> <span class="pl-v">h</span> :: <span class="pl-c1">[]</span> -&gt; h
+<span class="pl-k">|</span> <span class="pl-v">h</span> :: <span class="pl-v">t</span> -&gt; max h <span class="pl-k">@@</span> list_max t
+
+<span class="pl-c"><span class="pl-c">(*</span> list max exn string <span class="pl-c">*)</span></span>
+<span class="pl-k">let</span> <span class="pl-en">list_max_string</span> (<span class="pl-v">xs</span> <span class="pl-k">: int list</span>) : <span class="pl-k">string </span><span class="pl-k">=</span> 
+<span class="pl-k">match</span> xs <span class="pl-k">with</span><span class="pl-k"> </span>
+| <span class="pl-c1">[]</span> -&gt; <span class="pl-s"><span class="pl-pds">"</span>empty<span class="pl-pds">"</span></span>
+<span class="pl-k">|</span> <span class="pl-c1">_</span> -&gt; string_of_int <span class="pl-k">@@</span> list_max xs
+
+<span class="pl-c"><span class="pl-c">(*</span> is_bst <span class="pl-c">*)</span></span>
+<span class="pl-k">let</span> <span class="pl-en">is_bst</span> : <span class="pl-k">('a * 'b) tree -&gt; bool </span><span class="pl-k">=</span> <span class="pl-k">fun</span> <span class="pl-v">xs</span> -&gt; 
+  failwith <span class="pl-s"><span class="pl-pds">"</span>TODO<span class="pl-pds">"</span></span></pre></div></div>
+<div style="font-size:small;margin-top:8px;float:right;"></div>
+
+<button class="btn btn-block" type="button" onclick="openComments()" id="cmButton">评论</button>
+<div class="comments" id="comments"></div>
+
+</div>
+    <div id="footer"><div id="footer1">Copyright © <span id="copyrightYear"></span> <a href="https://SistineFibel-2006.github.io">SISTINE=Blog</a></div>
+<div id="footer2">
+    <span id="runday"></span><span>Powered by <a href="https://meekdai.com/Gmeek.html" target="_blank">Gmeek</a></span>
+</div>
+
+<script>
+var now=new Date();
+document.getElementById("copyrightYear").innerHTML=now.getFullYear();
+
+if(""!=""){
+    var startSite=new Date("");
+    var diff=now.getTime()-startSite.getTime();
+    var diffDay=Math.floor(diff/(1000*60*60*24));
+    document.getElementById("runday").innerHTML="网站运行 "+diffDay+" 天"+" • ";
+}
+</script></div>
+</body>
+<script>
+var IconList={'sun': 'M8 10.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5zM8 12a4 4 0 100-8 4 4 0 000 8zM8 0a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0V.75A.75.75 0 018 0zm0 13a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0v-1.5A.75.75 0 018 13zM2.343 2.343a.75.75 0 011.061 0l1.06 1.061a.75.75 0 01-1.06 1.06l-1.06-1.06a.75.75 0 010-1.06zm9.193 9.193a.75.75 0 011.06 0l1.061 1.06a.75.75 0 01-1.06 1.061l-1.061-1.06a.75.75 0 010-1.061zM16 8a.75.75 0 01-.75.75h-1.5a.75.75 0 010-1.5h1.5A.75.75 0 0116 8zM3 8a.75.75 0 01-.75.75H.75a.75.75 0 010-1.5h1.5A.75.75 0 013 8zm10.657-5.657a.75.75 0 010 1.061l-1.061 1.06a.75.75 0 11-1.06-1.06l1.06-1.06a.75.75 0 011.06 0zm-9.193 9.193a.75.75 0 010 1.06l-1.06 1.061a.75.75 0 11-1.061-1.06l1.06-1.061a.75.75 0 011.061 0z', 'moon': 'M9.598 1.591a.75.75 0 01.785-.175 7 7 0 11-8.967 8.967.75.75 0 01.961-.96 5.5 5.5 0 007.046-7.046.75.75 0 01.175-.786zm1.616 1.945a7 7 0 01-7.678 7.678 5.5 5.5 0 107.678-7.678z', 'sync': 'M1.705 8.005a.75.75 0 0 1 .834.656 5.5 5.5 0 0 0 9.592 2.97l-1.204-1.204a.25.25 0 0 1 .177-.427h3.646a.25.25 0 0 1 .25.25v3.646a.25.25 0 0 1-.427.177l-1.38-1.38A7.002 7.002 0 0 1 1.05 8.84a.75.75 0 0 1 .656-.834ZM8 2.5a5.487 5.487 0 0 0-4.131 1.869l1.204 1.204A.25.25 0 0 1 4.896 6H1.25A.25.25 0 0 1 1 5.75V2.104a.25.25 0 0 1 .427-.177l1.38 1.38A7.002 7.002 0 0 1 14.95 7.16a.75.75 0 0 1-1.49.178A5.5 5.5 0 0 0 8 2.5Z', 'home': 'M6.906.664a1.749 1.749 0 0 1 2.187 0l5.25 4.2c.415.332.657.835.657 1.367v7.019A1.75 1.75 0 0 1 13.25 15h-3.5a.75.75 0 0 1-.75-.75V9H7v5.25a.75.75 0 0 1-.75.75h-3.5A1.75 1.75 0 0 1 1 13.25V6.23c0-.531.242-1.034.657-1.366l5.25-4.2Zm1.25 1.171a.25.25 0 0 0-.312 0l-5.25 4.2a.25.25 0 0 0-.094.196v7.019c0 .138.112.25.25.25H5.5V8.25a.75.75 0 0 1 .75-.75h3.5a.75.75 0 0 1 .75.75v5.25h2.75a.25.25 0 0 0 .25-.25V6.23a.25.25 0 0 0-.094-.195Z', 'github': 'M8 0c4.42 0 8 3.58 8 8a8.013 8.013 0 0 1-5.45 7.59c-.4.08-.55-.17-.55-.38 0-.27.01-1.13.01-2.2 0-.75-.25-1.23-.54-1.48 1.78-.2 3.65-.88 3.65-3.95 0-.88-.31-1.59-.82-2.15.08-.2.36-1.02-.08-2.12 0 0-.67-.22-2.2.82-.64-.18-1.32-.27-2-.27-.68 0-1.36.09-2 .27-1.53-1.03-2.2-.82-2.2-.82-.44 1.1-.16 1.92-.08 2.12-.51.56-.82 1.28-.82 2.15 0 3.06 1.86 3.75 3.64 3.95-.23.2-.44.55-.51 1.07-.46.21-1.61.55-2.33-.66-.15-.24-.6-.83-1.23-.82-.67.01-.27.38.01.53.34.19.73.9.82 1.13.16.45.68 1.31 2.69.94 0 .67.01 1.3.01 1.49 0 .21-.15.45-.55.38A7.995 7.995 0 0 1 0 8c0-4.42 3.58-8 8-8Z', 'copy': 'M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 0 1 0 1.5h-1.5a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-1.5a.75.75 0 0 1 1.5 0v1.5A1.75 1.75 0 0 1 9.25 16h-7.5A1.75 1.75 0 0 1 0 14.25Z M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0 1 14.25 11h-7.5A1.75 1.75 0 0 1 5 9.25Zm1.75-.25a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-7.5a.25.25 0 0 0-.25-.25Z', 'check': 'M13.78 4.22a.75.75 0 0 1 0 1.06l-7.25 7.25a.75.75 0 0 1-1.06 0L2.22 9.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018L6 10.94l6.72-6.72a.75.75 0 0 1 1.06 0Z'};
+var utterancesLoad=0;
+
+let themeSettings={
+    "dark": ["dark","moon","#00f0ff","dark-blue"],
+    "light": ["light","sun","#ff5000","github-light"],
+    "auto": ["auto","sync","","preferred-color-scheme"]
+};
+function changeTheme(mode, icon, color, utheme){
+    document.documentElement.setAttribute("data-color-mode",mode);
+    document.getElementById("themeSwitch").setAttribute("d",value=IconList[icon]);
+    document.getElementById("themeSwitch").parentNode.style.color=color;
+    if(utterancesLoad==1){utterancesTheme(utheme);}
+}
+function modeSwitch(){
+    let currentMode=document.documentElement.getAttribute('data-color-mode');
+    let newMode = currentMode === "light" ? "dark" : currentMode === "dark" ? "auto" : "light";
+    localStorage.setItem("meek_theme", newMode);
+    if(themeSettings[newMode]){
+        changeTheme(...themeSettings[newMode]);
+    }
+}
+function utterancesTheme(theme){
+    const message={type:'set-theme',theme: theme};
+    const iframe=document.getElementsByClassName('utterances-frame')[0];
+    iframe.contentWindow.postMessage(message,'https://utteranc.es');
+}
+if(themeSettings[theme]){changeTheme(...themeSettings[theme]);}
+console.log("\n %c Gmeek last https://github.com/Meekdai/Gmeek \n","padding:5px 0;background:#02d81d;color:#fff");
+</script>
+
+<script>
+document.getElementById("pathHome").setAttribute("d",IconList["home"]);
+document.getElementById("pathIssue").setAttribute("d",IconList["github"]);
+
+
+
+function openComments(){
+    cm=document.getElementById("comments");
+    cmButton=document.getElementById("cmButton");
+    cmButton.disabled=true;
+    cmButton.innerHTML="loading";
+    span=document.createElement("span");
+    span.setAttribute("class","AnimatedEllipsis");
+    cmButton.appendChild(span);
+
+    script=document.createElement("script");
+    script.setAttribute("src","https://utteranc.es/client.js");
+    script.setAttribute("repo","SistineFibel-2006/SistineFibel-2006.github.io");
+    script.setAttribute("issue-term","title");
+    
+    if(localStorage.getItem("meek_theme")=="dark"){script.setAttribute("theme","dark-blue");}
+    else if(localStorage.getItem("meek_theme")=="light") {script.setAttribute("theme","github-light");}
+    else{script.setAttribute("theme","preferred-color-scheme");}
+    
+    script.setAttribute("crossorigin","anonymous");
+    script.setAttribute("async","");
+    cm.appendChild(script);
+
+    int=self.setInterval("iFrameLoading()",200);
+}
+
+function iFrameLoading(){
+    var utterances=document.getElementsByClassName('utterances');
+    if(utterances.length==1){
+        if(utterances[0].style.height!=""){
+            utterancesLoad=1;
+            int=window.clearInterval(int);
+            document.getElementById("cmButton").style.display="none";
+            console.log("utterances Load OK");
+        }
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    const createClipboardHTML = (codeContent, additionalClasses = '') => `
+        <pre class="notranslate"><code class="notranslate">${codeContent}</code></pre>
+        <div class="clipboard-container position-absolute right-0 top-0 ${additionalClasses}">
+            <clipboard-copy class="ClipboardButton btn m-2 p-0" role="button" style="display: inherit;">
+                <svg height="16" width="16" class="octicon octicon-copy m-2"><path d="${IconList["copy"]}"></path></svg>
+                <svg height="16" width="16" class="octicon octicon-check color-fg-success m-2 d-none"><path d="${IconList["check"]}"></path></svg>
+            </clipboard-copy>
+            <div class="copy-feedback">Copied!</div>
+        </div>
+    `;
+
+    const handleCodeElements = (selector = '') => {
+        document.querySelectorAll(selector).forEach(codeElement => {
+            const codeContent = codeElement.innerHTML;
+            const newStructure = document.createElement('div');
+            newStructure.className = 'snippet-clipboard-content position-relative overflow-auto';
+            newStructure.innerHTML = createClipboardHTML(codeContent);
+
+            const parentElement = codeElement.parentElement;
+            if (selector.includes('highlight')) {
+                parentElement.insertBefore(newStructure, codeElement.nextSibling);
+                parentElement.removeChild(codeElement);
+            } else {
+                parentElement.parentElement.replaceChild(newStructure, parentElement);
+            }
+        });
+    };
+
+    handleCodeElements('pre.notranslate > code.notranslate');
+    handleCodeElements('div.highlight > pre.notranslate');
+
+    let currentFeedback = null;
+    document.querySelectorAll('clipboard-copy').forEach(copyButton => {
+        copyButton.addEventListener('click', () => {
+            const codeContent = copyButton.closest('.snippet-clipboard-content').innerText;
+            const tempTextArea = document.createElement('textarea');
+            tempTextArea.value = codeContent;
+            document.body.appendChild(tempTextArea);
+            tempTextArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempTextArea);
+
+            const copyIcon = copyButton.querySelector('.octicon-copy');
+            const checkIcon = copyButton.querySelector('.octicon-check');
+            const copyFeedback = copyButton.nextElementSibling;
+
+            if (currentFeedback && currentFeedback !== copyFeedback) {currentFeedback.style.display = 'none';}
+            currentFeedback = copyFeedback;
+
+            copyIcon.classList.add('d-none');
+            checkIcon.classList.remove('d-none');
+            copyFeedback.style.display = 'block';
+            copyButton.style.borderColor = 'var(--color-success-fg)';
+
+            setTimeout(() => {
+                copyIcon.classList.remove('d-none');
+                checkIcon.classList.add('d-none');
+                copyFeedback.style.display = 'none';
+                copyButton.style.borderColor = '';
+            }, 2000);
+        });
+    });
+});
+
+</script>
+<script src='https://blog.meekdai.com/Gmeek/plugins/articletoc.js'></script>
+
+</html>
