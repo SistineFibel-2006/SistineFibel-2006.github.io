@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>SISTINE=Blog</title><link>https://SistineFibel-2006.github.io</link><description>QQ3034019410——Atcoder:SistineFibel</description><copyright>SISTINE=Blog</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://img.cdn1.vip/i/6a3aa678f126b_1782228600.webp</url><title>avatar</title><link>https://SistineFibel-2006.github.io</link></image><lastBuildDate>Tue, 23 Jun 2026 18:06:00 +0000</lastBuildDate><managingEditor>SISTINE=Blog</managingEditor><ttl>60</ttl><webMaster>SISTINE=Blog</webMaster><item><title>跟 Nachia DP 博客学DP-6 : SOS DP</title><link>https://SistineFibel-2006.github.io/post/gen-%20Nachia%20DP%20-bo-ke-xue-DP-6%20-%20SOS%20DP.html</link><description>### 跟 Nachia DP 博客学DP-6 : SOS DP
+<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>SISTINE=Blog</title><link>https://SistineFibel-2006.github.io</link><description>QQ3034019410——Atcoder:SistineFibel</description><copyright>SISTINE=Blog</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://img.cdn1.vip/i/6a3aa678f126b_1782228600.webp</url><title>avatar</title><link>https://SistineFibel-2006.github.io</link></image><lastBuildDate>Thu, 25 Jun 2026 09:23:47 +0000</lastBuildDate><managingEditor>SISTINE=Blog</managingEditor><ttl>60</ttl><webMaster>SISTINE=Blog</webMaster><item><title>跟 Nachia DP 博客学DP-6 : SOS DP</title><link>https://SistineFibel-2006.github.io/post/gen-%20Nachia%20DP%20-bo-ke-xue-DP-6%20-%20SOS%20DP.html</link><description>### 跟 Nachia DP 博客学DP-6 : SOS DP
 
 Nachia 原文： [DP 的俗称 | Mathenachia --- DP の俗称 | Mathenachia](https://www.mathenachia.blog/dp/)
 
@@ -36,13 +36,13 @@ Nachia 原文： [DP 的俗称 | Mathenachia --- DP の俗称 | Mathenachia](htt
 &gt;
 &gt; 删除若干（可能是0）条边后，使得**下面条件成立的联通块（团）**的最小数量：
 &gt;
-&gt; - 对于任意一对顶点 $(a,b)$ 满足 $1\le a &lt; b\le N$，如果顶点 $a$ 与 $b$ 在同一个联通块里，那么这两个点必定有一条**直接连接**这两个顶点的边
+&gt; - 对于任意一对顶点 $(a,b)$ 满足 $1\le a \lt b\le N$，如果顶点 $a$ 与 $b$ 在同一个联通块里，那么这两个点必定有一条**直接连接**这两个顶点的边
 &gt;
 &gt; **[约束]**
 &gt;
 &gt; - $1 \le N \le 18$
 &gt; - $0 \le M \le \frac{N(N-1)}{2}$
-&gt; - $1 \le A_i &lt; B_i \le N$
+&gt; - $1 \le A_i \lt B_i \le N$
 &gt; - $(A_i,B_i) \neq (A_j, B_j)$ for $i \neq j$
 
 我们定义 $F(S)$ 为顶点集合 $S$ **完全分割成若干个完全图**，所需要的最少组数，考虑如何求 $F(S)$ :
@@ -141,7 +141,7 @@ rep(i, 1, 1 &lt;&lt; N) for(int j = i; -- j &amp;= i; )
 
 于是我们就经典两步走：
 
-1. 先更新出每一个 $0 \le bit  \le (1 &lt;&lt; N)$ 的初始 $val(bit)$，这一部分复杂度是 $(O(2^N \cdot N^2))$
+1. 先更新出每一个 $0 \le bit  \le (1 \lt \lt N)$ 的初始 $val(bit)$，这一部分复杂度是 $(O(2^N \cdot N^2))$
 2. 然后我们用 SOS DP 来考虑更新这个转移方程，复杂度是 $O(3 ^ N)$，论证就不说辣！
 
 ```cpp
