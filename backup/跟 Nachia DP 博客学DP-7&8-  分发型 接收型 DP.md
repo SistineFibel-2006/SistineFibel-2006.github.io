@@ -35,11 +35,11 @@ Nachia 原文： [DP 的俗称 | Mathenachia --- DP の俗称 | Mathenachia](htt
 
 在背包问题的例子中，如果将 $dp[i][j]$ 定义为 “前 $i$ 件商品中，重量为 $j$ 的组合的最大价值”，则 $(i, j) \to (i + 1, j)$ 和 $(i, j) \to (i + 1, j + w_i)$ 的边会分别连接到每个 $(i, j)$.  换句话说，可以表示为：
 
-- $\delta_{+}(\langle i, j\rangle)=\{ \langle i + 1, j \rangle, \langle i + 1, j + w_i \rangle \}.$
+- $\delta_{+}(\langle i, j\rangle)= \set{  \langle i + 1, j \rangle, \langle i + 1, j + w_i \rangle }.$
 
 另一方面，逆向好像也很好求：
 
-- $\delta_{-}(\langle i, j\rangle)=\{ \langle i - 1, j \rangle, \langle i - 1, j - w_{i-1} \rangle \}.$
+- $\delta_{-}(\langle i, j\rangle)= \set{ \langle i - 1, j \rangle, \langle i - 1, j - w_{i-1} \rangle }.$
 
 因此，无论选择上述哪种实现，其实都没有问题.
 
@@ -74,7 +74,7 @@ ans = max(dp[n][j]) for j = 0 to W
 
 其实可以看作是 DP，$dp[i]$ 的定义是表示 “$i$ 是素数” 的布尔值.
 
-当 $i$ 是合数的时候无需筛选，因此可以说 $\delta_{+}(i) = \varnothing$.  当 $i$ 是素数的时候，则为 $\delta_{+}(i) = \{ i \cdot j : j \gt 1 \}$ .  这些都可以轻松计算，可以通过 $dp[i'] \gets dp[i'] \land dp[i], (i' \in \delta_{+}(i))$ 来更新.
+当 $i$ 是合数的时候无需筛选，因此可以说 $\delta_{+}(i) = \varnothing$.  当 $i$ 是素数的时候，则为 $\delta_{+}(i) = \set{ i \cdot j : j \gt 1 }$ .  这些都可以轻松计算，可以通过 $dp[i'] \gets dp[i'] \land dp[i], (i' \in \delta_{+}(i))$ 来更新.
 
 另一方面的话，能不能轻松的计算 $\delta_{-}(i)$ 呢？如果可以的话，那么根本就不需要筛法之类的东西来质因数分解了吧哈哈
 
