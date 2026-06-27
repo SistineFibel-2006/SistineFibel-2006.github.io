@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html data-color-mode="light" data-dark-theme="dark" data-light-theme="light" lang="zh-CN">
+<head>
+    <meta content="text/html; charset=utf-8" http-equiv="content-type" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link href='https://mirrors.sustech.edu.cn/cdnjs/ajax/libs/Primer/21.0.7/primer.css' rel='stylesheet' />
+    <script src='https://blog.meekdai.com/Gmeek/plugins/GmeekVercount.js'></script>
+    <link rel="icon" href="https://img.cdn1.vip/i/6a3aa678f126b_1782228600.webp"><script>
+        let theme = localStorage.getItem("meek_theme") || "light";
+        document.documentElement.setAttribute("data-color-mode", theme);
+    </script>
+<meta name="description" content="### 跟 Nachia DP 博客学DP-7&8  分发型 接收型 DP
+
+Nachia 原文： [DP 的俗称 | Mathenachia --- DP の俗称 | Mathenachia](https://www.mathenachia.blog/dp/)
+
+> [!tip]
+>
+> **[接收型 DP]** ：将尚未完成计算的区域作为当前状态，以已完成区域的结果来计算当前状态；按照递推式直接实现的 DP
+>
+> **[分发型 DP]**：将已完成计算的区域作为当前状态，来计算其对尚未完成区域的贡献；基于“当前状态的下一个可能状态是什么？”这一思路设计的 DP，直接实现的话，往往是分发型 DP
+
+背包问题通常可以用上列两种情况来实现，所以很多人认为：任何 DP 问题都能在这两类 DP 处理方式中轻松转换.
+
+下面我们仅考虑像 $dp[i]$ 这样只有一个下标的 DP，对于多个下标比如 $dp[i][j]$ 这样的，可以通过编码为 $dp[i \times n + j]$ 等方式来规约，如果我们把编码后的一对表示为 $\langle i, j\rangle$ 这样的形式，比如 $dp[\langle i, j\rangle]$
+
+为了计算 $dp[i]$ 的值而需要 $dp[j]$ 的值时，考虑一条边指向 $j \to i$ 图，需要注意的是，根据 DP 的定义，$j$ 和 $i$ 未必是大小关系链接
+
+如果设顶点 $i$ 的入边所连接的顶点集合记为 $\delta_{-}(i)$；同样地，顶点 $j$ 的出边所连接的顶点集合记为 $\delta_{+}(j)$.   也就是说，要计算 $dp[i]$，需要先对每个 $j \in \delta_{-}(i)$ 计算出 $dp[j]$ （充分条件）；反之，当 $dp[j]$ 计算完成后，对于每一个 $i \in \delta_{+}(j)$ 而言，就相当于获得了用于计算 $dp[i]$ 的其中一项信息（必要条件）。">
+<meta property="og:title" content="跟 Nachia DP 博客学DP-7&8:  分发型 接收型 DP">
+<meta property="og:description" content="### 跟 Nachia DP 博客学DP-7&8  分发型 接收型 DP
+
+Nachia 原文： [DP 的俗称 | Mathenachia --- DP の俗称 | Mathenachia](https://www.mathenachia.blog/dp/)
+
+> [!tip]
+>
+> **[接收型 DP]** ：将尚未完成计算的区域作为当前状态，以已完成区域的结果来计算当前状态；按照递推式直接实现的 DP
+>
+> **[分发型 DP]**：将已完成计算的区域作为当前状态，来计算其对尚未完成区域的贡献；基于“当前状态的下一个可能状态是什么？”这一思路设计的 DP，直接实现的话，往往是分发型 DP
+
+背包问题通常可以用上列两种情况来实现，所以很多人认为：任何 DP 问题都能在这两类 DP 处理方式中轻松转换.
+
+下面我们仅考虑像 $dp[i]$ 这样只有一个下标的 DP，对于多个下标比如 $dp[i][j]$ 这样的，可以通过编码为 $dp[i \times n + j]$ 等方式来规约，如果我们把编码后的一对表示为 $\langle i, j\rangle$ 这样的形式，比如 $dp[\langle i, j\rangle]$
+
+为了计算 $dp[i]$ 的值而需要 $dp[j]$ 的值时，考虑一条边指向 $j \to i$ 图，需要注意的是，根据 DP 的定义，$j$ 和 $i$ 未必是大小关系链接
+
+如果设顶点 $i$ 的入边所连接的顶点集合记为 $\delta_{-}(i)$；同样地，顶点 $j$ 的出边所连接的顶点集合记为 $\delta_{+}(j)$.   也就是说，要计算 $dp[i]$，需要先对每个 $j \in \delta_{-}(i)$ 计算出 $dp[j]$ （充分条件）；反之，当 $dp[j]$ 计算完成后，对于每一个 $i \in \delta_{+}(j)$ 而言，就相当于获得了用于计算 $dp[i]$ 的其中一项信息（必要条件）。">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://SistineFibel-2006.github.io/post/gen-%20Nachia%20DP%20-bo-ke-xue-DP-7%268-%20%20-fen-fa-xing-%20-jie-shou-xing-%20DP.html">
+<meta property="og:image" content="https://img.cdn1.vip/i/6a3aa678f126b_1782228600.webp">
+<title>跟 Nachia DP 博客学DP-7&8:  分发型 接收型 DP</title>
+<link href="//unpkg.com/@wooorm/starry-night@2.1.1/style/both.css" rel="stylesheet" />
+
+
+</head>
+<style>
+body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;padding: 45px;font-size: 16px;font-family: sans-serif;line-height: 1.25;}
+#header{display:flex;padding-bottom:8px;border-bottom: 1px solid var(--borderColor-muted, var(--color-border-muted));margin-bottom: 16px;}
+#footer {margin-top:64px; text-align: center;font-size: small;}
+
+</style>
+
+<style>
+.postTitle{margin: auto 0;font-size:40px;font-weight:bold;}
+.title-right{display:flex;margin:auto 0 0 auto;}
+.title-right .circle{padding: 14px 16px;margin-right:8px;}
+#postBody{border-bottom: 1px solid var(--color-border-default);padding-bottom:36px;}
+#postBody hr{height:2px;}
+#cmButton{height:48px;margin-top:48px;}
+#comments{margin-top:64px;}
+.g-emoji{font-size:24px;}
+@media (max-width: 600px) {
+    body {padding: 8px;}
+    .postTitle{font-size:24px;}
+}
+.copy-feedback {
+    display: none;
+    position: absolute;
+    top: 10px;
+    right: 50px;
+    color: var(--color-fg-on-emphasis);
+    background-color: var(--color-fg-muted);
+    border-radius: 3px;
+    padding: 5px 8px;
+    font-size: 12px;
+}
+</style>
+<style>.markdown-alert{padding:0.5rem 1rem;margin-bottom:1rem;border-left:.25em solid var(--borderColor-default,var(--color-border-default));}.markdown-alert .markdown-alert-title {display:flex;font-weight:var(--base-text-weight-medium,500);align-items:center;line-height:1;}.markdown-alert>:first-child {margin-top:0;}.markdown-alert>:last-child {margin-bottom:0;}</style><style>.markdown-alert.markdown-alert-tip {border-left-color:var(--borderColor-success-emphasis, var(--color-success-emphasis));background-color:var(--color-success-subtle);}.markdown-alert.markdown-alert-tip .markdown-alert-title {color: var(--fgColor-success,var(--color-success-fg));}</style>
+
+
+
+<body>
+    <div id="header">
+<h1 class="postTitle">跟 Nachia DP 博客学DP-7&8:  分发型 接收型 DP</h1>
+<div class="title-right">
+    <a href="https://SistineFibel-2006.github.io" id="buttonHome" class="btn btn-invisible circle" title="首页">
+        <svg class="octicon" width="16" height="16">
+            <path id="pathHome" fill-rule="evenodd"></path>
+        </svg>
+    </a>
+    
+    <a href="https://github.com/SistineFibel-2006/SistineFibel-2006.github.io/issues/8" target="_blank" class="btn btn-invisible circle" title="Issue">
+        <svg class="octicon" width="16" height="16">
+            <path id="pathIssue" fill-rule="evenodd"></path>
+        </svg>
+    </a>
+    
+
+    <a class="btn btn-invisible circle" onclick="modeSwitch();" title="切换主题">
+        <svg class="octicon" width="16" height="16" >
+            <path id="themeSwitch" fill-rule="evenodd"></path>
+        </svg>
+    </a>
+
+</div>
+</div>
+    <div id="content">
+<div class="markdown-body" id="postBody"><h3>跟 Nachia DP 博客学DP-7&amp;8  分发型 接收型 DP</h3>
+<p>Nachia 原文： <a href="https://www.mathenachia.blog/dp/" rel="nofollow">DP 的俗称 | Mathenachia --- DP の俗称 | Mathenachia</a></p>
+<div class="markdown-alert markdown-alert-tip"><p class="markdown-alert-title"><svg data-component="Octicon" class="octicon octicon-light-bulb mr-2" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path d="M8 1.5c-2.363 0-4 1.69-4 3.75 0 .984.424 1.625.984 2.304l.214.253c.223.264.47.556.673.848.284.411.537.896.621 1.49a.75.75 0 0 1-1.484.211c-.04-.282-.163-.547-.37-.847a8.456 8.456 0 0 0-.542-.68c-.084-.1-.173-.205-.268-.32C3.201 7.75 2.5 6.766 2.5 5.25 2.5 2.31 4.863 0 8 0s5.5 2.31 5.5 5.25c0 1.516-.701 2.5-1.328 3.259-.095.115-.184.22-.268.319-.207.245-.383.453-.541.681-.208.3-.33.565-.37.847a.751.751 0 0 1-1.485-.212c.084-.593.337-1.078.621-1.489.203-.292.45-.584.673-.848.075-.088.147-.173.213-.253.561-.679.985-1.32.985-2.304 0-2.06-1.637-3.75-4-3.75ZM5.75 12h4.5a.75.75 0 0 1 0 1.5h-4.5a.75.75 0 0 1 0-1.5ZM6 15.25a.75.75 0 0 1 .75-.75h2.5a.75.75 0 0 1 0 1.5h-2.5a.75.75 0 0 1-.75-.75Z"></path></svg>Tip</p>
+<p><strong>[接收型 DP]</strong> ：将尚未完成计算的区域作为当前状态，以已完成区域的结果来计算当前状态；按照递推式直接实现的 DP</p>
+<p><strong>[分发型 DP]</strong>：将已完成计算的区域作为当前状态，来计算其对尚未完成区域的贡献；基于“当前状态的下一个可能状态是什么？”这一思路设计的 DP，直接实现的话，往往是分发型 DP</p>
+</div>
+<p>背包问题通常可以用上列两种情况来实现，所以很多人认为：任何 DP 问题都能在这两类 DP 处理方式中轻松转换.</p>
+<p>下面我们仅考虑像 $dp[i]$ 这样只有一个下标的 DP，对于多个下标比如 $dp[i][j]$ 这样的，可以通过编码为 $dp[i \times n + j]$ 等方式来规约，如果我们把编码后的一对表示为 $\langle i, j\rangle$ 这样的形式，比如 $dp[\langle i, j\rangle]$</p>
+<p>为了计算 $dp[i]$ 的值而需要 $dp[j]$ 的值时，考虑一条边指向 $j \to i$ 图，需要注意的是，根据 DP 的定义，$j$ 和 $i$ 未必是大小关系链接</p>
+<p>如果设顶点 $i$ 的入边所连接的顶点集合记为 $\delta_{-}(i)$；同样地，顶点 $j$ 的出边所连接的顶点集合记为 $\delta_{+}(j)$.   也就是说，要计算 $dp[i]$，需要先对每个 $j \in \delta_{-}(i)$ 计算出 $dp[j]$ （充分条件）；反之，当 $dp[j]$ 计算完成后，对于每一个 $i \in \delta_{+}(j)$ 而言，就相当于获得了用于计算 $dp[i]$ 的其中一项信息（必要条件）。</p>
+<p>现在，图本身（与计算无关）由 DP 的定义和输入案例决定，但获取该图并不总是容易的，也就是说，在实现的时候，要考虑下面几点：</p>
+<ul>
+<li>从 $i$ 计算 $\delta_{-}(i)$ 是不是容易？</li>
+<li>从 $j$ 计算 $\delta_{+}(j)$ 是不是容易？</li>
+</ul>
+<p>也就是说，可以这样区分：当前者更容易的时候，利用其求解的方法就是<strong>接收型 DP</strong>；当后者更容易的时候，利用其求解的方法就叫<strong>分发型 DP</strong>.   即使基于后者，也需要用适当的计算顺序等方式，确保在计算 $dp[i]$ 时，每个 $j \in \delta_{-}(i)$ 的计算已经完成.</p>
+<p>接收型 DP 与 $dp[i] = f(\delta_{-}(i)) = f(j_1,j_2,\dots)$ 这样的描述形式相性较好，而分发型 DP 需要反复处理 $dp[i] \gets g(dp[i], dp[j])$ 这样的更新操作，因此不太擅长处理这样的情况</p>
+<p>接收型 DP 看起来更像“函数式”，而分发型 DP 则像“过程式”.  由于前者更容易思考不变量与正确性等问题，所以教科书中似乎用的更多</p>
+<p>此外，在“接收型 DP”中需要“从多个元素计算某值的处理”，而在“分发型 DP”中则需要“对多个元素进行更新的处理”.   因此，不仅需要考虑 $\delta_{\pm}$ 的计算，与实现这些处理的数据结构的兼容性也很重要.  总体而言，前一种类型的结构给人的印象更为丰富。</p>
+<h4>例子解释</h4>
+<h5>背包问题</h5>
+<p>在背包问题的例子中，如果将 $dp[i][j]$ 定义为 “前 $i$ 件商品中，重量为 $j$ 的组合的最大价值”，则 $(i, j) \to (i + 1, j)$ 和 $(i, j) \to (i + 1, j + w_i)$ 的边会分别连接到每个 $(i, j)$.  换句话说，可以表示为：</p>
+<ul>
+<li>$\delta_{+}(\langle i, j\rangle)={ \langle i + 1, j \rangle, \langle i + 1, j + w_i \rangle }.$</li>
+</ul>
+<p>另一方面，逆向好像也很好求：</p>
+<ul>
+<li>$\delta_{-}(\langle i, j\rangle)={ \langle i - 1, j \rangle, \langle i - 1, j - w_{i-1} \rangle }.$</li>
+</ul>
+<p>因此，无论选择上述哪种实现，其实都没有问题.</p>
+<div class="highlight highlight-source-c++"><pre class="notranslate">dp[<span class="pl-c1">0</span>][<span class="pl-c1">0</span>] = <span class="pl-c1">0</span>
+其他 dp = -∞
+
+<span class="pl-k">for</span> i = <span class="pl-c1">0</span> to n-<span class="pl-c1">1</span>:
+    <span class="pl-k">for</span> j = <span class="pl-c1">0</span> to W:
+        <span class="pl-k">if</span> dp[i][j] == -∞: <span class="pl-k">continue</span>
+        dp[i+<span class="pl-c1">1</span>][j] = max(dp[i+<span class="pl-c1">1</span>][j], dp[i][j])
+        <span class="pl-k">if</span> j + w[i+<span class="pl-c1">1</span>] &lt;= W:
+            dp[i+<span class="pl-c1">1</span>][j + w[i+<span class="pl-c1">1</span>]] = max(dp[i+<span class="pl-c1">1</span>][j + w[i+<span class="pl-c1">1</span>]], dp[i][j] + v[i+<span class="pl-c1">1</span>])
+
+ans = max(dp[n][j]) <span class="pl-k">for</span> j = <span class="pl-c1">0</span> to W</pre></div>
+<div class="highlight highlight-source-c++"><pre class="notranslate">dp[<span class="pl-c1">0</span>][<span class="pl-c1">0</span>] = <span class="pl-c1">0</span>
+其他 dp = -∞
+
+<span class="pl-k">for</span> i = <span class="pl-c1">1</span> to n:
+    <span class="pl-k">for</span> j = <span class="pl-c1">0</span> to W:
+        dp[i][j] = dp[i-<span class="pl-c1">1</span>][j]
+        <span class="pl-k">if</span> j &gt;= w[i]:
+            dp[i][j] = max(dp[i][j], dp[i-<span class="pl-c1">1</span>][j - w[i]] + v[i])
+
+ans = max(dp[n][j]) <span class="pl-k">for</span> j = <span class="pl-c1">0</span> to W</pre></div>
+<h5>埃式筛法</h5>
+<p>其实可以看作是 DP，$dp[i]$ 的定义是表示 “$i$ 是素数” 的布尔值.</p>
+<p>当 $i$ 是合数的时候无需筛选，因此可以说 $\delta_{+}(i) = \varnothing$.  当 $i$ 是素数的时候，则为 $\delta_{+}(i) = { i \cdot j : j \gt 1 }$ .  这些都可以轻松计算，可以通过 $dp[i'] \gets dp[i'] \and dp[i], (i' \in \delta_{+}(i))$ 来更新.</p>
+<p>另一方面的话，能不能轻松的计算 $\delta_{-}(i)$ 呢？如果可以的话，那么根本就不需要筛法之类的东西来质因数分解了吧哈哈</p>
+<p>因此这东西与 分发型 DP 相性好，但和 接收型 DP 相性差，其余筛法也是如此.</p>
+<div class="highlight highlight-source-c++"><pre class="notranslate">dp[<span class="pl-c1">2</span>..n] = <span class="pl-c1">true</span>      <span class="pl-c"><span class="pl-c">//</span> 假设全是素数</span>
+dp[<span class="pl-c1">0</span>] = dp[<span class="pl-c1">1</span>] = <span class="pl-c1">false</span>
+<span class="pl-k">for</span> i = <span class="pl-c1">2</span> to n:
+    <span class="pl-k">if</span> dp[i] == <span class="pl-c1">true</span>:                     <span class="pl-c"><span class="pl-c">//</span> i 是素数</span>
+        <span class="pl-k">for</span> j = <span class="pl-c1">2</span> to n/i:
+            dp[i * j] = <span class="pl-c1">false</span>             <span class="pl-c"><span class="pl-c">//</span> 标记倍数为合数</span></pre></div>
+<h5>涉及操作的问题，比如期望次数、博弈游戏等</h5>
+<p>从给定状态（也可称局面）到达最终形态所需的操作次数期望，以及判定两人游戏的胜负等问题十分常见.  在这些问题设定中，显然的案例是最终形态（例如可以分别得出 “期望值是 0” “该局面判输” 等结论）.  因此，边会从操作后的状态指向操作前的状态.  有些人会因此感觉违和，但请控制你的 “直觉”！</p>
+<p>这样的问题设定中， $\delta_{-}(s)$ 指的是 “从局面 $s$ 进行一次操作后可以得到的局面（们）”， $\delta_{+}(s)$ 指的是 “通过一次操作能够变成局面 $s$ 的局面（们）”.  通常题目考虑前者会更自然，但设定不同，两者可能都被考虑.</p>
+<p>从最终状态重复 $\delta_{+}$ 到达初始状态并非显而易见，因此从常常会计算出从初始状态无法到达的无用局面；另外，如果从初始状态重复 $\delta_{-}$，则可以只聚焦于从初始状态可达的局面，这看起来是很好的</p>
+<p>$\delta_{-}$ 与记忆化递归配合起来效果会更好.  一般来说，当计算顺序不明确的时候，记忆化递归往往更合适.   这相当与对 DP 图进行 DFS.  这样说来，好像用 BFS 也可以，但感觉这样的实现不多</p>
+<p>在类似双六棋这样简单的设定中，DP 的图会变成路径图，因此从终点格子开始按顺序循环的实现方式往往更简单。不仅限于游戏类，能否用循环轻松编写似乎取决于图的形状呢。</p>
+<h5>最短路问题</h5>
+<p>Dijkstra 算法可以看作是 DP.  虽然 DP 的更新顺序是动态的，但这样应该没什么问题.</p>
+<p>由于图的边直接成为 $\delta_{\pm }$，因此取决于图的表示方式，但如果持有普通的邻接列表，计算 $\delta_{+}$ 似乎更为自然.   当从堆中取出 $i$ 的时候，意味着针对 $j \in \delta_{-}(i)$ 计算了 $dp[j]$</p>
+<h4>总结</h4>
+<p>常说 “DP 就是 DAG”，但实际上关注边计算部分的讨论不多</p>
+<p>能从多种角度看待该问题，思路也会更加开阔</p>
+<h4>拓展阅读与例题</h4>
+<h5>拓展阅读</h5>
+<p><a href="https://qiita.com/hibit/items/ecfae3777cf56ac6281b" rel="nofollow">動的計画法（DP）と重みつきグラフ、あるいは添字と値の入れ替えについて #競技プログラミング - Qiita</a></p>
+<p><a href="https://kmyk.github.io/blog/blog/2019/09/19/dp-is-not-shortest-path-of-dag/" rel="nofollow">DPはDAG上の最短経路ではない - うさぎ小屋</a></p>
+<p><a href="https://tayama-2.hatenadiary.org/entry/20111210/1323502092" rel="nofollow">DPの話 - aizuzia</a></p>
+<p><a href="https://rsk0315.hatenablog.com/entry/2023/09/02/002121" rel="nofollow">关于分发型 DP 与接收型 DP 的特征化 - 虾酱的日记 --- 配る DP・もらう DP の特徴づけに関して - えびちゃんの日記</a></p></div>
+<div style="font-size:small;margin-top:8px;float:right;"></div>
+
+<button class="btn btn-block" type="button" onclick="openComments()" id="cmButton">评论</button>
+<div class="comments" id="comments"></div>
+
+</div>
+    <div id="footer"><div id="footer1">Copyright © <span id="copyrightYear"></span> <a href="https://SistineFibel-2006.github.io">SISTINE=Blog</a></div>
+<div id="footer2">
+    <span id="runday"></span><span>Powered by <a href="https://meekdai.com/Gmeek.html" target="_blank">Gmeek</a></span>
+</div>
+
+<script>
+var now=new Date();
+document.getElementById("copyrightYear").innerHTML=now.getFullYear();
+
+if(""!=""){
+    var startSite=new Date("");
+    var diff=now.getTime()-startSite.getTime();
+    var diffDay=Math.floor(diff/(1000*60*60*24));
+    document.getElementById("runday").innerHTML="网站运行 "+diffDay+" 天"+" • ";
+}
+</script></div>
+</body>
+<script>
+var IconList={'sun': 'M8 10.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5zM8 12a4 4 0 100-8 4 4 0 000 8zM8 0a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0V.75A.75.75 0 018 0zm0 13a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0v-1.5A.75.75 0 018 13zM2.343 2.343a.75.75 0 011.061 0l1.06 1.061a.75.75 0 01-1.06 1.06l-1.06-1.06a.75.75 0 010-1.06zm9.193 9.193a.75.75 0 011.06 0l1.061 1.06a.75.75 0 01-1.06 1.061l-1.061-1.06a.75.75 0 010-1.061zM16 8a.75.75 0 01-.75.75h-1.5a.75.75 0 010-1.5h1.5A.75.75 0 0116 8zM3 8a.75.75 0 01-.75.75H.75a.75.75 0 010-1.5h1.5A.75.75 0 013 8zm10.657-5.657a.75.75 0 010 1.061l-1.061 1.06a.75.75 0 11-1.06-1.06l1.06-1.06a.75.75 0 011.06 0zm-9.193 9.193a.75.75 0 010 1.06l-1.06 1.061a.75.75 0 11-1.061-1.06l1.06-1.061a.75.75 0 011.061 0z', 'moon': 'M9.598 1.591a.75.75 0 01.785-.175 7 7 0 11-8.967 8.967.75.75 0 01.961-.96 5.5 5.5 0 007.046-7.046.75.75 0 01.175-.786zm1.616 1.945a7 7 0 01-7.678 7.678 5.5 5.5 0 107.678-7.678z', 'sync': 'M1.705 8.005a.75.75 0 0 1 .834.656 5.5 5.5 0 0 0 9.592 2.97l-1.204-1.204a.25.25 0 0 1 .177-.427h3.646a.25.25 0 0 1 .25.25v3.646a.25.25 0 0 1-.427.177l-1.38-1.38A7.002 7.002 0 0 1 1.05 8.84a.75.75 0 0 1 .656-.834ZM8 2.5a5.487 5.487 0 0 0-4.131 1.869l1.204 1.204A.25.25 0 0 1 4.896 6H1.25A.25.25 0 0 1 1 5.75V2.104a.25.25 0 0 1 .427-.177l1.38 1.38A7.002 7.002 0 0 1 14.95 7.16a.75.75 0 0 1-1.49.178A5.5 5.5 0 0 0 8 2.5Z', 'home': 'M6.906.664a1.749 1.749 0 0 1 2.187 0l5.25 4.2c.415.332.657.835.657 1.367v7.019A1.75 1.75 0 0 1 13.25 15h-3.5a.75.75 0 0 1-.75-.75V9H7v5.25a.75.75 0 0 1-.75.75h-3.5A1.75 1.75 0 0 1 1 13.25V6.23c0-.531.242-1.034.657-1.366l5.25-4.2Zm1.25 1.171a.25.25 0 0 0-.312 0l-5.25 4.2a.25.25 0 0 0-.094.196v7.019c0 .138.112.25.25.25H5.5V8.25a.75.75 0 0 1 .75-.75h3.5a.75.75 0 0 1 .75.75v5.25h2.75a.25.25 0 0 0 .25-.25V6.23a.25.25 0 0 0-.094-.195Z', 'github': 'M8 0c4.42 0 8 3.58 8 8a8.013 8.013 0 0 1-5.45 7.59c-.4.08-.55-.17-.55-.38 0-.27.01-1.13.01-2.2 0-.75-.25-1.23-.54-1.48 1.78-.2 3.65-.88 3.65-3.95 0-.88-.31-1.59-.82-2.15.08-.2.36-1.02-.08-2.12 0 0-.67-.22-2.2.82-.64-.18-1.32-.27-2-.27-.68 0-1.36.09-2 .27-1.53-1.03-2.2-.82-2.2-.82-.44 1.1-.16 1.92-.08 2.12-.51.56-.82 1.28-.82 2.15 0 3.06 1.86 3.75 3.64 3.95-.23.2-.44.55-.51 1.07-.46.21-1.61.55-2.33-.66-.15-.24-.6-.83-1.23-.82-.67.01-.27.38.01.53.34.19.73.9.82 1.13.16.45.68 1.31 2.69.94 0 .67.01 1.3.01 1.49 0 .21-.15.45-.55.38A7.995 7.995 0 0 1 0 8c0-4.42 3.58-8 8-8Z', 'copy': 'M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 0 1 0 1.5h-1.5a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-1.5a.75.75 0 0 1 1.5 0v1.5A1.75 1.75 0 0 1 9.25 16h-7.5A1.75 1.75 0 0 1 0 14.25Z M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0 1 14.25 11h-7.5A1.75 1.75 0 0 1 5 9.25Zm1.75-.25a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-7.5a.25.25 0 0 0-.25-.25Z', 'check': 'M13.78 4.22a.75.75 0 0 1 0 1.06l-7.25 7.25a.75.75 0 0 1-1.06 0L2.22 9.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018L6 10.94l6.72-6.72a.75.75 0 0 1 1.06 0Z'};
+var utterancesLoad=0;
+
+let themeSettings={
+    "dark": ["dark","moon","#00f0ff","dark-blue"],
+    "light": ["light","sun","#ff5000","github-light"],
+    "auto": ["auto","sync","","preferred-color-scheme"]
+};
+function changeTheme(mode, icon, color, utheme){
+    document.documentElement.setAttribute("data-color-mode",mode);
+    document.getElementById("themeSwitch").setAttribute("d",value=IconList[icon]);
+    document.getElementById("themeSwitch").parentNode.style.color=color;
+    if(utterancesLoad==1){utterancesTheme(utheme);}
+}
+function modeSwitch(){
+    let currentMode=document.documentElement.getAttribute('data-color-mode');
+    let newMode = currentMode === "light" ? "dark" : currentMode === "dark" ? "auto" : "light";
+    localStorage.setItem("meek_theme", newMode);
+    if(themeSettings[newMode]){
+        changeTheme(...themeSettings[newMode]);
+    }
+}
+function utterancesTheme(theme){
+    const message={type:'set-theme',theme: theme};
+    const iframe=document.getElementsByClassName('utterances-frame')[0];
+    iframe.contentWindow.postMessage(message,'https://utteranc.es');
+}
+if(themeSettings[theme]){changeTheme(...themeSettings[theme]);}
+console.log("\n %c Gmeek last https://github.com/Meekdai/Gmeek \n","padding:5px 0;background:#02d81d;color:#fff");
+</script>
+
+<script>
+document.getElementById("pathHome").setAttribute("d",IconList["home"]);
+document.getElementById("pathIssue").setAttribute("d",IconList["github"]);
+
+
+
+function openComments(){
+    cm=document.getElementById("comments");
+    cmButton=document.getElementById("cmButton");
+    cmButton.disabled=true;
+    cmButton.innerHTML="loading";
+    span=document.createElement("span");
+    span.setAttribute("class","AnimatedEllipsis");
+    cmButton.appendChild(span);
+
+    script=document.createElement("script");
+    script.setAttribute("src","https://utteranc.es/client.js");
+    script.setAttribute("repo","SistineFibel-2006/SistineFibel-2006.github.io");
+    script.setAttribute("issue-term","title");
+    
+    if(localStorage.getItem("meek_theme")=="dark"){script.setAttribute("theme","dark-blue");}
+    else if(localStorage.getItem("meek_theme")=="light") {script.setAttribute("theme","github-light");}
+    else{script.setAttribute("theme","preferred-color-scheme");}
+    
+    script.setAttribute("crossorigin","anonymous");
+    script.setAttribute("async","");
+    cm.appendChild(script);
+
+    int=self.setInterval("iFrameLoading()",200);
+}
+
+function iFrameLoading(){
+    var utterances=document.getElementsByClassName('utterances');
+    if(utterances.length==1){
+        if(utterances[0].style.height!=""){
+            utterancesLoad=1;
+            int=window.clearInterval(int);
+            document.getElementById("cmButton").style.display="none";
+            console.log("utterances Load OK");
+        }
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    const createClipboardHTML = (codeContent, additionalClasses = '') => `
+        <pre class="notranslate"><code class="notranslate">${codeContent}</code></pre>
+        <div class="clipboard-container position-absolute right-0 top-0 ${additionalClasses}">
+            <clipboard-copy class="ClipboardButton btn m-2 p-0" role="button" style="display: inherit;">
+                <svg height="16" width="16" class="octicon octicon-copy m-2"><path d="${IconList["copy"]}"></path></svg>
+                <svg height="16" width="16" class="octicon octicon-check color-fg-success m-2 d-none"><path d="${IconList["check"]}"></path></svg>
+            </clipboard-copy>
+            <div class="copy-feedback">Copied!</div>
+        </div>
+    `;
+
+    const handleCodeElements = (selector = '') => {
+        document.querySelectorAll(selector).forEach(codeElement => {
+            const codeContent = codeElement.innerHTML;
+            const newStructure = document.createElement('div');
+            newStructure.className = 'snippet-clipboard-content position-relative overflow-auto';
+            newStructure.innerHTML = createClipboardHTML(codeContent);
+
+            const parentElement = codeElement.parentElement;
+            if (selector.includes('highlight')) {
+                parentElement.insertBefore(newStructure, codeElement.nextSibling);
+                parentElement.removeChild(codeElement);
+            } else {
+                parentElement.parentElement.replaceChild(newStructure, parentElement);
+            }
+        });
+    };
+
+    handleCodeElements('pre.notranslate > code.notranslate');
+    handleCodeElements('div.highlight > pre.notranslate');
+
+    let currentFeedback = null;
+    document.querySelectorAll('clipboard-copy').forEach(copyButton => {
+        copyButton.addEventListener('click', () => {
+            const codeContent = copyButton.closest('.snippet-clipboard-content').innerText;
+            const tempTextArea = document.createElement('textarea');
+            tempTextArea.value = codeContent;
+            document.body.appendChild(tempTextArea);
+            tempTextArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempTextArea);
+
+            const copyIcon = copyButton.querySelector('.octicon-copy');
+            const checkIcon = copyButton.querySelector('.octicon-check');
+            const copyFeedback = copyButton.nextElementSibling;
+
+            if (currentFeedback && currentFeedback !== copyFeedback) {currentFeedback.style.display = 'none';}
+            currentFeedback = copyFeedback;
+
+            copyIcon.classList.add('d-none');
+            checkIcon.classList.remove('d-none');
+            copyFeedback.style.display = 'block';
+            copyButton.style.borderColor = 'var(--color-success-fg)';
+
+            setTimeout(() => {
+                copyIcon.classList.remove('d-none');
+                checkIcon.classList.add('d-none');
+                copyFeedback.style.display = 'none';
+                copyButton.style.borderColor = '';
+            }, 2000);
+        });
+    });
+});
+
+</script>
+<script src='https://blog.meekdai.com/Gmeek/plugins/articletoc.js'></script><script>MathJax = {tex: {inlineMath: [["$", "$"]]}};</script><script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+</html>

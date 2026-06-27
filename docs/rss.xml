@@ -1,5 +1,21 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>SISTINE=Blog</title><link>https://SistineFibel-2006.github.io</link><description>QQ3034019410——Atcoder:SistineFibel</description><copyright>SISTINE=Blog</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://img.cdn1.vip/i/6a3aa678f126b_1782228600.webp</url><title>avatar</title><link>https://SistineFibel-2006.github.io</link></image><lastBuildDate>Thu, 25 Jun 2026 09:23:47 +0000</lastBuildDate><managingEditor>SISTINE=Blog</managingEditor><ttl>60</ttl><webMaster>SISTINE=Blog</webMaster><item><title>跟 Nachia DP 博客学DP-6 : SOS DP</title><link>https://SistineFibel-2006.github.io/post/gen-%20Nachia%20DP%20-bo-ke-xue-DP-6%20-%20SOS%20DP.html</link><description>### 跟 Nachia DP 博客学DP-6 : SOS DP
+<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>SISTINE=Blog</title><link>https://SistineFibel-2006.github.io</link><description>QQ3034019410——Atcoder:SistineFibel</description><copyright>SISTINE=Blog</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://img.cdn1.vip/i/6a3aa678f126b_1782228600.webp</url><title>avatar</title><link>https://SistineFibel-2006.github.io</link></image><lastBuildDate>Sat, 27 Jun 2026 16:39:20 +0000</lastBuildDate><managingEditor>SISTINE=Blog</managingEditor><ttl>60</ttl><webMaster>SISTINE=Blog</webMaster><item><title>跟 Nachia DP 博客学DP-7&amp;8:  分发型 接收型 DP</title><link>https://SistineFibel-2006.github.io/post/gen-%20Nachia%20DP%20-bo-ke-xue-DP-7%268-%20%20-fen-fa-xing-%20-jie-shou-xing-%20DP.html</link><description>### 跟 Nachia DP 博客学DP-7&amp;8  分发型 接收型 DP
+
+Nachia 原文： [DP 的俗称 | Mathenachia --- DP の俗称 | Mathenachia](https://www.mathenachia.blog/dp/)
+
+&gt; [!tip]
+&gt;
+&gt; **[接收型 DP]** ：将尚未完成计算的区域作为当前状态，以已完成区域的结果来计算当前状态；按照递推式直接实现的 DP
+&gt;
+&gt; **[分发型 DP]**：将已完成计算的区域作为当前状态，来计算其对尚未完成区域的贡献；基于“当前状态的下一个可能状态是什么？”这一思路设计的 DP，直接实现的话，往往是分发型 DP
+
+背包问题通常可以用上列两种情况来实现，所以很多人认为：任何 DP 问题都能在这两类 DP 处理方式中轻松转换.
+
+下面我们仅考虑像 $dp[i]$ 这样只有一个下标的 DP，对于多个下标比如 $dp[i][j]$ 这样的，可以通过编码为 $dp[i \times n + j]$ 等方式来规约，如果我们把编码后的一对表示为 $\langle i, j\rangle$ 这样的形式，比如 $dp[\langle i, j\rangle]$
+
+为了计算 $dp[i]$ 的值而需要 $dp[j]$ 的值时，考虑一条边指向 $j \to i$ 图，需要注意的是，根据 DP 的定义，$j$ 和 $i$ 未必是大小关系链接
+
+如果设顶点 $i$ 的入边所连接的顶点集合记为 $\delta_{-}(i)$；同样地，顶点 $j$ 的出边所连接的顶点集合记为 $\delta_{+}(j)$.   也就是说，要计算 $dp[i]$，需要先对每个 $j \in \delta_{-}(i)$ 计算出 $dp[j]$ （充分条件）；反之，当 $dp[j]$ 计算完成后，对于每一个 $i \in \delta_{+}(j)$ 而言，就相当于获得了用于计算 $dp[i]$ 的其中一项信息（必要条件）。</description><guid isPermaLink="true">https://SistineFibel-2006.github.io/post/gen-%20Nachia%20DP%20-bo-ke-xue-DP-7%268-%20%20-fen-fa-xing-%20-jie-shou-xing-%20DP.html</guid><pubDate>Sat, 27 Jun 2026 16:38:53 +0000</pubDate></item><item><title>跟 Nachia DP 博客学DP-6 : SOS DP</title><link>https://SistineFibel-2006.github.io/post/gen-%20Nachia%20DP%20-bo-ke-xue-DP-6%20-%20SOS%20DP.html</link><description>### 跟 Nachia DP 博客学DP-6 : SOS DP
 
 Nachia 原文： [DP 的俗称 | Mathenachia --- DP の俗称 | Mathenachia](https://www.mathenachia.blog/dp/)
 
