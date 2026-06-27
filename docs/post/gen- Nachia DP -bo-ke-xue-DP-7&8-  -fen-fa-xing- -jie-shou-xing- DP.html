@@ -168,7 +168,7 @@ ans = max(dp[n][j]) <span class="pl-k">for</span> j = <span class="pl-c1">0</spa
 ans = max(dp[n][j]) <span class="pl-k">for</span> j = <span class="pl-c1">0</span> to W</pre></div>
 <h5>埃式筛法</h5>
 <p>其实可以看作是 DP，$dp[i]$ 的定义是表示 “$i$ 是素数” 的布尔值.</p>
-<p>当 $i$ 是合数的时候无需筛选，因此可以说 $\delta_{+}(i) = \varnothing$.  当 $i$ 是素数的时候，则为 $\delta_{+}(i) = { i \cdot j : j \gt 1 }$ .  这些都可以轻松计算，可以通过 $dp[i'] \gets dp[i'] \and dp[i], (i' \in \delta_{+}(i))$ 来更新.</p>
+<p>当 $i$ 是合数的时候无需筛选，因此可以说 $\delta_{+}(i) = \varnothing$.  当 $i$ 是素数的时候，则为 $\delta_{+}(i) = { i \cdot j : j \gt 1 }$ .  这些都可以轻松计算，可以通过 $dp[i'] \gets dp[i'] \land dp[i], (i' \in \delta_{+}(i))$ 来更新.</p>
 <p>另一方面的话，能不能轻松的计算 $\delta_{-}(i)$ 呢？如果可以的话，那么根本就不需要筛法之类的东西来质因数分解了吧哈哈</p>
 <p>因此这东西与 分发型 DP 相性好，但和 接收型 DP 相性差，其余筛法也是如此.</p>
 <div class="highlight highlight-source-c++"><pre class="notranslate">dp[<span class="pl-c1">2</span>..n] = <span class="pl-c1">true</span>      <span class="pl-c"><span class="pl-c">//</span> 假设全是素数</span>

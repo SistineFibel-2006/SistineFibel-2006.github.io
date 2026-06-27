@@ -74,7 +74,7 @@ ans = max(dp[n][j]) for j = 0 to W
 
 其实可以看作是 DP，$dp[i]$ 的定义是表示 “$i$ 是素数” 的布尔值.
 
-当 $i$ 是合数的时候无需筛选，因此可以说 $\delta_{+}(i) = \varnothing$.  当 $i$ 是素数的时候，则为 $\delta_{+}(i) = \{ i \cdot j : j \gt 1 \}$ .  这些都可以轻松计算，可以通过 $dp[i'] \gets dp[i'] \and dp[i], (i' \in \delta_{+}(i))$ 来更新.
+当 $i$ 是合数的时候无需筛选，因此可以说 $\delta_{+}(i) = \varnothing$.  当 $i$ 是素数的时候，则为 $\delta_{+}(i) = \{ i \cdot j : j \gt 1 \}$ .  这些都可以轻松计算，可以通过 $dp[i'] \gets dp[i'] \land dp[i], (i' \in \delta_{+}(i))$ 来更新.
 
 另一方面的话，能不能轻松的计算 $\delta_{-}(i)$ 呢？如果可以的话，那么根本就不需要筛法之类的东西来质因数分解了吧哈哈
 
