@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html data-color-mode="light" data-dark-theme="dark" data-light-theme="light" lang="zh-CN">
+<head>
+    <meta content="text/html; charset=utf-8" http-equiv="content-type" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link href='https://mirrors.sustech.edu.cn/cdnjs/ajax/libs/Primer/21.0.7/primer.css' rel='stylesheet' />
+    <script src='https://blog.meekdai.com/Gmeek/plugins/GmeekVercount.js'></script>
+    <link rel="icon" href="https://img.cdn1.vip/i/6a3aa678f126b_1782228600.webp"><script>
+        let theme = localStorage.getItem("meek_theme") || "light";
+        document.documentElement.setAttribute("data-color-mode", theme);
+    </script>
+<meta name="description" content="### 跟 Nachia DP 博客学DP-9 : 树形 DP
+
+遇到关于有根树 $T$ 的问题时，设定以下子问题
+
+> [!tip]
+>
+> $dp[v] =$ （关于顶点 $v$ 问题的解）
+
+该问题通常涉及顶点 $v$ 的子树问题，这里顶点 $v$ 的子树是指顶点集合为 $T$ 中 $v$ 的后代，且根为 $v$ 的 $T$ 的有根子树
+
+仅从叶子向根方向（自底向上）或从根向叶子方向（自顶向下）之一扫描有根树的 DP 被称为树形 DP
+
+树形 DP 有非常非常多变种，该文章仅讨论最简单的一类，其余的会在后续文章出现
+
+对于树形 DP 入门，我更倾向于在例题的辅助下讲解，其本身并不具有什么可以讲的东西（与正常的 动态规划 相区分）
+
+#### 讲解
+
+##### 例题1:  [AtCoder EDPC:  P - Independent Set](https://atcoder.jp/contests/dp/tasks/dp_p)
+
+[AtCoder EDPC:  P - Independent Set](https://atcoder.jp/contests/dp/tasks/dp_p)
+
+> [!note]
+>
+> 一颗有 $N$ 个节点的树，编号从 $1,2,\dots,N$ ，对于每个 $i = 1,2,\dots,N-1$，第 $i$ 条边连接 $x_i$ 与 $y_i$ 两个点.   太郎打算把**每个点**染成**白**或**黑**色，相邻两个点**不能**都是黑色的.
+>
+> 找到染色方案数，对 $10^9 + 7$ 取模.
+>
+> **[约束]**
+>
+> - $1 \le N \le 10^5$
+> - $1 \le x_i,y_i \le N$
+
+这道题使用一个维度显然是不足以存储所有的元素的，因为该点是白还是黑色是影响其后续递推的，于是我们重新设 DP 表：$dp[v][color]=$ 以点 $v$ 为根且点 $v$ 是 $color$ 颜色时候的方案数，其中 $color = 0/1$
+
+如果当前点是白色的话，其孩子可以是白或黑色的；如果当前点是黑色的话，其孩子仅可以是白色的，于是我们就可以写出来：
+
+- $dp[u][white] = \prod_{v \in e[u]} (dp[v][white] + dp[v][black])$
+- $dp[u][black] = \prod_{v \in e[u]} (dp[v][white])$
+
+于是我们可以写出一个代码：
+
+```cpp
+auto Mainsol = [](){
+  INT(N);
+  v<v<I>> e(N);
+  rep(N - 1) {
+  	INT(x, y); -- x, -- y;
+  	e[x].pb(y); e[y].pb(x);
+  }
+  v<a<mm ,2>> f(N, {0, 0});
+  auto dfs = [&](auto&&dfs, int u, int fa = -1) -> void {
+  	f[u][0] = f[u][1] = 1;
+  	each(v, e[u]) {
+  		if(v == fa) continue;
+  		dfs(dfs, v, u);
+  		f[u][0] *= f[v][0] + f[v][1];
+  		f[u][1] *= f[v][0];
+  	}
+  };
+  dfs(dfs, 0);
+  out((f[0][0] + f[0][1]).x);
+};
+```
+
+相同的题： [AtCoder ABC036: D - 涂色画](https://atcoder.jp/contests/abc036/tasks/abc036_d)
+
+##### 例题2: [AtCoder TDPC:  N - 木](https://atcoder.jp/contests/tdpc/tasks/tdpc_tree)
+
+[AtCoder TDPC:  N - 木](https://atcoder.jp/contests/tdpc/tasks/tdpc_tree)
+
+> [!note]
+>
+> 给定你 $N - 1$ 条边，你可以以任意顺序选择边被绘画的先后，但是每一次绘画后，你要保证所有边是联通的，求出绘画方案，对 $10^9 + 7$ 取模
+>
+> **[约束]**
+>
+> - $2 \le N \le 1000$
+> - $1 \le a_i,b_i \le N$
+
+如果我们假设第一条绘画的边上有一个点是整体的根，那么对于所有的子树而言，第一次遇到一个新节点时，绘画的边必须包含子树的根，这样才能满足联通，但是一旦联通后，后续的所有边的选择顺序无所谓
+
+所以我们知道，当边 $e_v$ 是连接 $v$ 和其父亲的边，我们必须把 $e_v$ 放在所有其他 $v$ 的子树中的边之前，而放在前面的概率是 $P(e_v) = \frac{1}{size[v]}$
+
+那么所有非根节点的情况都满足的概率就是 ： $P = \prod_{v=2}^N \frac{1}{size[v]}$
+
+$N - 1$ 条边的所有排列法就是 $(N - 1) !$，那么合法方案数就是 $P \cdot (N-1)! = \frac{(N-1)!}{\prod_{v=2}^N {size[v]}}$
+
+于是我们先枚举以每个点为根的情况，在每个点为根的时候，预处理出其余点在当前情况下的子树大小即可，复杂度是 $O(N^2)$ 的
+
+这道题的其实的动态规划其实在求子树大小！
+
+- $size[u]=$ 以 $u$ 为根的子树的大小
+
+显然有： $size[u] = 1 + \sum_{v \in to[u]} size[v]$
+
+但是我们枚举每一个点之后会把相同的点计算两次贡献，所以答案要除以 $2$，这样就可以了，代码如下：
+
+```cpp
+auto Mainsol = [](){
+  INT(N); 
+  Comb C(N * N); // 预处理阶乘
+  v<v<I>> e(N);
+  rep(N - 1) {
+  	INT(x, y); -- x, -- y;
+  	e[x].pb(y), e[y].pb(x);
+  }
+  mm ans = 0, cons = C.fac(N - 1);
+  dbg(cons.x);
+  rep(root, N) {
+  	v<ll> f(N, 0); // size
+	auto dfs = [&](auto&&dfs, int u, int fa = -1) -> void{
+		f[u] = 1;
+		each(v, e[u]) if(v != fa) {
+			dfs(dfs, v, u);
+			f[u] += f[v];
+		}
+	};
+	dfs(dfs, root);
+	mm now = cons;
+	rep(i, N) if(i != root) now *= ((mm)f[i]).inv();
+  	ans += now;
+  }
+  out((ans/2).x);
+};
+```
+
+其他的树形 DP，请期待后续的文章，谢谢！
+
+#### 拓展阅读与例题
+
+https://yukicoder.me/problems/no/417
+
+http://tdpc.contest.atcoder.jp/tasks/tdpc_eel
+
+http://codeforces.com/contest/855/problem/C
+
+##### 拓展阅读
+
+[树形 DP 教程 - Codeforces --- DP on Trees Tutorial - Codeforces](https://codeforces.com/blog/entry/20935)
+
+[竞技编程中的树形 DP 问题总结 - 哈马扬哈马扬哈马扬 --- 競技プログラミングにおける木DP問題まとめ - はまやんはまやんはまやん](https://blog.hamayanhamayan.com/entry/2017/06/19/161741)。">
+<meta property="og:title" content="跟 Nachia DP 博客学DP-9  树形 DP">
+<meta property="og:description" content="### 跟 Nachia DP 博客学DP-9 : 树形 DP
+
+遇到关于有根树 $T$ 的问题时，设定以下子问题
+
+> [!tip]
+>
+> $dp[v] =$ （关于顶点 $v$ 问题的解）
+
+该问题通常涉及顶点 $v$ 的子树问题，这里顶点 $v$ 的子树是指顶点集合为 $T$ 中 $v$ 的后代，且根为 $v$ 的 $T$ 的有根子树
+
+仅从叶子向根方向（自底向上）或从根向叶子方向（自顶向下）之一扫描有根树的 DP 被称为树形 DP
+
+树形 DP 有非常非常多变种，该文章仅讨论最简单的一类，其余的会在后续文章出现
+
+对于树形 DP 入门，我更倾向于在例题的辅助下讲解，其本身并不具有什么可以讲的东西（与正常的 动态规划 相区分）
+
+#### 讲解
+
+##### 例题1:  [AtCoder EDPC:  P - Independent Set](https://atcoder.jp/contests/dp/tasks/dp_p)
+
+[AtCoder EDPC:  P - Independent Set](https://atcoder.jp/contests/dp/tasks/dp_p)
+
+> [!note]
+>
+> 一颗有 $N$ 个节点的树，编号从 $1,2,\dots,N$ ，对于每个 $i = 1,2,\dots,N-1$，第 $i$ 条边连接 $x_i$ 与 $y_i$ 两个点.   太郎打算把**每个点**染成**白**或**黑**色，相邻两个点**不能**都是黑色的.
+>
+> 找到染色方案数，对 $10^9 + 7$ 取模.
+>
+> **[约束]**
+>
+> - $1 \le N \le 10^5$
+> - $1 \le x_i,y_i \le N$
+
+这道题使用一个维度显然是不足以存储所有的元素的，因为该点是白还是黑色是影响其后续递推的，于是我们重新设 DP 表：$dp[v][color]=$ 以点 $v$ 为根且点 $v$ 是 $color$ 颜色时候的方案数，其中 $color = 0/1$
+
+如果当前点是白色的话，其孩子可以是白或黑色的；如果当前点是黑色的话，其孩子仅可以是白色的，于是我们就可以写出来：
+
+- $dp[u][white] = \prod_{v \in e[u]} (dp[v][white] + dp[v][black])$
+- $dp[u][black] = \prod_{v \in e[u]} (dp[v][white])$
+
+于是我们可以写出一个代码：
+
+```cpp
+auto Mainsol = [](){
+  INT(N);
+  v<v<I>> e(N);
+  rep(N - 1) {
+  	INT(x, y); -- x, -- y;
+  	e[x].pb(y); e[y].pb(x);
+  }
+  v<a<mm ,2>> f(N, {0, 0});
+  auto dfs = [&](auto&&dfs, int u, int fa = -1) -> void {
+  	f[u][0] = f[u][1] = 1;
+  	each(v, e[u]) {
+  		if(v == fa) continue;
+  		dfs(dfs, v, u);
+  		f[u][0] *= f[v][0] + f[v][1];
+  		f[u][1] *= f[v][0];
+  	}
+  };
+  dfs(dfs, 0);
+  out((f[0][0] + f[0][1]).x);
+};
+```
+
+相同的题： [AtCoder ABC036: D - 涂色画](https://atcoder.jp/contests/abc036/tasks/abc036_d)
+
+##### 例题2: [AtCoder TDPC:  N - 木](https://atcoder.jp/contests/tdpc/tasks/tdpc_tree)
+
+[AtCoder TDPC:  N - 木](https://atcoder.jp/contests/tdpc/tasks/tdpc_tree)
+
+> [!note]
+>
+> 给定你 $N - 1$ 条边，你可以以任意顺序选择边被绘画的先后，但是每一次绘画后，你要保证所有边是联通的，求出绘画方案，对 $10^9 + 7$ 取模
+>
+> **[约束]**
+>
+> - $2 \le N \le 1000$
+> - $1 \le a_i,b_i \le N$
+
+如果我们假设第一条绘画的边上有一个点是整体的根，那么对于所有的子树而言，第一次遇到一个新节点时，绘画的边必须包含子树的根，这样才能满足联通，但是一旦联通后，后续的所有边的选择顺序无所谓
+
+所以我们知道，当边 $e_v$ 是连接 $v$ 和其父亲的边，我们必须把 $e_v$ 放在所有其他 $v$ 的子树中的边之前，而放在前面的概率是 $P(e_v) = \frac{1}{size[v]}$
+
+那么所有非根节点的情况都满足的概率就是 ： $P = \prod_{v=2}^N \frac{1}{size[v]}$
+
+$N - 1$ 条边的所有排列法就是 $(N - 1) !$，那么合法方案数就是 $P \cdot (N-1)! = \frac{(N-1)!}{\prod_{v=2}^N {size[v]}}$
+
+于是我们先枚举以每个点为根的情况，在每个点为根的时候，预处理出其余点在当前情况下的子树大小即可，复杂度是 $O(N^2)$ 的
+
+这道题的其实的动态规划其实在求子树大小！
+
+- $size[u]=$ 以 $u$ 为根的子树的大小
+
+显然有： $size[u] = 1 + \sum_{v \in to[u]} size[v]$
+
+但是我们枚举每一个点之后会把相同的点计算两次贡献，所以答案要除以 $2$，这样就可以了，代码如下：
+
+```cpp
+auto Mainsol = [](){
+  INT(N); 
+  Comb C(N * N); // 预处理阶乘
+  v<v<I>> e(N);
+  rep(N - 1) {
+  	INT(x, y); -- x, -- y;
+  	e[x].pb(y), e[y].pb(x);
+  }
+  mm ans = 0, cons = C.fac(N - 1);
+  dbg(cons.x);
+  rep(root, N) {
+  	v<ll> f(N, 0); // size
+	auto dfs = [&](auto&&dfs, int u, int fa = -1) -> void{
+		f[u] = 1;
+		each(v, e[u]) if(v != fa) {
+			dfs(dfs, v, u);
+			f[u] += f[v];
+		}
+	};
+	dfs(dfs, root);
+	mm now = cons;
+	rep(i, N) if(i != root) now *= ((mm)f[i]).inv();
+  	ans += now;
+  }
+  out((ans/2).x);
+};
+```
+
+其他的树形 DP，请期待后续的文章，谢谢！
+
+#### 拓展阅读与例题
+
+https://yukicoder.me/problems/no/417
+
+http://tdpc.contest.atcoder.jp/tasks/tdpc_eel
+
+http://codeforces.com/contest/855/problem/C
+
+##### 拓展阅读
+
+[树形 DP 教程 - Codeforces --- DP on Trees Tutorial - Codeforces](https://codeforces.com/blog/entry/20935)
+
+[竞技编程中的树形 DP 问题总结 - 哈马扬哈马扬哈马扬 --- 競技プログラミングにおける木DP問題まとめ - はまやんはまやんはまやん](https://blog.hamayanhamayan.com/entry/2017/06/19/161741)。">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://SistineFibel-2006.github.io/post/gen-%20Nachia%20DP%20-bo-ke-xue-DP-9%20%20-shu-xing-%20DP.html">
+<meta property="og:image" content="https://img.cdn1.vip/i/6a3aa678f126b_1782228600.webp">
+<title>跟 Nachia DP 博客学DP-9  树形 DP</title>
+<link href="//unpkg.com/@wooorm/starry-night@2.1.1/style/both.css" rel="stylesheet" />
+
+
+</head>
+<style>
+body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;padding: 45px;font-size: 16px;font-family: sans-serif;line-height: 1.25;}
+#header{display:flex;padding-bottom:8px;border-bottom: 1px solid var(--borderColor-muted, var(--color-border-muted));margin-bottom: 16px;}
+#footer {margin-top:64px; text-align: center;font-size: small;}
+
+</style>
+
+<style>
+.postTitle{margin: auto 0;font-size:40px;font-weight:bold;}
+.title-right{display:flex;margin:auto 0 0 auto;}
+.title-right .circle{padding: 14px 16px;margin-right:8px;}
+#postBody{border-bottom: 1px solid var(--color-border-default);padding-bottom:36px;}
+#postBody hr{height:2px;}
+#cmButton{height:48px;margin-top:48px;}
+#comments{margin-top:64px;}
+.g-emoji{font-size:24px;}
+@media (max-width: 600px) {
+    body {padding: 8px;}
+    .postTitle{font-size:24px;}
+}
+.copy-feedback {
+    display: none;
+    position: absolute;
+    top: 10px;
+    right: 50px;
+    color: var(--color-fg-on-emphasis);
+    background-color: var(--color-fg-muted);
+    border-radius: 3px;
+    padding: 5px 8px;
+    font-size: 12px;
+}
+</style>
+<style>.markdown-alert{padding:0.5rem 1rem;margin-bottom:1rem;border-left:.25em solid var(--borderColor-default,var(--color-border-default));}.markdown-alert .markdown-alert-title {display:flex;font-weight:var(--base-text-weight-medium,500);align-items:center;line-height:1;}.markdown-alert>:first-child {margin-top:0;}.markdown-alert>:last-child {margin-bottom:0;}</style><style>.markdown-alert.markdown-alert-note {border-left-color:var(--borderColor-accent-emphasis, var(--color-accent-emphasis));background-color:var(--color-accent-subtle);}.markdown-alert.markdown-alert-note .markdown-alert-title {color: var(--fgColor-accent,var(--color-accent-fg));}</style><style>.markdown-alert.markdown-alert-tip {border-left-color:var(--borderColor-success-emphasis, var(--color-success-emphasis));background-color:var(--color-success-subtle);}.markdown-alert.markdown-alert-tip .markdown-alert-title {color: var(--fgColor-success,var(--color-success-fg));}</style>
+
+
+
+<body>
+    <div id="header">
+<h1 class="postTitle">跟 Nachia DP 博客学DP-9  树形 DP</h1>
+<div class="title-right">
+    <a href="https://SistineFibel-2006.github.io" id="buttonHome" class="btn btn-invisible circle" title="首页">
+        <svg class="octicon" width="16" height="16">
+            <path id="pathHome" fill-rule="evenodd"></path>
+        </svg>
+    </a>
+    
+    <a href="https://github.com/SistineFibel-2006/SistineFibel-2006.github.io/issues/9" target="_blank" class="btn btn-invisible circle" title="Issue">
+        <svg class="octicon" width="16" height="16">
+            <path id="pathIssue" fill-rule="evenodd"></path>
+        </svg>
+    </a>
+    
+
+    <a class="btn btn-invisible circle" onclick="modeSwitch();" title="切换主题">
+        <svg class="octicon" width="16" height="16" >
+            <path id="themeSwitch" fill-rule="evenodd"></path>
+        </svg>
+    </a>
+
+</div>
+</div>
+    <div id="content">
+<div class="markdown-body" id="postBody"><h3>跟 Nachia DP 博客学DP-9 : 树形 DP</h3>
+<p>遇到关于有根树 $T$ 的问题时，设定以下子问题</p>
+<div class="markdown-alert markdown-alert-tip"><p class="markdown-alert-title"><svg data-component="Octicon" class="octicon octicon-light-bulb mr-2" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path d="M8 1.5c-2.363 0-4 1.69-4 3.75 0 .984.424 1.625.984 2.304l.214.253c.223.264.47.556.673.848.284.411.537.896.621 1.49a.75.75 0 0 1-1.484.211c-.04-.282-.163-.547-.37-.847a8.456 8.456 0 0 0-.542-.68c-.084-.1-.173-.205-.268-.32C3.201 7.75 2.5 6.766 2.5 5.25 2.5 2.31 4.863 0 8 0s5.5 2.31 5.5 5.25c0 1.516-.701 2.5-1.328 3.259-.095.115-.184.22-.268.319-.207.245-.383.453-.541.681-.208.3-.33.565-.37.847a.751.751 0 0 1-1.485-.212c.084-.593.337-1.078.621-1.489.203-.292.45-.584.673-.848.075-.088.147-.173.213-.253.561-.679.985-1.32.985-2.304 0-2.06-1.637-3.75-4-3.75ZM5.75 12h4.5a.75.75 0 0 1 0 1.5h-4.5a.75.75 0 0 1 0-1.5ZM6 15.25a.75.75 0 0 1 .75-.75h2.5a.75.75 0 0 1 0 1.5h-2.5a.75.75 0 0 1-.75-.75Z"></path></svg>Tip</p>
+<p>$dp[v] =$ （关于顶点 $v$ 问题的解）</p>
+</div>
+<p>该问题通常涉及顶点 $v$ 的子树问题，这里顶点 $v$ 的子树是指顶点集合为 $T$ 中 $v$ 的后代，且根为 $v$ 的 $T$ 的有根子树</p>
+<p>仅从叶子向根方向（自底向上）或从根向叶子方向（自顶向下）之一扫描有根树的 DP 被称为树形 DP</p>
+<p>树形 DP 有非常非常多变种，该文章仅讨论最简单的一类，其余的会在后续文章出现</p>
+<p>对于树形 DP 入门，我更倾向于在例题的辅助下讲解，其本身并不具有什么可以讲的东西（与正常的 动态规划 相区分）</p>
+<h4>讲解</h4>
+<h5>例题1:  <a href="https://atcoder.jp/contests/dp/tasks/dp_p" rel="nofollow">AtCoder EDPC:  P - Independent Set</a></h5>
+<p><a href="https://atcoder.jp/contests/dp/tasks/dp_p" rel="nofollow">AtCoder EDPC:  P - Independent Set</a></p>
+<div class="markdown-alert markdown-alert-note"><p class="markdown-alert-title"><svg data-component="Octicon" class="octicon octicon-info mr-2" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8Zm8-6.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13ZM6.5 7.75A.75.75 0 0 1 7.25 7h1a.75.75 0 0 1 .75.75v2.75h.25a.75.75 0 0 1 0 1.5h-2a.75.75 0 0 1 0-1.5h.25v-2h-.25a.75.75 0 0 1-.75-.75ZM8 6a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"></path></svg>Note</p>
+<p>一颗有 $N$ 个节点的树，编号从 $1,2,\dots,N$ ，对于每个 $i = 1,2,\dots,N-1$，第 $i$ 条边连接 $x_i$ 与 $y_i$ 两个点.   太郎打算把<strong>每个点</strong>染成<strong>白</strong>或<strong>黑</strong>色，相邻两个点<strong>不能</strong>都是黑色的.</p>
+<p>找到染色方案数，对 $10^9 + 7$ 取模.</p>
+<p><strong>[约束]</strong></p>
+<ul>
+<li>$1 \le N \le 10^5$</li>
+<li>$1 \le x_i,y_i \le N$</li>
+</ul>
+</div>
+<p>这道题使用一个维度显然是不足以存储所有的元素的，因为该点是白还是黑色是影响其后续递推的，于是我们重新设 DP 表：$dp[v][color]=$ 以点 $v$ 为根且点 $v$ 是 $color$ 颜色时候的方案数，其中 $color = 0/1$</p>
+<p>如果当前点是白色的话，其孩子可以是白或黑色的；如果当前点是黑色的话，其孩子仅可以是白色的，于是我们就可以写出来：</p>
+<ul>
+<li>$dp[u][white] = \prod_{v \in e[u]} (dp[v][white] + dp[v][black])$</li>
+<li>$dp[u][black] = \prod_{v \in e[u]} (dp[v][white])$</li>
+</ul>
+<p>于是我们可以写出一个代码：</p>
+<div class="highlight highlight-source-c++"><pre class="notranslate"><span class="pl-k">auto</span> Mainsol = [](){
+  <span class="pl-c1">INT</span>(N);
+  v&lt;v&lt;I&gt;&gt; <span class="pl-c1">e</span>(N);
+  <span class="pl-c1">rep</span>(N - <span class="pl-c1">1</span>) {
+  	<span class="pl-c1">INT</span>(x, y); -- x, -- y;
+  	e[x].<span class="pl-c1">pb</span>(y); e[y].<span class="pl-c1">pb</span>(x);
+  }
+  v&lt;a&lt;mm ,<span class="pl-c1">2</span>&gt;&gt; <span class="pl-c1">f</span>(N, {<span class="pl-c1">0</span>, <span class="pl-c1">0</span>});
+  <span class="pl-k">auto</span> dfs = [&amp;](<span class="pl-k">auto</span>&amp;&amp;dfs, <span class="pl-k">int</span> u, <span class="pl-k">int</span> fa = -<span class="pl-c1">1</span>) -&gt; <span class="pl-k">void</span> {
+  	f[u][<span class="pl-c1">0</span>] = f[u][<span class="pl-c1">1</span>] = <span class="pl-c1">1</span>;
+  	<span class="pl-c1">each</span>(v, e[u]) {
+  		<span class="pl-k">if</span>(v == fa) <span class="pl-k">continue</span>;
+  		<span class="pl-c1">dfs</span>(dfs, v, u);
+  		f[u][<span class="pl-c1">0</span>] *= f[v][<span class="pl-c1">0</span>] + f[v][<span class="pl-c1">1</span>];
+  		f[u][<span class="pl-c1">1</span>] *= f[v][<span class="pl-c1">0</span>];
+  	}
+  };
+  <span class="pl-c1">dfs</span>(dfs, <span class="pl-c1">0</span>);
+  <span class="pl-c1">out</span>((f[<span class="pl-c1">0</span>][<span class="pl-c1">0</span>] + f[<span class="pl-c1">0</span>][<span class="pl-c1">1</span>]).<span class="pl-smi">x</span>);
+};</pre></div>
+<p>相同的题： <a href="https://atcoder.jp/contests/abc036/tasks/abc036_d" rel="nofollow">AtCoder ABC036: D - 涂色画</a></p>
+<h5>例题2: <a href="https://atcoder.jp/contests/tdpc/tasks/tdpc_tree" rel="nofollow">AtCoder TDPC:  N - 木</a></h5>
+<p><a href="https://atcoder.jp/contests/tdpc/tasks/tdpc_tree" rel="nofollow">AtCoder TDPC:  N - 木</a></p>
+<div class="markdown-alert markdown-alert-note"><p class="markdown-alert-title"><svg data-component="Octicon" class="octicon octicon-info mr-2" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8Zm8-6.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13ZM6.5 7.75A.75.75 0 0 1 7.25 7h1a.75.75 0 0 1 .75.75v2.75h.25a.75.75 0 0 1 0 1.5h-2a.75.75 0 0 1 0-1.5h.25v-2h-.25a.75.75 0 0 1-.75-.75ZM8 6a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"></path></svg>Note</p>
+<p>给定你 $N - 1$ 条边，你可以以任意顺序选择边被绘画的先后，但是每一次绘画后，你要保证所有边是联通的，求出绘画方案，对 $10^9 + 7$ 取模</p>
+<p><strong>[约束]</strong></p>
+<ul>
+<li>$2 \le N \le 1000$</li>
+<li>$1 \le a_i,b_i \le N$</li>
+</ul>
+</div>
+<p>如果我们假设第一条绘画的边上有一个点是整体的根，那么对于所有的子树而言，第一次遇到一个新节点时，绘画的边必须包含子树的根，这样才能满足联通，但是一旦联通后，后续的所有边的选择顺序无所谓</p>
+<p>所以我们知道，当边 $e_v$ 是连接 $v$ 和其父亲的边，我们必须把 $e_v$ 放在所有其他 $v$ 的子树中的边之前，而放在前面的概率是 $P(e_v) = \frac{1}{size[v]}$</p>
+<p>那么所有非根节点的情况都满足的概率就是 ： $P = \prod_{v=2}^N \frac{1}{size[v]}$</p>
+<p>$N - 1$ 条边的所有排列法就是 $(N - 1) !$，那么合法方案数就是 $P \cdot (N-1)! = \frac{(N-1)!}{\prod_{v=2}^N {size[v]}}$</p>
+<p>于是我们先枚举以每个点为根的情况，在每个点为根的时候，预处理出其余点在当前情况下的子树大小即可，复杂度是 $O(N^2)$ 的</p>
+<p>这道题的其实的动态规划其实在求子树大小！</p>
+<ul>
+<li>
+$size[u]=$ 以 $u$ 为根的子树的大小</li>
+</ul>
+<p>显然有： $size[u] = 1 + \sum_{v \in to[u]} size[v]$</p>
+<p>但是我们枚举每一个点之后会把相同的点计算两次贡献，所以答案要除以 $2$，这样就可以了，代码如下：</p>
+<div class="highlight highlight-source-c++"><pre class="notranslate"><span class="pl-k">auto</span> Mainsol = [](){
+  <span class="pl-c1">INT</span>(N); 
+  Comb <span class="pl-smi">C</span>(N * N); <span class="pl-c"><span class="pl-c">//</span> 预处理阶乘</span>
+  v&lt;v&lt;I&gt;&gt; <span class="pl-c1">e</span>(N);
+  <span class="pl-c1">rep</span>(N - <span class="pl-c1">1</span>) {
+  	<span class="pl-c1">INT</span>(x, y); -- x, -- y;
+  	e[x].<span class="pl-c1">pb</span>(y), e[y].<span class="pl-c1">pb</span>(x);
+  }
+  mm ans = <span class="pl-c1">0</span>, cons = C.<span class="pl-c1">fac</span>(N - <span class="pl-c1">1</span>);
+  <span class="pl-c1">dbg</span>(cons.<span class="pl-smi">x</span>);
+  <span class="pl-c1">rep</span>(root, N) {
+  	v&lt;ll&gt; <span class="pl-c1">f</span>(N, <span class="pl-c1">0</span>); <span class="pl-c"><span class="pl-c">//</span> size</span>
+	<span class="pl-k">auto</span> dfs = [&amp;](<span class="pl-k">auto</span>&amp;&amp;dfs, <span class="pl-k">int</span> u, <span class="pl-k">int</span> fa = -<span class="pl-c1">1</span>) -&gt; <span class="pl-k">void</span>{
+		f[u] = <span class="pl-c1">1</span>;
+		<span class="pl-c1">each</span>(v, e[u]) <span class="pl-k">if</span>(v != fa) {
+			<span class="pl-c1">dfs</span>(dfs, v, u);
+			f[u] += f[v];
+		}
+	};
+	<span class="pl-c1">dfs</span>(dfs, root);
+	mm now = cons;
+	<span class="pl-c1">rep</span>(i, N) <span class="pl-k">if</span>(i != root) now *= ((mm)f[i]).<span class="pl-c1">inv</span>();
+  	ans += now;
+  }
+  <span class="pl-c1">out</span>((ans/<span class="pl-c1">2</span>).<span class="pl-smi">x</span>);
+};</pre></div>
+<p>其他的树形 DP，请期待后续的文章，谢谢！</p>
+<h4>拓展阅读与例题</h4>
+<p><a href="https://yukicoder.me/problems/no/417" rel="nofollow">https://yukicoder.me/problems/no/417</a></p>
+<p><a href="http://tdpc.contest.atcoder.jp/tasks/tdpc_eel" rel="nofollow">http://tdpc.contest.atcoder.jp/tasks/tdpc_eel</a></p>
+<p><a href="http://codeforces.com/contest/855/problem/C" rel="nofollow">http://codeforces.com/contest/855/problem/C</a></p>
+<h5>拓展阅读</h5>
+<p><a href="https://codeforces.com/blog/entry/20935" rel="nofollow">树形 DP 教程 - Codeforces --- DP on Trees Tutorial - Codeforces</a></p>
+<p><a href="https://blog.hamayanhamayan.com/entry/2017/06/19/161741" rel="nofollow">竞技编程中的树形 DP 问题总结 - 哈马扬哈马扬哈马扬 --- 競技プログラミングにおける木DP問題まとめ - はまやんはまやんはまやん</a></p></div>
+<div style="font-size:small;margin-top:8px;float:right;"></div>
+
+<button class="btn btn-block" type="button" onclick="openComments()" id="cmButton">评论</button>
+<div class="comments" id="comments"></div>
+
+</div>
+    <div id="footer"><div id="footer1">Copyright © <span id="copyrightYear"></span> <a href="https://SistineFibel-2006.github.io">SISTINE=Blog</a></div>
+<div id="footer2">
+    <span id="runday"></span><span>Powered by <a href="https://meekdai.com/Gmeek.html" target="_blank">Gmeek</a></span>
+</div>
+
+<script>
+var now=new Date();
+document.getElementById("copyrightYear").innerHTML=now.getFullYear();
+
+if(""!=""){
+    var startSite=new Date("");
+    var diff=now.getTime()-startSite.getTime();
+    var diffDay=Math.floor(diff/(1000*60*60*24));
+    document.getElementById("runday").innerHTML="网站运行 "+diffDay+" 天"+" • ";
+}
+</script></div>
+</body>
+<script>
+var IconList={'sun': 'M8 10.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5zM8 12a4 4 0 100-8 4 4 0 000 8zM8 0a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0V.75A.75.75 0 018 0zm0 13a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0v-1.5A.75.75 0 018 13zM2.343 2.343a.75.75 0 011.061 0l1.06 1.061a.75.75 0 01-1.06 1.06l-1.06-1.06a.75.75 0 010-1.06zm9.193 9.193a.75.75 0 011.06 0l1.061 1.06a.75.75 0 01-1.06 1.061l-1.061-1.06a.75.75 0 010-1.061zM16 8a.75.75 0 01-.75.75h-1.5a.75.75 0 010-1.5h1.5A.75.75 0 0116 8zM3 8a.75.75 0 01-.75.75H.75a.75.75 0 010-1.5h1.5A.75.75 0 013 8zm10.657-5.657a.75.75 0 010 1.061l-1.061 1.06a.75.75 0 11-1.06-1.06l1.06-1.06a.75.75 0 011.06 0zm-9.193 9.193a.75.75 0 010 1.06l-1.06 1.061a.75.75 0 11-1.061-1.06l1.06-1.061a.75.75 0 011.061 0z', 'moon': 'M9.598 1.591a.75.75 0 01.785-.175 7 7 0 11-8.967 8.967.75.75 0 01.961-.96 5.5 5.5 0 007.046-7.046.75.75 0 01.175-.786zm1.616 1.945a7 7 0 01-7.678 7.678 5.5 5.5 0 107.678-7.678z', 'sync': 'M1.705 8.005a.75.75 0 0 1 .834.656 5.5 5.5 0 0 0 9.592 2.97l-1.204-1.204a.25.25 0 0 1 .177-.427h3.646a.25.25 0 0 1 .25.25v3.646a.25.25 0 0 1-.427.177l-1.38-1.38A7.002 7.002 0 0 1 1.05 8.84a.75.75 0 0 1 .656-.834ZM8 2.5a5.487 5.487 0 0 0-4.131 1.869l1.204 1.204A.25.25 0 0 1 4.896 6H1.25A.25.25 0 0 1 1 5.75V2.104a.25.25 0 0 1 .427-.177l1.38 1.38A7.002 7.002 0 0 1 14.95 7.16a.75.75 0 0 1-1.49.178A5.5 5.5 0 0 0 8 2.5Z', 'home': 'M6.906.664a1.749 1.749 0 0 1 2.187 0l5.25 4.2c.415.332.657.835.657 1.367v7.019A1.75 1.75 0 0 1 13.25 15h-3.5a.75.75 0 0 1-.75-.75V9H7v5.25a.75.75 0 0 1-.75.75h-3.5A1.75 1.75 0 0 1 1 13.25V6.23c0-.531.242-1.034.657-1.366l5.25-4.2Zm1.25 1.171a.25.25 0 0 0-.312 0l-5.25 4.2a.25.25 0 0 0-.094.196v7.019c0 .138.112.25.25.25H5.5V8.25a.75.75 0 0 1 .75-.75h3.5a.75.75 0 0 1 .75.75v5.25h2.75a.25.25 0 0 0 .25-.25V6.23a.25.25 0 0 0-.094-.195Z', 'github': 'M8 0c4.42 0 8 3.58 8 8a8.013 8.013 0 0 1-5.45 7.59c-.4.08-.55-.17-.55-.38 0-.27.01-1.13.01-2.2 0-.75-.25-1.23-.54-1.48 1.78-.2 3.65-.88 3.65-3.95 0-.88-.31-1.59-.82-2.15.08-.2.36-1.02-.08-2.12 0 0-.67-.22-2.2.82-.64-.18-1.32-.27-2-.27-.68 0-1.36.09-2 .27-1.53-1.03-2.2-.82-2.2-.82-.44 1.1-.16 1.92-.08 2.12-.51.56-.82 1.28-.82 2.15 0 3.06 1.86 3.75 3.64 3.95-.23.2-.44.55-.51 1.07-.46.21-1.61.55-2.33-.66-.15-.24-.6-.83-1.23-.82-.67.01-.27.38.01.53.34.19.73.9.82 1.13.16.45.68 1.31 2.69.94 0 .67.01 1.3.01 1.49 0 .21-.15.45-.55.38A7.995 7.995 0 0 1 0 8c0-4.42 3.58-8 8-8Z', 'copy': 'M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 0 1 0 1.5h-1.5a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-1.5a.75.75 0 0 1 1.5 0v1.5A1.75 1.75 0 0 1 9.25 16h-7.5A1.75 1.75 0 0 1 0 14.25Z M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0 1 14.25 11h-7.5A1.75 1.75 0 0 1 5 9.25Zm1.75-.25a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-7.5a.25.25 0 0 0-.25-.25Z', 'check': 'M13.78 4.22a.75.75 0 0 1 0 1.06l-7.25 7.25a.75.75 0 0 1-1.06 0L2.22 9.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018L6 10.94l6.72-6.72a.75.75 0 0 1 1.06 0Z'};
+var utterancesLoad=0;
+
+let themeSettings={
+    "dark": ["dark","moon","#00f0ff","dark-blue"],
+    "light": ["light","sun","#ff5000","github-light"],
+    "auto": ["auto","sync","","preferred-color-scheme"]
+};
+function changeTheme(mode, icon, color, utheme){
+    document.documentElement.setAttribute("data-color-mode",mode);
+    document.getElementById("themeSwitch").setAttribute("d",value=IconList[icon]);
+    document.getElementById("themeSwitch").parentNode.style.color=color;
+    if(utterancesLoad==1){utterancesTheme(utheme);}
+}
+function modeSwitch(){
+    let currentMode=document.documentElement.getAttribute('data-color-mode');
+    let newMode = currentMode === "light" ? "dark" : currentMode === "dark" ? "auto" : "light";
+    localStorage.setItem("meek_theme", newMode);
+    if(themeSettings[newMode]){
+        changeTheme(...themeSettings[newMode]);
+    }
+}
+function utterancesTheme(theme){
+    const message={type:'set-theme',theme: theme};
+    const iframe=document.getElementsByClassName('utterances-frame')[0];
+    iframe.contentWindow.postMessage(message,'https://utteranc.es');
+}
+if(themeSettings[theme]){changeTheme(...themeSettings[theme]);}
+console.log("\n %c Gmeek last https://github.com/Meekdai/Gmeek \n","padding:5px 0;background:#02d81d;color:#fff");
+</script>
+
+<script>
+document.getElementById("pathHome").setAttribute("d",IconList["home"]);
+document.getElementById("pathIssue").setAttribute("d",IconList["github"]);
+
+
+
+function openComments(){
+    cm=document.getElementById("comments");
+    cmButton=document.getElementById("cmButton");
+    cmButton.disabled=true;
+    cmButton.innerHTML="loading";
+    span=document.createElement("span");
+    span.setAttribute("class","AnimatedEllipsis");
+    cmButton.appendChild(span);
+
+    script=document.createElement("script");
+    script.setAttribute("src","https://utteranc.es/client.js");
+    script.setAttribute("repo","SistineFibel-2006/SistineFibel-2006.github.io");
+    script.setAttribute("issue-term","title");
+    
+    if(localStorage.getItem("meek_theme")=="dark"){script.setAttribute("theme","dark-blue");}
+    else if(localStorage.getItem("meek_theme")=="light") {script.setAttribute("theme","github-light");}
+    else{script.setAttribute("theme","preferred-color-scheme");}
+    
+    script.setAttribute("crossorigin","anonymous");
+    script.setAttribute("async","");
+    cm.appendChild(script);
+
+    int=self.setInterval("iFrameLoading()",200);
+}
+
+function iFrameLoading(){
+    var utterances=document.getElementsByClassName('utterances');
+    if(utterances.length==1){
+        if(utterances[0].style.height!=""){
+            utterancesLoad=1;
+            int=window.clearInterval(int);
+            document.getElementById("cmButton").style.display="none";
+            console.log("utterances Load OK");
+        }
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    const createClipboardHTML = (codeContent, additionalClasses = '') => `
+        <pre class="notranslate"><code class="notranslate">${codeContent}</code></pre>
+        <div class="clipboard-container position-absolute right-0 top-0 ${additionalClasses}">
+            <clipboard-copy class="ClipboardButton btn m-2 p-0" role="button" style="display: inherit;">
+                <svg height="16" width="16" class="octicon octicon-copy m-2"><path d="${IconList["copy"]}"></path></svg>
+                <svg height="16" width="16" class="octicon octicon-check color-fg-success m-2 d-none"><path d="${IconList["check"]}"></path></svg>
+            </clipboard-copy>
+            <div class="copy-feedback">Copied!</div>
+        </div>
+    `;
+
+    const handleCodeElements = (selector = '') => {
+        document.querySelectorAll(selector).forEach(codeElement => {
+            const codeContent = codeElement.innerHTML;
+            const newStructure = document.createElement('div');
+            newStructure.className = 'snippet-clipboard-content position-relative overflow-auto';
+            newStructure.innerHTML = createClipboardHTML(codeContent);
+
+            const parentElement = codeElement.parentElement;
+            if (selector.includes('highlight')) {
+                parentElement.insertBefore(newStructure, codeElement.nextSibling);
+                parentElement.removeChild(codeElement);
+            } else {
+                parentElement.parentElement.replaceChild(newStructure, parentElement);
+            }
+        });
+    };
+
+    handleCodeElements('pre.notranslate > code.notranslate');
+    handleCodeElements('div.highlight > pre.notranslate');
+
+    let currentFeedback = null;
+    document.querySelectorAll('clipboard-copy').forEach(copyButton => {
+        copyButton.addEventListener('click', () => {
+            const codeContent = copyButton.closest('.snippet-clipboard-content').innerText;
+            const tempTextArea = document.createElement('textarea');
+            tempTextArea.value = codeContent;
+            document.body.appendChild(tempTextArea);
+            tempTextArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempTextArea);
+
+            const copyIcon = copyButton.querySelector('.octicon-copy');
+            const checkIcon = copyButton.querySelector('.octicon-check');
+            const copyFeedback = copyButton.nextElementSibling;
+
+            if (currentFeedback && currentFeedback !== copyFeedback) {currentFeedback.style.display = 'none';}
+            currentFeedback = copyFeedback;
+
+            copyIcon.classList.add('d-none');
+            checkIcon.classList.remove('d-none');
+            copyFeedback.style.display = 'block';
+            copyButton.style.borderColor = 'var(--color-success-fg)';
+
+            setTimeout(() => {
+                copyIcon.classList.remove('d-none');
+                checkIcon.classList.add('d-none');
+                copyFeedback.style.display = 'none';
+                copyButton.style.borderColor = '';
+            }, 2000);
+        });
+    });
+});
+
+</script>
+<script src='https://blog.meekdai.com/Gmeek/plugins/articletoc.js'></script><script>MathJax = {tex: {inlineMath: [["$", "$"]]}};</script><script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+</html>
