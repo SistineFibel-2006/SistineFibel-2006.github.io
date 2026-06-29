@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>SISTINE=Blog</title><link>https://SistineFibel-2006.github.io</link><description>QQ3034019410——Atcoder:SistineFibel</description><copyright>SISTINE=Blog</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://img.cdn1.vip/i/6a3aa678f126b_1782228600.webp</url><title>avatar</title><link>https://SistineFibel-2006.github.io</link></image><lastBuildDate>Mon, 29 Jun 2026 13:54:23 +0000</lastBuildDate><managingEditor>SISTINE=Blog</managingEditor><ttl>60</ttl><webMaster>SISTINE=Blog</webMaster><item><title>跟 Nachia DP 博客学DP-10  平方的树形 DP</title><link>https://SistineFibel-2006.github.io/post/gen-%20Nachia%20DP%20-bo-ke-xue-DP-10%20%20-ping-fang-de-shu-xing-%20DP.html</link><description>### 跟 Nachia DP 博客学DP-10  平方的树形 DP、$O(NK)$  的树形 DP
+<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>SISTINE=Blog</title><link>https://SistineFibel-2006.github.io</link><description>QQ3034019410——Atcoder:SistineFibel</description><copyright>SISTINE=Blog</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://img.cdn1.vip/i/6a3aa678f126b_1782228600.webp</url><title>avatar</title><link>https://SistineFibel-2006.github.io</link></image><lastBuildDate>Mon, 29 Jun 2026 15:33:16 +0000</lastBuildDate><managingEditor>SISTINE=Blog</managingEditor><ttl>60</ttl><webMaster>SISTINE=Blog</webMaster><item><title>跟 Nachia DP 博客学DP-10  平方的树形 DP</title><link>https://SistineFibel-2006.github.io/post/gen-%20Nachia%20DP%20-bo-ke-xue-DP-10%20%20-ping-fang-de-shu-xing-%20DP.html</link><description>### 跟 Nachia DP 博客学DP-10  平方的树形 DP、$O(NK)$  的树形 DP
 
 假设目标有根树的顶点数为 $n$，每个顶点有大小为 $1$ 的数据，数据的大小大概等同于子树中处理过的节点数目
 
@@ -45,7 +45,7 @@
 
        *这个可能是最难讨论的一部分 :(*
 
-       两个小包合并的时候，新包大小至多 $&lt; 2K$（两个小于 $K$ 的合并，结果肯定 $&lt; 2K$，之后如果继续让新包参与合并，那么就不在小小合并的讨论范畴了，因为其已经变成了大包）
+       两个小包合并的时候，新包大小至多小于 $2K$（两个小于 $K$ 的合并，结果肯定小于 $2K$，之后如果继续让新包参与合并，那么就不在小小合并的讨论范畴了，因为其已经变成了大包）
 
        小小合并显然代价是 $O(size^2)$
 
