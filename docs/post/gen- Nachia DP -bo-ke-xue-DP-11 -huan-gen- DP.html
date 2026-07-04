@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html data-color-mode="light" data-dark-theme="dark" data-light-theme="light" lang="zh-CN">
+<head>
+    <meta content="text/html; charset=utf-8" http-equiv="content-type" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link href='https://mirrors.sustech.edu.cn/cdnjs/ajax/libs/Primer/21.0.7/primer.css' rel='stylesheet' />
+    <script src='https://blog.meekdai.com/Gmeek/plugins/GmeekVercount.js'></script>
+    <link rel="icon" href="https://img.cdn1.vip/i/6a3aa678f126b_1782228600.webp"><script>
+        let theme = localStorage.getItem("meek_theme") || "light";
+        document.documentElement.setAttribute("data-color-mode", theme);
+    </script>
+<meta name="description" content="### 跟 Nachia DP 博客学DP-11 ：换根 DP
+
+将自底向上的树形 DP 的结果对任意根节点一次性计算的 DP 法，叫做**全方位树形 DP（换根 DP）**
+
+从叶子向根计算树 DP 后，对于每个顶点 $v$，将 $v$ 的子节点排成一列并双向计算累积值，这样按照从根到叶子的顺序，就能以每个顶点常数次合并的方式实现与树 DP 相同的聚合。">
+<meta property="og:title" content="跟 Nachia DP 博客学DP-11 换根 DP">
+<meta property="og:description" content="### 跟 Nachia DP 博客学DP-11 ：换根 DP
+
+将自底向上的树形 DP 的结果对任意根节点一次性计算的 DP 法，叫做**全方位树形 DP（换根 DP）**
+
+从叶子向根计算树 DP 后，对于每个顶点 $v$，将 $v$ 的子节点排成一列并双向计算累积值，这样按照从根到叶子的顺序，就能以每个顶点常数次合并的方式实现与树 DP 相同的聚合。">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://SistineFibel-2006.github.io/post/gen-%20Nachia%20DP%20-bo-ke-xue-DP-11%20-huan-gen-%20DP.html">
+<meta property="og:image" content="https://img.cdn1.vip/i/6a3aa678f126b_1782228600.webp">
+<title>跟 Nachia DP 博客学DP-11 换根 DP</title>
+<link href="//unpkg.com/@wooorm/starry-night@2.1.1/style/both.css" rel="stylesheet" />
+
+
+</head>
+<style>
+body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;padding: 45px;font-size: 16px;font-family: sans-serif;line-height: 1.25;}
+#header{display:flex;padding-bottom:8px;border-bottom: 1px solid var(--borderColor-muted, var(--color-border-muted));margin-bottom: 16px;}
+#footer {margin-top:64px; text-align: center;font-size: small;}
+
+</style>
+
+<style>
+.postTitle{margin: auto 0;font-size:40px;font-weight:bold;}
+.title-right{display:flex;margin:auto 0 0 auto;}
+.title-right .circle{padding: 14px 16px;margin-right:8px;}
+#postBody{border-bottom: 1px solid var(--color-border-default);padding-bottom:36px;}
+#postBody hr{height:2px;}
+#cmButton{height:48px;margin-top:48px;}
+#comments{margin-top:64px;}
+.g-emoji{font-size:24px;}
+@media (max-width: 600px) {
+    body {padding: 8px;}
+    .postTitle{font-size:24px;}
+}
+.copy-feedback {
+    display: none;
+    position: absolute;
+    top: 10px;
+    right: 50px;
+    color: var(--color-fg-on-emphasis);
+    background-color: var(--color-fg-muted);
+    border-radius: 3px;
+    padding: 5px 8px;
+    font-size: 12px;
+}
+</style>
+<style>.markdown-alert{padding:0.5rem 1rem;margin-bottom:1rem;border-left:.25em solid var(--borderColor-default,var(--color-border-default));}.markdown-alert .markdown-alert-title {display:flex;font-weight:var(--base-text-weight-medium,500);align-items:center;line-height:1;}.markdown-alert>:first-child {margin-top:0;}.markdown-alert>:last-child {margin-bottom:0;}</style><style>.markdown-alert.markdown-alert-note {border-left-color:var(--borderColor-accent-emphasis, var(--color-accent-emphasis));background-color:var(--color-accent-subtle);}.markdown-alert.markdown-alert-note .markdown-alert-title {color: var(--fgColor-accent,var(--color-accent-fg));}</style><style>.markdown-alert.markdown-alert-tip {border-left-color:var(--borderColor-success-emphasis, var(--color-success-emphasis));background-color:var(--color-success-subtle);}.markdown-alert.markdown-alert-tip .markdown-alert-title {color: var(--fgColor-success,var(--color-success-fg));}</style>
+
+
+
+<body>
+    <div id="header">
+<h1 class="postTitle">跟 Nachia DP 博客学DP-11 换根 DP</h1>
+<div class="title-right">
+    <a href="https://SistineFibel-2006.github.io" id="buttonHome" class="btn btn-invisible circle" title="首页">
+        <svg class="octicon" width="16" height="16">
+            <path id="pathHome" fill-rule="evenodd"></path>
+        </svg>
+    </a>
+    
+    <a href="https://github.com/SistineFibel-2006/SistineFibel-2006.github.io/issues/11" target="_blank" class="btn btn-invisible circle" title="Issue">
+        <svg class="octicon" width="16" height="16">
+            <path id="pathIssue" fill-rule="evenodd"></path>
+        </svg>
+    </a>
+    
+
+    <a class="btn btn-invisible circle" onclick="modeSwitch();" title="切换主题">
+        <svg class="octicon" width="16" height="16" >
+            <path id="themeSwitch" fill-rule="evenodd"></path>
+        </svg>
+    </a>
+
+</div>
+</div>
+    <div id="content">
+<div class="markdown-body" id="postBody"><h3>跟 Nachia DP 博客学DP-11 ：换根 DP</h3>
+<p>将自底向上的树形 DP 的结果对任意根节点一次性计算的 DP 法，叫做<strong>全方位树形 DP（换根 DP）</strong></p>
+<p>从叶子向根计算树 DP 后，对于每个顶点 $v$，将 $v$ 的子节点排成一列并双向计算累积值，这样按照从根到叶子的顺序，就能以每个顶点常数次合并的方式实现与树 DP 相同的聚合。</p>
+<h4>什么是全方位树形 DP？</h4>
+<div class="markdown-alert markdown-alert-tip"><p class="markdown-alert-title"><svg data-component="Octicon" class="octicon octicon-light-bulb mr-2" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path d="M8 1.5c-2.363 0-4 1.69-4 3.75 0 .984.424 1.625.984 2.304l.214.253c.223.264.47.556.673.848.284.411.537.896.621 1.49a.75.75 0 0 1-1.484.211c-.04-.282-.163-.547-.37-.847a8.456 8.456 0 0 0-.542-.68c-.084-.1-.173-.205-.268-.32C3.201 7.75 2.5 6.766 2.5 5.25 2.5 2.31 4.863 0 8 0s5.5 2.31 5.5 5.25c0 1.516-.701 2.5-1.328 3.259-.095.115-.184.22-.268.319-.207.245-.383.453-.541.681-.208.3-.33.565-.37.847a.751.751 0 0 1-1.485-.212c.084-.593.337-1.078.621-1.489.203-.292.45-.584.673-.848.075-.088.147-.173.213-.253.561-.679.985-1.32.985-2.304 0-2.06-1.637-3.75-4-3.75ZM5.75 12h4.5a.75.75 0 0 1 0 1.5h-4.5a.75.75 0 0 1 0-1.5ZM6 15.25a.75.75 0 0 1 .75-.75h2.5a.75.75 0 0 1 0 1.5h-2.5a.75.75 0 0 1-.75-.75Z"></path></svg>Tip</p>
+<p><strong>[定义1]</strong></p>
+<p>对于某些可s以通过从每个点进行搜索来解决的问题，如果满足特定条件，则可以通过该算法以相同的计算量求出所有顶点的答案.</p>
+</div>
+<p>首先让我们来看个例题</p>
+<div class="markdown-alert markdown-alert-note"><p class="markdown-alert-title"><svg data-component="Octicon" class="octicon octicon-info mr-2" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8Zm8-6.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13ZM6.5 7.75A.75.75 0 0 1 7.25 7h1a.75.75 0 0 1 .75.75v2.75h.25a.75.75 0 0 1 0 1.5h-2a.75.75 0 0 1 0-1.5h.25v-2h-.25a.75.75 0 0 1-.75-.75ZM8 6a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"></path></svg>Note</p>
+<p>给定一个包含 $N$ 个顶点的树，对于每个顶点，求出从该顶点到最远顶点的距离（经过的边数）</p>
+<p><strong>[约束]</strong>：要求复杂度小于 $O(N^2)$</p>
+</div>
+<p>朴素的 $O(N^2)$ 的解法很好思考，$O(N)$ 遍历所有顶点，每个顶点 $O(N)$ 搜索整棵树即可</p>
+<p>考虑优化的过程其实与这个朴素的解法有紧密的联系：如果将搜索理解是**「求解树结构的值」<strong>，那么我们可以进一步将其理解为</strong>「计算以自身子节点为根的子树的值，并合并这些结果」**.</p>
+<p>下图用方框表示子树，可以看出，每个子树都是由「以自身为子节点为根的子树」与「根」合并而成的.</p>
+<p><a target="_blank" rel="noopener noreferrer nofollow" href="https://camo.githubusercontent.com/0bf5d1bf271fd581ca586c64769ec0ce748d96fc49fd799c80e23272e39dcedb/68747470733a2f2f71696974612d757365722d636f6e74656e74732e696d6769782e6e65742f687474707325334125324625324671696974612d696d6167652d73746f72652e73332e61702d6e6f727468656173742d312e616d617a6f6e6177732e636f6d2532463025324631353831333425324636363061343037652d323463372d643764622d363433342d3036306662363034376632332e706e673f69786c69623d72622d342e302e30266175746f3d666f726d6174266769662d713d363026713d373526733d6431663230353636373331396264616532643431366665383830373833643435"><img src="https://camo.githubusercontent.com/0bf5d1bf271fd581ca586c64769ec0ce748d96fc49fd799c80e23272e39dcedb/68747470733a2f2f71696974612d757365722d636f6e74656e74732e696d6769782e6e65742f687474707325334125324625324671696974612d696d6167652d73746f72652e73332e61702d6e6f727468656173742d312e616d617a6f6e6177732e636f6d2532463025324631353831333425324636363061343037652d323463372d643764622d363433342d3036306662363034376632332e706e673f69786c69623d72622d342e302e30266175746f3d666f726d6174266769662d713d363026713d373526733d6431663230353636373331396264616532643431366665383830373833643435" alt="img" data-canonical-src="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F158134%2F660a407e-24c7-d7db-6434-060fb6047f23.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=d1f205667319bdae2d416fe880783d45" style="max-width: 100%;"></a></p>
+<p>在此问题中，我们考虑对每个子树求解「从子树根节点到最远顶点的距离」这一问题。这与整体问题相同。在合并子树时，可以通过「将子树的解的最大值加上根节点的深度」这一操作来求解。实现该功能的代码如下所示。</p>
+<div class="highlight highlight-source-c++"><pre class="notranslate"><span class="pl-k">int</span> <span class="pl-en">dfs</span>(<span class="pl-k">int</span> u, <span class="pl-k">int</span> fa = -<span class="pl-c1">1</span>) {
+    <span class="pl-k">int</span> ans = <span class="pl-c1">0</span>;
+    <span class="pl-c1">each</span>(v, e[u]) <span class="pl-k">if</span>(v != fa) {
+        <span class="pl-c1">chmax</span>(ans, <span class="pl-c1">dfs</span>(v, u) + <span class="pl-c1">1</span>);
+    }
+    <span class="pl-k">return</span> ans;
+}</pre></div>
+<p>但是这个显然不是 $O(N)$ 的对吧，加上记忆化才是完整的</p>
+<div class="highlight highlight-source-c++"><pre class="notranslate"><span class="pl-k">void</span> <span class="pl-en">dfs</span>(<span class="pl-k">int</span> u, <span class="pl-k">int</span> fa = -<span class="pl-c1">1</span>) {
+    <span class="pl-k">if</span>(dp[u][fa] != -<span class="pl-c1">1</span>) <span class="pl-k">return</span> dp[u][fa];
+    <span class="pl-k">int</span> ans = <span class="pl-c1">0</span>;
+    <span class="pl-c1">each</span>(v, e[u]) <span class="pl-k">if</span>(v != fa) {
+        ans = <span class="pl-c1">max</span>(ans, <span class="pl-c1">dfs</span>(v, u) + <span class="pl-c1">1</span>);
+    }
+    <span class="pl-k">return</span> dp[u][fa] = ans;
+}</pre></div>
+<p>看上去很优美，对吧</p>
+<p><a target="_blank" rel="noopener noreferrer nofollow" href="https://camo.githubusercontent.com/f97ab19c9b0e1cab4bfc57c63e9755067aa1cc0ea166d0ff53e54aa86847474f/68747470733a2f2f71696974612d757365722d636f6e74656e74732e696d6769782e6e65742f687474707325334125324625324671696974612d696d6167652d73746f72652e73332e61702d6e6f727468656173742d312e616d617a6f6e6177732e636f6d2532463025324631353831333425324666663832393734392d366533352d656363612d366431652d3131313963343962343133352e706e673f69786c69623d72622d342e302e30266175746f3d666f726d6174266769662d713d363026713d373526733d3733353832643137373537666431303137363361616265313731323365336566"><img src="https://camo.githubusercontent.com/f97ab19c9b0e1cab4bfc57c63e9755067aa1cc0ea166d0ff53e54aa86847474f/68747470733a2f2f71696974612d757365722d636f6e74656e74732e696d6769782e6e65742f687474707325334125324625324671696974612d696d6167652d73746f72652e73332e61702d6e6f727468656173742d312e616d617a6f6e6177732e636f6d2532463025324631353831333425324666663832393734392d366533352d656363612d366431652d3131313963343962343133352e706e673f69786c69623d72622d342e302e30266175746f3d666f726d6174266769662d713d363026713d373526733d3733353832643137373537666431303137363361616265313731323365336566" alt="img" data-canonical-src="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F158134%2Fff829749-6e35-ecca-6d1e-1119c49b4135.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=73582d17757fd101763aabe17123e3ef" style="max-width: 100%;"></a></p>
+<p>如果对于这样一个菊花图来说，你会发现，如果我们只提取对<code class="notranslate">ans</code>有影响的部分，就是：</p>
+<div class="highlight highlight-source-c++"><pre class="notranslate"><span class="pl-k">int</span> ans = <span class="pl-c1">0</span>;
+<span class="pl-en">chmax</span>(ans, dp[root][<span class="pl-c1">0</span>]);
+<span class="pl-en">chmax</span>(ans, dp[root][<span class="pl-c1">1</span>]);
+<span class="pl-en">chmax</span>(ans, dp[root][<span class="pl-c1">2</span>]);
+<span class="pl-en">chmax</span>(ans, dp[root][<span class="pl-c1">3</span>]);
+<span class="pl-en">chmax</span>(ans, dp[root][<span class="pl-c1">4</span>]);
+<span class="pl-en">chmax</span>(ans, dp[root][<span class="pl-c1">5</span>]);
+<span class="pl-en">chmax</span>(ans, dp[root][<span class="pl-c1">6</span>]);</pre></div>
+<p>实际上就是在求： $\max_{v \in e[u]} dp[u][v]$</p>
+<p>而其余的也可以如下图所示：</p>
+<p><a target="_blank" rel="noopener noreferrer nofollow" href="https://camo.githubusercontent.com/e3a7b05a4d208ebf1a9df7d98fabec778bed1765be439a67ece4b98157b50bf4/68747470733a2f2f71696974612d757365722d636f6e74656e74732e696d6769782e6e65742f687474707325334125324625324671696974612d696d6167652d73746f72652e73332e61702d6e6f727468656173742d312e616d617a6f6e6177732e636f6d2532463025324631353831333425324637393131343562362d343466362d313630392d326563342d6331323965353431623939642e706e673f69786c69623d72622d342e302e30266175746f3d666f726d6174266769662d713d363026713d373526733d6631653737653836383530626635373132666233316539303534616261373436"><img src="https://camo.githubusercontent.com/e3a7b05a4d208ebf1a9df7d98fabec778bed1765be439a67ece4b98157b50bf4/68747470733a2f2f71696974612d757365722d636f6e74656e74732e696d6769782e6e65742f687474707325334125324625324671696974612d696d6167652d73746f72652e73332e61702d6e6f727468656173742d312e616d617a6f6e6177732e636f6d2532463025324631353831333425324637393131343562362d343466362d313630392d326563342d6331323965353431623939642e706e673f69786c69623d72622d342e302e30266175746f3d666f726d6174266769662d713d363026713d373526733d6631653737653836383530626635373132666233316539303534616261373436" alt="img" data-canonical-src="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F158134%2F791145b6-44f6-1609-2ec4-c129e541b99d.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=f1e77e86850bf5712fb31e9054aba746" style="max-width: 100%;"></a></p>
+<p>形式化的讲：「先计算其子子树从左往右/从右往左的累计<code class="notranslate">MAX</code>」，然后对于所有父方向，合并对应的值即可</p>
+<p>边总数是 $N - 1$ 条，每个边两段顶点各被计算一次，所有邻接顶点数的和就是 $2(N - 1) \in O(N)$ 个</p>
+<p><strong>实际上不难发现的是，当操作是一个幺半群的时候，就可以使用 换根 DP</strong></p>
+<p>幺半群：有单位元，每个元素有逆元且可逆，满足交换律</p>
+<p>你可以理解为，正常的 树形 DP 是 「按照顶点」对应子树，因为本身 DP 时包含方向这个信息；而 换根 DP 需要「按有向边」的角度来思考</p>
+<h4>模板</h4>
+<p>用上面取 <code class="notranslate">MAX</code> 的例子来举例模板代码吧：</p>
+<div class="highlight highlight-source-c++"><pre class="notranslate"><span class="pl-k">template </span>&lt;<span class="pl-k">class</span> <span class="pl-en">E</span>, <span class="pl-k">class</span> <span class="pl-en">V</span>, E (*merge)(E, E), E (*e)(), E (*add_edge)(V, <span class="pl-k">int</span>), V (*add_root)(E, <span class="pl-k">int</span>)&gt;
+<span class="pl-k">struct</span> <span class="pl-en">RerootingDP</span> {
+    <span class="pl-k">struct</span> <span class="pl-en">Edge</span> { <span class="pl-k">int</span> to, idx, rev; };
+    
+    <span class="pl-k">int</span> n;
+    vector&lt;vector&lt;Edge&gt;&gt; g;
+    vector&lt;vector&lt;E&gt;&gt; dp;
+    vector&lt;V&gt; ans;
+    
+    <span class="pl-en">RerootingDP</span>(<span class="pl-k">int</span> n) : n(n) {
+        g.<span class="pl-c1">resize</span>(n);
+        dp.<span class="pl-c1">resize</span>(n);
+        ans.<span class="pl-c1">resize</span>(n);
+    }
+    
+    <span class="pl-k">void</span> <span class="pl-en">add_edge</span>(<span class="pl-k">int</span> u, <span class="pl-k">int</span> v) {
+        g[u].<span class="pl-c1">push_back</span>({v, <span class="pl-c1">0</span>, (<span class="pl-k">int</span>)g[v].<span class="pl-c1">size</span>()});
+        g[v].<span class="pl-c1">push_back</span>({u, <span class="pl-c1">0</span>, (<span class="pl-k">int</span>)g[u].<span class="pl-c1">size</span>() - <span class="pl-c1">1</span>});
+    }
+    
+    vector&lt;V&gt; <span class="pl-en">build</span>(<span class="pl-k">int</span> root = <span class="pl-c1">0</span>) {
+        vector&lt;<span class="pl-k">int</span>&gt; <span class="pl-c1">parent</span>(n, -<span class="pl-c1">1</span>), order;
+        order.<span class="pl-c1">reserve</span>(n);
+        
+        stack&lt;<span class="pl-k">int</span>&gt; st;
+        st.<span class="pl-c1">push</span>(root);
+        parent[root] = -<span class="pl-c1">2</span>;
+        <span class="pl-k">while</span> (!st.<span class="pl-c1">empty</span>()) {
+            <span class="pl-k">int</span> u = st.<span class="pl-c1">top</span>(); st.<span class="pl-c1">pop</span>();
+            order.<span class="pl-c1">push_back</span>(u);
+            <span class="pl-k">for</span> (<span class="pl-k">auto</span>&amp; e : g[u]) {
+                <span class="pl-k">if</span> (e.<span class="pl-smi">to</span> == parent[u]) <span class="pl-k">continue</span>;
+                parent[e.<span class="pl-smi">to</span>] = u;
+                st.<span class="pl-c1">push</span>(e.<span class="pl-smi">to</span>);
+            }
+        }
+        
+        <span class="pl-k">for</span> (<span class="pl-k">int</span> i = n - <span class="pl-c1">1</span>; i &gt;= <span class="pl-c1">1</span>; i--) {
+            <span class="pl-k">int</span> u = order[i];
+            <span class="pl-k">int</span> p = parent[u];
+            E acc = <span class="pl-c1">e</span>();
+            <span class="pl-k">for</span> (<span class="pl-k">auto</span>&amp; e : g[u]) {
+                <span class="pl-k">if</span> (e.<span class="pl-smi">to</span> == p) <span class="pl-k">continue</span>;
+                acc = <span class="pl-c1">merge</span>(acc, dp[u][e.<span class="pl-smi">rev</span>]);
+            }
+            V val = <span class="pl-c1">add_root</span>(acc, u);
+            <span class="pl-k">for</span> (<span class="pl-k">auto</span>&amp; e : g[p]) {
+                <span class="pl-k">if</span> (e.<span class="pl-smi">to</span> == u) {
+                    dp[p][e.<span class="pl-smi">rev</span>] = <span class="pl-c1">add_edge</span>(val, e.<span class="pl-smi">idx</span>);
+                    <span class="pl-k">break</span>;
+                }
+            }
+        }
+        
+        ans[root] = <span class="pl-c1">add_root</span>(<span class="pl-c1">e</span>(), root);
+        <span class="pl-k">return</span> ans;
+    }
+    
+    vector&lt;V&gt; <span class="pl-en">reroot</span>(<span class="pl-k">int</span> root = <span class="pl-c1">0</span>) {
+        <span class="pl-c1">build</span>(root);
+        
+        <span class="pl-k">for</span> (<span class="pl-k">int</span> u = <span class="pl-c1">0</span>; u &lt; n; u++) {
+            <span class="pl-k">int</span> m = g[u].<span class="pl-c1">size</span>();
+            vector&lt;E&gt; <span class="pl-c1">suffix</span>(m + <span class="pl-c1">1</span>, <span class="pl-c1">e</span>());
+            <span class="pl-k">for</span> (<span class="pl-k">int</span> i = m - <span class="pl-c1">1</span>; i &gt;= <span class="pl-c1">0</span>; i--) {
+                suffix[i] = <span class="pl-c1">merge</span>(dp[u][i], suffix[i + <span class="pl-c1">1</span>]);
+            }
+            
+            E prefix = <span class="pl-c1">e</span>();
+            <span class="pl-k">for</span> (<span class="pl-k">int</span> i = <span class="pl-c1">0</span>; i &lt; m; i++) {
+                <span class="pl-k">int</span> v = g[u][i].<span class="pl-smi">to</span>;
+                E other = <span class="pl-c1">merge</span>(prefix, suffix[i + <span class="pl-c1">1</span>]);
+                V val = <span class="pl-c1">add_root</span>(other, u);
+                dp[v][g[u][i].<span class="pl-smi">rev</span>] = <span class="pl-c1">add_edge</span>(val, g[u][i].<span class="pl-smi">rev</span>);
+                prefix = <span class="pl-c1">merge</span>(prefix, dp[u][i]);
+            }
+            
+            ans[u] = <span class="pl-c1">add_root</span>(prefix, u);
+        }
+        
+        <span class="pl-k">return</span> ans;
+    }
+};</pre></div>
+<p>求每个顶点到最远点的距离：</p>
+<div class="highlight highlight-source-c++"><pre class="notranslate"><span class="pl-k">int</span> <span class="pl-en">merge</span>(<span class="pl-k">int</span> a, <span class="pl-k">int</span> b) { <span class="pl-k">return</span> <span class="pl-c1">max</span>(a, b); }  <span class="pl-c"><span class="pl-c">//</span> 二元运算 (E \cdot E)</span>
+<span class="pl-k">int</span> <span class="pl-en">e</span>() { <span class="pl-k">return</span> <span class="pl-c1">0</span>; } <span class="pl-c"><span class="pl-c">//</span> 单位元 (E id)</span>
+<span class="pl-k">int</span> <span class="pl-en">add_edge</span>(<span class="pl-k">int</span> v, <span class="pl-k">int</span> idx) { <span class="pl-k">return</span> v + <span class="pl-c1">1</span>; } <span class="pl-c"><span class="pl-c">//</span> 与新边聚合 (V, int) V: Dp数组的数值类型</span>
+<span class="pl-k">int</span> <span class="pl-en">add_root</span>(<span class="pl-k">int</span> e, <span class="pl-k">int</span> u) { <span class="pl-k">return</span> e; } <span class="pl-c"><span class="pl-c">//</span>与当前节点聚合  (E, int)</span>
+
+<span class="pl-k">int</span> <span class="pl-en">main</span>() {
+    <span class="pl-k">int</span> n;
+    cin &gt;&gt; n;
+    RerootingDP&lt;<span class="pl-k">int</span>, <span class="pl-k">int</span>, merge, e, add_edge, add_root&gt; <span class="pl-c1">reroot</span>(n);
+    <span class="pl-k">for</span> (<span class="pl-k">int</span> i = <span class="pl-c1">0</span>; i &lt; n - <span class="pl-c1">1</span>; i++) {
+        <span class="pl-k">int</span> u, v;
+        cin &gt;&gt; u &gt;&gt; v;
+        reroot.<span class="pl-c1">add_edge</span>(u - <span class="pl-c1">1</span>, v - <span class="pl-c1">1</span>, i, i);
+    }
+    <span class="pl-k">auto</span> ans = reroot.<span class="pl-c1">reroot</span>();
+    <span class="pl-k">for</span> (<span class="pl-k">int</span> i = <span class="pl-c1">0</span>; i &lt; n; i++) {
+        cout &lt;&lt; ans[i] &lt;&lt; endl;
+    }
+    <span class="pl-k">return</span> <span class="pl-c1">0</span>;
+}</pre></div>
+<h4>例题与其他阅读</h4>
+<h5>例题</h5>
+<p><a href="https://atcoder.jp/contests/dp/tasks/dp_v" rel="nofollow">AtCoder EDPC-V</a></p>
+<p><a href="https://atcoder.jp/contests/tdpc/tasks/tdpc_tree" rel="nofollow">AtCoder TDPC-N</a></p>
+<h5>其他阅读</h5>
+<p><a href="https://algo-logic.info/tree-dp/" rel="nofollow">木DPと全方位木DPを基礎から抽象化まで解説【競技プログラミング】 | アルゴリズムロジック</a></p>
+<p><a href="https://qiita.com/keymoon/items/2a52f1b0fb7ef67fb89e" rel="nofollow">【全方位树 DP】明天就能用的便利树结构算法 #竞技编程 - Qiita --- 【全方位木DP】明日使える便利な木構造のアルゴリズム #競技プログラミング - Qiita</a></p></div>
+<div style="font-size:small;margin-top:8px;float:right;"></div>
+
+<button class="btn btn-block" type="button" onclick="openComments()" id="cmButton">评论</button>
+<div class="comments" id="comments"></div>
+
+</div>
+    <div id="footer"><div id="footer1">Copyright © <span id="copyrightYear"></span> <a href="https://SistineFibel-2006.github.io">SISTINE=Blog</a></div>
+<div id="footer2">
+    <span id="runday"></span><span>Powered by <a href="https://meekdai.com/Gmeek.html" target="_blank">Gmeek</a></span>
+</div>
+
+<script>
+var now=new Date();
+document.getElementById("copyrightYear").innerHTML=now.getFullYear();
+
+if(""!=""){
+    var startSite=new Date("");
+    var diff=now.getTime()-startSite.getTime();
+    var diffDay=Math.floor(diff/(1000*60*60*24));
+    document.getElementById("runday").innerHTML="网站运行 "+diffDay+" 天"+" • ";
+}
+</script></div>
+</body>
+<script>
+var IconList={'sun': 'M8 10.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5zM8 12a4 4 0 100-8 4 4 0 000 8zM8 0a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0V.75A.75.75 0 018 0zm0 13a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0v-1.5A.75.75 0 018 13zM2.343 2.343a.75.75 0 011.061 0l1.06 1.061a.75.75 0 01-1.06 1.06l-1.06-1.06a.75.75 0 010-1.06zm9.193 9.193a.75.75 0 011.06 0l1.061 1.06a.75.75 0 01-1.06 1.061l-1.061-1.06a.75.75 0 010-1.061zM16 8a.75.75 0 01-.75.75h-1.5a.75.75 0 010-1.5h1.5A.75.75 0 0116 8zM3 8a.75.75 0 01-.75.75H.75a.75.75 0 010-1.5h1.5A.75.75 0 013 8zm10.657-5.657a.75.75 0 010 1.061l-1.061 1.06a.75.75 0 11-1.06-1.06l1.06-1.06a.75.75 0 011.06 0zm-9.193 9.193a.75.75 0 010 1.06l-1.06 1.061a.75.75 0 11-1.061-1.06l1.06-1.061a.75.75 0 011.061 0z', 'moon': 'M9.598 1.591a.75.75 0 01.785-.175 7 7 0 11-8.967 8.967.75.75 0 01.961-.96 5.5 5.5 0 007.046-7.046.75.75 0 01.175-.786zm1.616 1.945a7 7 0 01-7.678 7.678 5.5 5.5 0 107.678-7.678z', 'sync': 'M1.705 8.005a.75.75 0 0 1 .834.656 5.5 5.5 0 0 0 9.592 2.97l-1.204-1.204a.25.25 0 0 1 .177-.427h3.646a.25.25 0 0 1 .25.25v3.646a.25.25 0 0 1-.427.177l-1.38-1.38A7.002 7.002 0 0 1 1.05 8.84a.75.75 0 0 1 .656-.834ZM8 2.5a5.487 5.487 0 0 0-4.131 1.869l1.204 1.204A.25.25 0 0 1 4.896 6H1.25A.25.25 0 0 1 1 5.75V2.104a.25.25 0 0 1 .427-.177l1.38 1.38A7.002 7.002 0 0 1 14.95 7.16a.75.75 0 0 1-1.49.178A5.5 5.5 0 0 0 8 2.5Z', 'home': 'M6.906.664a1.749 1.749 0 0 1 2.187 0l5.25 4.2c.415.332.657.835.657 1.367v7.019A1.75 1.75 0 0 1 13.25 15h-3.5a.75.75 0 0 1-.75-.75V9H7v5.25a.75.75 0 0 1-.75.75h-3.5A1.75 1.75 0 0 1 1 13.25V6.23c0-.531.242-1.034.657-1.366l5.25-4.2Zm1.25 1.171a.25.25 0 0 0-.312 0l-5.25 4.2a.25.25 0 0 0-.094.196v7.019c0 .138.112.25.25.25H5.5V8.25a.75.75 0 0 1 .75-.75h3.5a.75.75 0 0 1 .75.75v5.25h2.75a.25.25 0 0 0 .25-.25V6.23a.25.25 0 0 0-.094-.195Z', 'github': 'M8 0c4.42 0 8 3.58 8 8a8.013 8.013 0 0 1-5.45 7.59c-.4.08-.55-.17-.55-.38 0-.27.01-1.13.01-2.2 0-.75-.25-1.23-.54-1.48 1.78-.2 3.65-.88 3.65-3.95 0-.88-.31-1.59-.82-2.15.08-.2.36-1.02-.08-2.12 0 0-.67-.22-2.2.82-.64-.18-1.32-.27-2-.27-.68 0-1.36.09-2 .27-1.53-1.03-2.2-.82-2.2-.82-.44 1.1-.16 1.92-.08 2.12-.51.56-.82 1.28-.82 2.15 0 3.06 1.86 3.75 3.64 3.95-.23.2-.44.55-.51 1.07-.46.21-1.61.55-2.33-.66-.15-.24-.6-.83-1.23-.82-.67.01-.27.38.01.53.34.19.73.9.82 1.13.16.45.68 1.31 2.69.94 0 .67.01 1.3.01 1.49 0 .21-.15.45-.55.38A7.995 7.995 0 0 1 0 8c0-4.42 3.58-8 8-8Z', 'copy': 'M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 0 1 0 1.5h-1.5a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-1.5a.75.75 0 0 1 1.5 0v1.5A1.75 1.75 0 0 1 9.25 16h-7.5A1.75 1.75 0 0 1 0 14.25Z M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0 1 14.25 11h-7.5A1.75 1.75 0 0 1 5 9.25Zm1.75-.25a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-7.5a.25.25 0 0 0-.25-.25Z', 'check': 'M13.78 4.22a.75.75 0 0 1 0 1.06l-7.25 7.25a.75.75 0 0 1-1.06 0L2.22 9.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018L6 10.94l6.72-6.72a.75.75 0 0 1 1.06 0Z'};
+var utterancesLoad=0;
+
+let themeSettings={
+    "dark": ["dark","moon","#00f0ff","dark-blue"],
+    "light": ["light","sun","#ff5000","github-light"],
+    "auto": ["auto","sync","","preferred-color-scheme"]
+};
+function changeTheme(mode, icon, color, utheme){
+    document.documentElement.setAttribute("data-color-mode",mode);
+    document.getElementById("themeSwitch").setAttribute("d",value=IconList[icon]);
+    document.getElementById("themeSwitch").parentNode.style.color=color;
+    if(utterancesLoad==1){utterancesTheme(utheme);}
+}
+function modeSwitch(){
+    let currentMode=document.documentElement.getAttribute('data-color-mode');
+    let newMode = currentMode === "light" ? "dark" : currentMode === "dark" ? "auto" : "light";
+    localStorage.setItem("meek_theme", newMode);
+    if(themeSettings[newMode]){
+        changeTheme(...themeSettings[newMode]);
+    }
+}
+function utterancesTheme(theme){
+    const message={type:'set-theme',theme: theme};
+    const iframe=document.getElementsByClassName('utterances-frame')[0];
+    iframe.contentWindow.postMessage(message,'https://utteranc.es');
+}
+if(themeSettings[theme]){changeTheme(...themeSettings[theme]);}
+console.log("\n %c Gmeek last https://github.com/Meekdai/Gmeek \n","padding:5px 0;background:#02d81d;color:#fff");
+</script>
+
+<script>
+document.getElementById("pathHome").setAttribute("d",IconList["home"]);
+document.getElementById("pathIssue").setAttribute("d",IconList["github"]);
+
+
+
+function openComments(){
+    cm=document.getElementById("comments");
+    cmButton=document.getElementById("cmButton");
+    cmButton.disabled=true;
+    cmButton.innerHTML="loading";
+    span=document.createElement("span");
+    span.setAttribute("class","AnimatedEllipsis");
+    cmButton.appendChild(span);
+
+    script=document.createElement("script");
+    script.setAttribute("src","https://utteranc.es/client.js");
+    script.setAttribute("repo","SistineFibel-2006/SistineFibel-2006.github.io");
+    script.setAttribute("issue-term","title");
+    
+    if(localStorage.getItem("meek_theme")=="dark"){script.setAttribute("theme","dark-blue");}
+    else if(localStorage.getItem("meek_theme")=="light") {script.setAttribute("theme","github-light");}
+    else{script.setAttribute("theme","preferred-color-scheme");}
+    
+    script.setAttribute("crossorigin","anonymous");
+    script.setAttribute("async","");
+    cm.appendChild(script);
+
+    int=self.setInterval("iFrameLoading()",200);
+}
+
+function iFrameLoading(){
+    var utterances=document.getElementsByClassName('utterances');
+    if(utterances.length==1){
+        if(utterances[0].style.height!=""){
+            utterancesLoad=1;
+            int=window.clearInterval(int);
+            document.getElementById("cmButton").style.display="none";
+            console.log("utterances Load OK");
+        }
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    const createClipboardHTML = (codeContent, additionalClasses = '') => `
+        <pre class="notranslate"><code class="notranslate">${codeContent}</code></pre>
+        <div class="clipboard-container position-absolute right-0 top-0 ${additionalClasses}">
+            <clipboard-copy class="ClipboardButton btn m-2 p-0" role="button" style="display: inherit;">
+                <svg height="16" width="16" class="octicon octicon-copy m-2"><path d="${IconList["copy"]}"></path></svg>
+                <svg height="16" width="16" class="octicon octicon-check color-fg-success m-2 d-none"><path d="${IconList["check"]}"></path></svg>
+            </clipboard-copy>
+            <div class="copy-feedback">Copied!</div>
+        </div>
+    `;
+
+    const handleCodeElements = (selector = '') => {
+        document.querySelectorAll(selector).forEach(codeElement => {
+            const codeContent = codeElement.innerHTML;
+            const newStructure = document.createElement('div');
+            newStructure.className = 'snippet-clipboard-content position-relative overflow-auto';
+            newStructure.innerHTML = createClipboardHTML(codeContent);
+
+            const parentElement = codeElement.parentElement;
+            if (selector.includes('highlight')) {
+                parentElement.insertBefore(newStructure, codeElement.nextSibling);
+                parentElement.removeChild(codeElement);
+            } else {
+                parentElement.parentElement.replaceChild(newStructure, parentElement);
+            }
+        });
+    };
+
+    handleCodeElements('pre.notranslate > code.notranslate');
+    handleCodeElements('div.highlight > pre.notranslate');
+
+    let currentFeedback = null;
+    document.querySelectorAll('clipboard-copy').forEach(copyButton => {
+        copyButton.addEventListener('click', () => {
+            const codeContent = copyButton.closest('.snippet-clipboard-content').innerText;
+            const tempTextArea = document.createElement('textarea');
+            tempTextArea.value = codeContent;
+            document.body.appendChild(tempTextArea);
+            tempTextArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempTextArea);
+
+            const copyIcon = copyButton.querySelector('.octicon-copy');
+            const checkIcon = copyButton.querySelector('.octicon-check');
+            const copyFeedback = copyButton.nextElementSibling;
+
+            if (currentFeedback && currentFeedback !== copyFeedback) {currentFeedback.style.display = 'none';}
+            currentFeedback = copyFeedback;
+
+            copyIcon.classList.add('d-none');
+            checkIcon.classList.remove('d-none');
+            copyFeedback.style.display = 'block';
+            copyButton.style.borderColor = 'var(--color-success-fg)';
+
+            setTimeout(() => {
+                copyIcon.classList.remove('d-none');
+                checkIcon.classList.add('d-none');
+                copyFeedback.style.display = 'none';
+                copyButton.style.borderColor = '';
+            }, 2000);
+        });
+    });
+});
+
+</script>
+<script src='https://blog.meekdai.com/Gmeek/plugins/articletoc.js'></script><script>MathJax = {tex: {inlineMath: [["$", "$"]]}};</script><script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+</html>
