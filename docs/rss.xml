@@ -1,5 +1,107 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>SISTINE=Blog</title><link>https://SistineFibel-2006.github.io</link><description>QQ3034019410——Atcoder:SistineFibel</description><copyright>SISTINE=Blog</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://img.cdn1.vip/i/6a3aa678f126b_1782228600.webp</url><title>avatar</title><link>https://SistineFibel-2006.github.io</link></image><lastBuildDate>Sat, 04 Jul 2026 16:31:14 +0000</lastBuildDate><managingEditor>SISTINE=Blog</managingEditor><ttl>60</ttl><webMaster>SISTINE=Blog</webMaster><item><title>跟 Nachia DP 博客学DP-11 换根 DP</title><link>https://SistineFibel-2006.github.io/post/gen-%20Nachia%20DP%20-bo-ke-xue-DP-11%20-huan-gen-%20DP.html</link><description>### 跟 Nachia DP 博客学DP-11 ：换根 DP
+<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>SISTINE=Blog</title><link>https://SistineFibel-2006.github.io</link><description>QQ3034019410——Atcoder:SistineFibel</description><copyright>SISTINE=Blog</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://img.cdn1.vip/i/6a3aa678f126b_1782228600.webp</url><title>avatar</title><link>https://SistineFibel-2006.github.io</link></image><lastBuildDate>Sun, 12 Jul 2026 18:44:16 +0000</lastBuildDate><managingEditor>SISTINE=Blog</managingEditor><ttl>60</ttl><webMaster>SISTINE=Blog</webMaster><item><title>AtCoder ABC466E</title><link>https://SistineFibel-2006.github.io/post/AtCoder%20ABC466E.html</link><description>### [AtCoder ABC 466E - Range Flip](https://atcoder.jp/contests/abc466/tasks/abc466_e)
+
+[E - Range Flip](https://atcoder.jp/contests/abc466/tasks/abc466_e)
+
+#### 题目大意
+
+给你 $N$ 张卡片，编号从 $1$ 到 $N$
+
+第 $i$ 张卡正面写着 $A_i$，背面写着 $B_i$，一开始都是正面朝上
+
+你可以进行下列操作至多 $K$ 次；
+
+-  选择一个二元组 $(l, r)$ 满足 $1\le l \le r \le N$，对于所有 $l\le i\le r$ 的 $i$，翻转编号 $i$ 的卡，也就是正变反，反变正
+
+进行完操作后，找到所有朝上数字之和的最大值
+
+##### 约束
+
+- $1\le N \le 2 \times 10^5$
+- $1\le K \le 10$
+- $1\le A_i,B_i \le 10^9$
+
+#### 题解1
+
+这个方法其实比较直观，如同之前的 Game DP 一样，我们设最大化变化值即可，如果定义 $d[i] = B[i] - A[i]$ 的话，那么我们要求 $max \set{\sum_{i=1}^N p \times d[i]}$，其中 $p = 0 / 1$
+
+于是我们可以列出转移方程，设 $dp[i][j]=$ 进行了 $i$ 次操作，进行到第 $j$ 个数字时候的最大化变化值：
+
+$dp[i][j] = max_{1 \le k \le j} \set{dp[i - 1][k - 1] + \sum_{i=k}^N d[i]}$
+
+这个式子前缀和优化后可以变成
+
+$dp[i][j] = max_{1 \le k \le j} \set{dp[i - 1][k - 1] + pre[j] - pre[k - 1]}$
+
+而 $pre[j]$ 可以提出来变成
+
+$dp[i][j] = pre[j] + max_{1 \le k \le j} \set{dp[i - 1][k - 1] - pre[k - 1]}$
+
+而这个式子用一个 trick 就可以在 $O(NK)$ 的情况下维护了，也就是一直维护 max 值，代码如下：
+
+```cpp
+auto Mainsol = [](){
+  INT(N, K);
+  vec(ll, A, N); vec(ll, B, N);
+  rep(i, N) in(A[i], B[i]);
+  vec(ll, d, N);
+  rep(i, N) d[i] = B[i] - A[i];
+  vec(ll, pre, N + 1, 0);
+  rep(i, N) pre[i + 1] = pre[i] + d[i];
+
+  v&lt;v&lt;ll&gt;&gt; f(K + 1, v&lt;ll&gt;(N + 1, 0));
+  rep(i, 1, K + 1) {
+  	ll now = -LINF;
+  	rep(j, 1, N + 1) {
+  		chmax(now, f[i - 1][j - 1] - pre[j - 1]);
+  		f[i][j] = f[i][j - 1];
+  		chmax(f[i][j], pre[j] + now);
+  	}
+  }
+  ll bst = 0;
+  rep(i, N) bst += A[i];
+  ll maxx = 0;
+  rep(i, K + 1) chmax(maxx, f[i][N]);
+  out(maxx + bst);
+};
+
+```
+
+#### 题解2
+
+这个做法需要一些观察，首先我们可以注意到，如果每一次选择的区间总是独立（也就是没有共用元素）的话，这样的选法总是优于（至少不劣）有共用元素的选法，于是我们可以注意到：
+
+对于一个元素而言，其翻转次数最多 $K$ 次，也就是可达状态数 $2 \times K$ 种，于是我们有转移状态：
+
+$dp[k] =$ 处理完前 $i$ 个元素后，进行了 $k$ 次切换能达到的最大总和
+
+于是可以写出代码
+
+每一次先尝试切换状态，如果前一个状态更优，那么就切换，然后根据奇偶加对应的结果即可，类似 状态机 DP！
+
+```cpp
+// code of potato167 
+// https://atcoder.jp/contests/abc466/submissions/77364802
+void solve(){
+    int N, K;
+    cin &gt;&gt; N &gt;&gt; K;
+    vector&lt;ll&gt; A(N), B(N);
+    rep(i, 0, N) cin &gt;&gt; A[i] &gt;&gt; B[i];
+    vector&lt;ll&gt; dp(K * 2 + 1);
+    rep(i, 0, N) {
+        rep(j, 1, dp.size()) {
+            chmax(dp[j], dp[j - 1]);
+        }
+        rep(j, 0, dp.size()) {
+            if (j &amp; 1) dp[j] += B[i];
+            else dp[j] += A[i];
+        }
+    }
+    cout &lt;&lt; vec_max(dp) &lt;&lt; '\n';
+}
+```
+
+。</description><guid isPermaLink="true">https://SistineFibel-2006.github.io/post/AtCoder%20ABC466E.html</guid><pubDate>Sun, 12 Jul 2026 18:43:49 +0000</pubDate></item><item><title>跟 Nachia DP 博客学DP-11 换根 DP</title><link>https://SistineFibel-2006.github.io/post/gen-%20Nachia%20DP%20-bo-ke-xue-DP-11%20-huan-gen-%20DP.html</link><description>### 跟 Nachia DP 博客学DP-11 ：换根 DP
 
 将自底向上的树形 DP 的结果对任意根节点一次性计算的 DP 法，叫做**全方位树形 DP（换根 DP）**
 
