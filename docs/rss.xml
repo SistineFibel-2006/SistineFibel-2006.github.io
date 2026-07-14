@@ -1,5 +1,17 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>SISTINE=Blog</title><link>https://SistineFibel-2006.github.io</link><description>QQ3034019410——Atcoder:SistineFibel</description><copyright>SISTINE=Blog</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://img.cdn1.vip/i/6a3aa678f126b_1782228600.webp</url><title>avatar</title><link>https://SistineFibel-2006.github.io</link></image><lastBuildDate>Tue, 14 Jul 2026 08:33:52 +0000</lastBuildDate><managingEditor>SISTINE=Blog</managingEditor><ttl>60</ttl><webMaster>SISTINE=Blog</webMaster><item><title>跟 Nachia DP 博客学DP-12 子序列 DP</title><link>https://SistineFibel-2006.github.io/post/gen-%20Nachia%20DP%20-bo-ke-xue-DP-12%20-zi-xu-lie-%20DP.html</link><description>### 跟 Nachia DP 博客学DP-12 子序列 DP
+<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>SISTINE=Blog</title><link>https://SistineFibel-2006.github.io</link><description>QQ3034019410——Atcoder:SistineFibel</description><copyright>SISTINE=Blog</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://img.cdn1.vip/i/6a3aa678f126b_1782228600.webp</url><title>avatar</title><link>https://SistineFibel-2006.github.io</link></image><lastBuildDate>Tue, 14 Jul 2026 11:49:32 +0000</lastBuildDate><managingEditor>SISTINE=Blog</managingEditor><ttl>60</ttl><webMaster>SISTINE=Blog</webMaster><item><title>跟 Nachia DP 博客学DP-13&amp;14 多维 DP in-place DP 优化</title><link>https://SistineFibel-2006.github.io/post/gen-%20Nachia%20DP%20-bo-ke-xue-DP-13%2614%20-duo-wei-%20DP%20in-place%20DP%20-you-hua.html</link><description>### 跟 Nachia DP 博客学DP-13&amp;14 多维 DP in-place DP 优化
+
+#### 多维 DP （*d* 次元 DP）
+
+*d* 中是一个具体的正整数，也就是通过 in-place 优化前的维数，该维数也是 DP **时间复杂度的下界**
+
+##### *d* 的意义
+
+其本质是：**为了满足「无后效性」，你最少需要用几个独立的变量来唯一确定一个子问题？**
+
+常见的一维（*d* = 1）有：斐波那契数列、LIS 问题、最大子段和；状态往往只与一个线性位置或阶段有关
+
+常见的二维（*d* = 2）有：01背包问题、LCS 问题、区间 DP、简单网格图路径；状态由两个独立变量约束（如：位置+容量，序列A长度+序列B长度，区间左端点+右端点）。</description><guid isPermaLink="true">https://SistineFibel-2006.github.io/post/gen-%20Nachia%20DP%20-bo-ke-xue-DP-13%2614%20-duo-wei-%20DP%20in-place%20DP%20-you-hua.html</guid><pubDate>Tue, 14 Jul 2026 11:49:06 +0000</pubDate></item><item><title>跟 Nachia DP 博客学DP-12 子序列 DP</title><link>https://SistineFibel-2006.github.io/post/gen-%20Nachia%20DP%20-bo-ke-xue-DP-12%20-zi-xu-lie-%20DP.html</link><description>### 跟 Nachia DP 博客学DP-12 子序列 DP
 
 **原文**：[DP 的俗称 | Mathenachia --- DP の俗称 | Mathenachia](https://www.mathenachia.blog/dp/#toc15)
 
