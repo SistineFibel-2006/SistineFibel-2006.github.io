@@ -1,5 +1,13 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>SISTINE=Blog</title><link>https://SistineFibel-2006.github.io</link><description>QQ3034019410——Atcoder:SistineFibel</description><copyright>SISTINE=Blog</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://img.cdn1.vip/i/6a3aa678f126b_1782228600.webp</url><title>avatar</title><link>https://SistineFibel-2006.github.io</link></image><lastBuildDate>Tue, 14 Jul 2026 11:49:32 +0000</lastBuildDate><managingEditor>SISTINE=Blog</managingEditor><ttl>60</ttl><webMaster>SISTINE=Blog</webMaster><item><title>跟 Nachia DP 博客学DP-13&amp;14 多维 DP in-place DP 优化</title><link>https://SistineFibel-2006.github.io/post/gen-%20Nachia%20DP%20-bo-ke-xue-DP-13%2614%20-duo-wei-%20DP%20in-place%20DP%20-you-hua.html</link><description>### 跟 Nachia DP 博客学DP-13&amp;14 多维 DP in-place DP 优化
+<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>SISTINE=Blog</title><link>https://SistineFibel-2006.github.io</link><description>QQ3034019410——Atcoder:SistineFibel</description><copyright>SISTINE=Blog</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://img.cdn1.vip/i/6a3aa678f126b_1782228600.webp</url><title>avatar</title><link>https://SistineFibel-2006.github.io</link></image><lastBuildDate>Tue, 14 Jul 2026 13:45:29 +0000</lastBuildDate><managingEditor>SISTINE=Blog</managingEditor><ttl>60</ttl><webMaster>SISTINE=Blog</webMaster><item><title>跟 Nachia DP 博客学DP-15 回退 DP</title><link>https://SistineFibel-2006.github.io/post/gen-%20Nachia%20DP%20-bo-ke-xue-DP-15%20-hui-tui-%20DP.html</link><description>### 跟 Nachia DP 博客学DP-15 回退 DP
+
+**回退 DP （Restore DP / Rollback DP / Erasure DP）**是一种在计数 DP （尤其是背包 DP） 中非常经典且高效的技巧
+
+在完全计算出 DP 后，通过部分地执行与原始 DP 相反的步骤来达成目标的解法，被称为“回退 DP”
+
+它的核心思想是：**先用 $O(NM)$ 的时间求出包含所有元素的全局 DP 状态，然后利用“逆运算”，在 $O(M)$ 的时间内快速扣除（回退）某一个特定元素的影响**
+
+如果没有这个技巧，我们为了求“去掉第 $i$ 个元素后的答案”，必须对剩余的 $N-1$ 个元素重新跑一次 $O(NM)$ 的背包，总复杂度会劣化到 $O(N^2 M)$。</description><guid isPermaLink="true">https://SistineFibel-2006.github.io/post/gen-%20Nachia%20DP%20-bo-ke-xue-DP-15%20-hui-tui-%20DP.html</guid><pubDate>Tue, 14 Jul 2026 13:44:57 +0000</pubDate></item><item><title>跟 Nachia DP 博客学DP-13&amp;14 多维 DP in-place DP 优化</title><link>https://SistineFibel-2006.github.io/post/gen-%20Nachia%20DP%20-bo-ke-xue-DP-13%2614%20-duo-wei-%20DP%20in-place%20DP%20-you-hua.html</link><description>### 跟 Nachia DP 博客学DP-13&amp;14 多维 DP in-place DP 优化
 
 #### 多维 DP （*d* 次元 DP）
 

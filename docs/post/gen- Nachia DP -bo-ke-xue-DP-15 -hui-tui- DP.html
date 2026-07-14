@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html data-color-mode="light" data-dark-theme="dark" data-light-theme="light" lang="zh-CN">
+<head>
+    <meta content="text/html; charset=utf-8" http-equiv="content-type" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link href='https://mirrors.sustech.edu.cn/cdnjs/ajax/libs/Primer/21.0.7/primer.css' rel='stylesheet' />
+    <script src='https://blog.meekdai.com/Gmeek/plugins/GmeekVercount.js'></script>
+    <link rel="icon" href="https://img.cdn1.vip/i/6a3aa678f126b_1782228600.webp"><script>
+        let theme = localStorage.getItem("meek_theme") || "light";
+        document.documentElement.setAttribute("data-color-mode", theme);
+    </script>
+<meta name="description" content="### 跟 Nachia DP 博客学DP-15 回退 DP
+
+**回退 DP （Restore DP / Rollback DP / Erasure DP）**是一种在计数 DP （尤其是背包 DP） 中非常经典且高效的技巧
+
+在完全计算出 DP 后，通过部分地执行与原始 DP 相反的步骤来达成目标的解法，被称为“回退 DP”
+
+它的核心思想是：**先用 $O(NM)$ 的时间求出包含所有元素的全局 DP 状态，然后利用“逆运算”，在 $O(M)$ 的时间内快速扣除（回退）某一个特定元素的影响**
+
+如果没有这个技巧，我们为了求“去掉第 $i$ 个元素后的答案”，必须对剩余的 $N-1$ 个元素重新跑一次 $O(NM)$ 的背包，总复杂度会劣化到 $O(N^2 M)$。">
+<meta property="og:title" content="跟 Nachia DP 博客学DP-15 回退 DP">
+<meta property="og:description" content="### 跟 Nachia DP 博客学DP-15 回退 DP
+
+**回退 DP （Restore DP / Rollback DP / Erasure DP）**是一种在计数 DP （尤其是背包 DP） 中非常经典且高效的技巧
+
+在完全计算出 DP 后，通过部分地执行与原始 DP 相反的步骤来达成目标的解法，被称为“回退 DP”
+
+它的核心思想是：**先用 $O(NM)$ 的时间求出包含所有元素的全局 DP 状态，然后利用“逆运算”，在 $O(M)$ 的时间内快速扣除（回退）某一个特定元素的影响**
+
+如果没有这个技巧，我们为了求“去掉第 $i$ 个元素后的答案”，必须对剩余的 $N-1$ 个元素重新跑一次 $O(NM)$ 的背包，总复杂度会劣化到 $O(N^2 M)$。">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://SistineFibel-2006.github.io/post/gen-%20Nachia%20DP%20-bo-ke-xue-DP-15%20-hui-tui-%20DP.html">
+<meta property="og:image" content="https://img.cdn1.vip/i/6a3aa678f126b_1782228600.webp">
+<title>跟 Nachia DP 博客学DP-15 回退 DP</title>
+<link href="//unpkg.com/@wooorm/starry-night@2.1.1/style/both.css" rel="stylesheet" />
+
+
+</head>
+<style>
+body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;padding: 45px;font-size: 16px;font-family: sans-serif;line-height: 1.25;}
+#header{display:flex;padding-bottom:8px;border-bottom: 1px solid var(--borderColor-muted, var(--color-border-muted));margin-bottom: 16px;}
+#footer {margin-top:64px; text-align: center;font-size: small;}
+
+</style>
+
+<style>
+.postTitle{margin: auto 0;font-size:40px;font-weight:bold;}
+.title-right{display:flex;margin:auto 0 0 auto;}
+.title-right .circle{padding: 14px 16px;margin-right:8px;}
+#postBody{border-bottom: 1px solid var(--color-border-default);padding-bottom:36px;}
+#postBody hr{height:2px;}
+#cmButton{height:48px;margin-top:48px;}
+#comments{margin-top:64px;}
+.g-emoji{font-size:24px;}
+@media (max-width: 600px) {
+    body {padding: 8px;}
+    .postTitle{font-size:24px;}
+}
+.copy-feedback {
+    display: none;
+    position: absolute;
+    top: 10px;
+    right: 50px;
+    color: var(--color-fg-on-emphasis);
+    background-color: var(--color-fg-muted);
+    border-radius: 3px;
+    padding: 5px 8px;
+    font-size: 12px;
+}
+</style>
+<style>.markdown-alert{padding:0.5rem 1rem;margin-bottom:1rem;border-left:.25em solid var(--borderColor-default,var(--color-border-default));}.markdown-alert .markdown-alert-title {display:flex;font-weight:var(--base-text-weight-medium,500);align-items:center;line-height:1;}.markdown-alert>:first-child {margin-top:0;}.markdown-alert>:last-child {margin-bottom:0;}</style><style>.markdown-alert.markdown-alert-note {border-left-color:var(--borderColor-accent-emphasis, var(--color-accent-emphasis));background-color:var(--color-accent-subtle);}.markdown-alert.markdown-alert-note .markdown-alert-title {color: var(--fgColor-accent,var(--color-accent-fg));}</style>
+
+
+
+<body>
+    <div id="header">
+<h1 class="postTitle">跟 Nachia DP 博客学DP-15 回退 DP</h1>
+<div class="title-right">
+    <a href="https://SistineFibel-2006.github.io" id="buttonHome" class="btn btn-invisible circle" title="首页">
+        <svg class="octicon" width="16" height="16">
+            <path id="pathHome" fill-rule="evenodd"></path>
+        </svg>
+    </a>
+    
+    <a href="https://github.com/SistineFibel-2006/SistineFibel-2006.github.io/issues/15" target="_blank" class="btn btn-invisible circle" title="Issue">
+        <svg class="octicon" width="16" height="16">
+            <path id="pathIssue" fill-rule="evenodd"></path>
+        </svg>
+    </a>
+    
+
+    <a class="btn btn-invisible circle" onclick="modeSwitch();" title="切换主题">
+        <svg class="octicon" width="16" height="16" >
+            <path id="themeSwitch" fill-rule="evenodd"></path>
+        </svg>
+    </a>
+
+</div>
+</div>
+    <div id="content">
+<div class="markdown-body" id="postBody"><h3>跟 Nachia DP 博客学DP-15 回退 DP</h3>
+<p>**回退 DP （Restore DP / Rollback DP / Erasure DP）**是一种在计数 DP （尤其是背包 DP） 中非常经典且高效的技巧</p>
+<p>在完全计算出 DP 后，通过部分地执行与原始 DP 相反的步骤来达成目标的解法，被称为“回退 DP”</p>
+<p>它的核心思想是：<strong>先用 $O(NM)$ 的时间求出包含所有元素的全局 DP 状态，然后利用“逆运算”，在 $O(M)$ 的时间内快速扣除（回退）某一个特定元素的影响</strong></p>
+<p>如果没有这个技巧，我们为了求“去掉第 $i$ 个元素后的答案”，必须对剩余的 $N-1$ 个元素重新跑一次 $O(NM)$ 的背包，总复杂度会劣化到 $O(N^2 M)$。而使用回退 DP，总复杂度可以直接降到 $O(NM)$</p>
+<h4>例题1</h4>
+<div class="markdown-alert markdown-alert-note"><p class="markdown-alert-title"><svg data-component="Octicon" class="octicon octicon-info mr-2" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8Zm8-6.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13ZM6.5 7.75A.75.75 0 0 1 7.25 7h1a.75.75 0 0 1 .75.75v2.75h.25a.75.75 0 0 1 0 1.5h-2a.75.75 0 0 1 0-1.5h.25v-2h-.25a.75.75 0 0 1-.75-.75ZM8 6a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"></path></svg>Note</p>
+<p>给定正整数 $N,M$ 与一个正整数序列 $A =(A_0,A_1,\ldots,A_{N-1})$ ，其中 $\sum_{i=0}^{N-1} A_i = M$。对于 $i = 0,1,\ldots,N-1$ 与 $x=1,2,\ldots,M$，将序列 $A$ 中仅移除第 $i$ 个元素 $A_i$ 后得到的序列记为 $B_i$，求 $B_i$ 的（不一定连续的）子序列中，元素总和为 $x$ 的选取方式的数量，并输出该数量除以 $998244353$ 的余数</p>
+</div>
+<p>设 $dp[x]$ 表示使用<strong>全部元素</strong>凑出和为 $x$ 的方案数</p>
+<p>假设我们最后加入的元素是 $A_i$，那么在加入 $A_i$ 之前，凑出和为 $x$ 的方案数记为 $dp_{not}[x][i]$</p>
+<p>那么根据转移，我们就有加入 $A_i$ 后的状态 $dp_{all}[x] = dp_{not}[x][i] + dp_{not}[x - A_i][i]$</p>
+<p>这个转移其实很直观，凑出 $x$ 的方案，要么<strong>不选 $A_i$</strong>（就是前半段），要么<strong>选 $A_i$</strong>（就是之前凑出了 $x-A_i$ 的方案数，后半段）</p>
+<p>而我们要求的就是 $dp_{not}[x][i]$ 对吧，就很简单的移项过来：<br>
+$$<br>
+dp_{not}[x][i] = dp_{all}[x]  - dp_{not}[x - A_i][i]<br>
+$$<br>
+这个公式就是回退 DP 的灵魂。它告诉我们：只要我们从能量/体积小到大（即 $x$ 从 $0$ 到 $M$）进行计算，就可以利用已经算好的较小状态，像推多米诺骨牌一样，逐一还原出没有 $A_i$ 时的状态。</p>
+<ul>
+<li>对于 $x \lt A_i$：显然有 $dp_{not}[x][i] = dp_{all}[x]$
+</li>
+<li>对于 $x \ge A_i$：就套现有的式子 $dp_{not}[x][i] = dp_{all}[x]  - dp_{not}[x - A_i][i]$
+</li>
+</ul>
+<p>我们就可以写出这个题目了！</p>
+<div class="highlight highlight-source-c++"><pre class="notranslate">	vector&lt;<span class="pl-k">long</span> <span class="pl-k">long</span>&gt; <span class="pl-en">dp</span>(M + <span class="pl-c1">1</span>, <span class="pl-c1">0</span>);
+    dp[<span class="pl-c1">0</span>] = <span class="pl-c1">1</span>;
+    <span class="pl-k">for</span> (<span class="pl-k">int</span> i = <span class="pl-c1">0</span>; i &lt; N; ++i) {
+        <span class="pl-k">for</span> (<span class="pl-k">int</span> x = M; x &gt;= A[i]; --x) {
+            dp[x] = (dp[x] + dp[x - A[i]]) % <span class="pl-c1">MOD</span>;
+        }
+    }
+	<span class="pl-k">for</span> (<span class="pl-k">int</span> i = <span class="pl-c1">0</span>; i &lt; N; ++i) {
+        vector&lt;<span class="pl-k">long</span> <span class="pl-k">long</span>&gt; <span class="pl-c1">tmp</span>(M + <span class="pl-c1">1</span>, <span class="pl-c1">0</span>);
+        <span class="pl-k">for</span> (<span class="pl-k">int</span> x = <span class="pl-c1">0</span>; x &lt;= M; ++x) {
+            <span class="pl-k">if</span> (x &lt; A[i]) {
+                tmp[x] = dp[x];
+            } <span class="pl-k">else</span> {
+                tmp[x] = (dp[x] - tmp[x - A[i]] + <span class="pl-c1">MOD</span>) % <span class="pl-c1">MOD</span>;
+            }
+        }
+        <span class="pl-k">for</span> (<span class="pl-k">int</span> x = <span class="pl-c1">1</span>; x &lt;= M; ++x) {
+            cout &lt;&lt; tmp[x] &lt;&lt; <span class="pl-s"><span class="pl-pds">"</span> <span class="pl-pds">"</span></span>;
+        }
+        cout &lt;&lt; <span class="pl-s"><span class="pl-pds">"</span><span class="pl-cce">\n</span><span class="pl-pds">"</span></span>;
+    }</pre></div>
+<p>而你可以看到，前半段是预处理出 $dp_{all}$，后半段是通过 $dp_{all}$ 回退出对应删去 $A_i$ 后的答案，这便是 <strong>Rollback</strong> ！</p>
+<p>好的，现在让我们来看一道题吧：</p>
+<h4>例题2：<a href="https://atcoder.jp/contests/abc321/tasks/abc321_f" rel="nofollow">AtCoder ABC321 F - #(subset sum = K) with Add and Erase</a></h4>
+<div class="markdown-alert markdown-alert-note"><p class="markdown-alert-title"><svg data-component="Octicon" class="octicon octicon-info mr-2" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8Zm8-6.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13ZM6.5 7.75A.75.75 0 0 1 7.25 7h1a.75.75 0 0 1 .75.75v2.75h.25a.75.75 0 0 1 0 1.5h-2a.75.75 0 0 1 0-1.5h.25v-2h-.25a.75.75 0 0 1-.75-.75ZM8 6a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"></path></svg>Note</p>
+<p>一个空盒子， $Q$ 次操作，两种情况：</p>
+<ul>
+<li>往箱子里放入一个值为 $x$ 的球</li>
+<li>从箱子里扔出一个值为 $x$ 的球，保证扔之前里面一定有</li>
+</ul>
+<p>每一次操作完要输出一次询问：</p>
+<ul>
+<li>找到盒子中有多少种可以刚好凑成 $K$ 的方案数，对 $998244353$ 取模，所有球都认为是不同的</li>
+</ul>
+<p><strong>「约束」</strong></p>
+<ul>
+<li>$1 \le Q \le 5000$</li>
+<li>$1 \le K \le 5000$</li>
+<li>$1 \le x \le 5000$</li>
+</ul>
+</div>
+<p>你会发现其实就是模板题！</p>
+<p>插入其实就是背包更新，删除其实就是回滚更新：</p>
+<div class="highlight highlight-source-c++"><pre class="notranslate"><span class="pl-k">auto</span> Mainsol = [](){
+  <span class="pl-c1">INT</span>(Q, K);
+  v&lt;mm&gt; <span class="pl-c1">f</span>(K + <span class="pl-c1">1</span>, <span class="pl-c1">0</span>); f[<span class="pl-c1">0</span>] = <span class="pl-c1">1</span>;
+  <span class="pl-c1">rep</span>(Q) {
+  	<span class="pl-c1">CHR</span>(op); <span class="pl-c1">INT</span>(x);
+  	<span class="pl-k">if</span>(op == <span class="pl-s"><span class="pl-pds">'</span>+<span class="pl-pds">'</span></span>) {
+  		<span class="pl-c1">rrep</span>(v, x, K + <span class="pl-c1">1</span>)  <span class="pl-c"><span class="pl-c">//</span> for(int i = K + 1; i -- &gt; x; )</span>
+  			f[v] += f[v - x]; <span class="pl-c"><span class="pl-c">//</span> 插入：标准背包更新，从大到小</span>
+  	} <span class="pl-c1">elif</span>(op == <span class="pl-s"><span class="pl-pds">'</span>-<span class="pl-pds">'</span></span>) {
+  		<span class="pl-c1">rep</span>(v, x, K + <span class="pl-c1">1</span>) 
+  			f[v] -= f[v - x]; <span class="pl-c"><span class="pl-c">//</span> 删除：回退 DP 更新，从小到大</span>
+  	}
+  	<span class="pl-c1">out</span>(f[K].<span class="pl-smi">x</span>);
+  }
+};</pre></div>
+<h4>例题与参考阅读</h4>
+<h5>MID</h5>
+<p><a href="https://atcoder.jp/contests/arc104/tasks/arc104_d" rel="nofollow">D - Multiset Mean</a> 2200 ELO</p>
+<p>$\frac{\sum_{a\in S} a}{|S|} = x \Leftrightarrow \sum_{a \in S} |a - x| = 0$</p>
+<div class="highlight highlight-source-c++"><pre class="notranslate"><span class="pl-k">auto</span> Mainsol = [](){
+  <span class="pl-c1">INT</span>(N, K); <span class="pl-c1">LL</span>(M); mod = M;
+  <span class="pl-k">int</span> S = K * N * (N + <span class="pl-c1">1</span>) / <span class="pl-c1">2</span>;
+  v&lt;v&lt;mm&gt;&gt; <span class="pl-c1">f</span>(N + <span class="pl-c1">1</span>, v&lt;mm&gt;(S + <span class="pl-c1">1</span>, <span class="pl-c1">0</span>));
+  f[<span class="pl-c1">0</span>][<span class="pl-c1">0</span>] = <span class="pl-c1">1</span>;
+
+  <span class="pl-c1">rep</span>(i, <span class="pl-c1">1</span>, N + <span class="pl-c1">1</span>) {
+  	<span class="pl-c1">rep</span>(s, S + <span class="pl-c1">1</span>) {
+  		f[i][s] = f[i - <span class="pl-c1">1</span>][s];
+  		<span class="pl-k">if</span>(s &gt;= i) f[i][s] += f[i][s - i];
+  		<span class="pl-k">if</span>(s &gt;= (K + <span class="pl-c1">1</span>) * i) f[i][s] -= f[i - <span class="pl-c1">1</span>][s - (K + <span class="pl-c1">1</span>) * i];
+  	}
+  }
+
+  <span class="pl-c1">rep</span>(x, <span class="pl-c1">1</span>, N + <span class="pl-c1">1</span>) {
+  	ll top = <span class="pl-c1">min</span>(K * x * (x - <span class="pl-c1">1</span>) / <span class="pl-c1">2</span>, K * (N - x) * (N - x + <span class="pl-c1">1</span>) / <span class="pl-c1">2</span>);
+  	mm ans = <span class="pl-c1">0</span>;
+  	<span class="pl-c1">rep</span>(i, top + <span class="pl-c1">1</span>) ans += f[x - <span class="pl-c1">1</span>][i] * f[N - x][i];
+  	ans *= (K + <span class="pl-c1">1</span>);
+  	<span class="pl-c1">out</span>((ans - <span class="pl-c1">1</span>).<span class="pl-smi">x</span>);
+  }
+};</pre></div>
+<h5>Hard</h5>
+<p><a href="https://atcoder.jp/contests/arc102/tasks/arc102_c" rel="nofollow">https://atcoder.jp/contests/arc102/tasks/arc102_c</a></p></div>
+<div style="font-size:small;margin-top:8px;float:right;"></div>
+
+<button class="btn btn-block" type="button" onclick="openComments()" id="cmButton">评论</button>
+<div class="comments" id="comments"></div>
+
+</div>
+    <div id="footer"><div id="footer1">Copyright © <span id="copyrightYear"></span> <a href="https://SistineFibel-2006.github.io">SISTINE=Blog</a></div>
+<div id="footer2">
+    <span id="runday"></span><span>Powered by <a href="https://meekdai.com/Gmeek.html" target="_blank">Gmeek</a></span>
+</div>
+
+<script>
+var now=new Date();
+document.getElementById("copyrightYear").innerHTML=now.getFullYear();
+
+if(""!=""){
+    var startSite=new Date("");
+    var diff=now.getTime()-startSite.getTime();
+    var diffDay=Math.floor(diff/(1000*60*60*24));
+    document.getElementById("runday").innerHTML="网站运行 "+diffDay+" 天"+" • ";
+}
+</script></div>
+</body>
+<script>
+var IconList={'sun': 'M8 10.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5zM8 12a4 4 0 100-8 4 4 0 000 8zM8 0a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0V.75A.75.75 0 018 0zm0 13a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0v-1.5A.75.75 0 018 13zM2.343 2.343a.75.75 0 011.061 0l1.06 1.061a.75.75 0 01-1.06 1.06l-1.06-1.06a.75.75 0 010-1.06zm9.193 9.193a.75.75 0 011.06 0l1.061 1.06a.75.75 0 01-1.06 1.061l-1.061-1.06a.75.75 0 010-1.061zM16 8a.75.75 0 01-.75.75h-1.5a.75.75 0 010-1.5h1.5A.75.75 0 0116 8zM3 8a.75.75 0 01-.75.75H.75a.75.75 0 010-1.5h1.5A.75.75 0 013 8zm10.657-5.657a.75.75 0 010 1.061l-1.061 1.06a.75.75 0 11-1.06-1.06l1.06-1.06a.75.75 0 011.06 0zm-9.193 9.193a.75.75 0 010 1.06l-1.06 1.061a.75.75 0 11-1.061-1.06l1.06-1.061a.75.75 0 011.061 0z', 'moon': 'M9.598 1.591a.75.75 0 01.785-.175 7 7 0 11-8.967 8.967.75.75 0 01.961-.96 5.5 5.5 0 007.046-7.046.75.75 0 01.175-.786zm1.616 1.945a7 7 0 01-7.678 7.678 5.5 5.5 0 107.678-7.678z', 'sync': 'M1.705 8.005a.75.75 0 0 1 .834.656 5.5 5.5 0 0 0 9.592 2.97l-1.204-1.204a.25.25 0 0 1 .177-.427h3.646a.25.25 0 0 1 .25.25v3.646a.25.25 0 0 1-.427.177l-1.38-1.38A7.002 7.002 0 0 1 1.05 8.84a.75.75 0 0 1 .656-.834ZM8 2.5a5.487 5.487 0 0 0-4.131 1.869l1.204 1.204A.25.25 0 0 1 4.896 6H1.25A.25.25 0 0 1 1 5.75V2.104a.25.25 0 0 1 .427-.177l1.38 1.38A7.002 7.002 0 0 1 14.95 7.16a.75.75 0 0 1-1.49.178A5.5 5.5 0 0 0 8 2.5Z', 'home': 'M6.906.664a1.749 1.749 0 0 1 2.187 0l5.25 4.2c.415.332.657.835.657 1.367v7.019A1.75 1.75 0 0 1 13.25 15h-3.5a.75.75 0 0 1-.75-.75V9H7v5.25a.75.75 0 0 1-.75.75h-3.5A1.75 1.75 0 0 1 1 13.25V6.23c0-.531.242-1.034.657-1.366l5.25-4.2Zm1.25 1.171a.25.25 0 0 0-.312 0l-5.25 4.2a.25.25 0 0 0-.094.196v7.019c0 .138.112.25.25.25H5.5V8.25a.75.75 0 0 1 .75-.75h3.5a.75.75 0 0 1 .75.75v5.25h2.75a.25.25 0 0 0 .25-.25V6.23a.25.25 0 0 0-.094-.195Z', 'github': 'M8 0c4.42 0 8 3.58 8 8a8.013 8.013 0 0 1-5.45 7.59c-.4.08-.55-.17-.55-.38 0-.27.01-1.13.01-2.2 0-.75-.25-1.23-.54-1.48 1.78-.2 3.65-.88 3.65-3.95 0-.88-.31-1.59-.82-2.15.08-.2.36-1.02-.08-2.12 0 0-.67-.22-2.2.82-.64-.18-1.32-.27-2-.27-.68 0-1.36.09-2 .27-1.53-1.03-2.2-.82-2.2-.82-.44 1.1-.16 1.92-.08 2.12-.51.56-.82 1.28-.82 2.15 0 3.06 1.86 3.75 3.64 3.95-.23.2-.44.55-.51 1.07-.46.21-1.61.55-2.33-.66-.15-.24-.6-.83-1.23-.82-.67.01-.27.38.01.53.34.19.73.9.82 1.13.16.45.68 1.31 2.69.94 0 .67.01 1.3.01 1.49 0 .21-.15.45-.55.38A7.995 7.995 0 0 1 0 8c0-4.42 3.58-8 8-8Z', 'copy': 'M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 0 1 0 1.5h-1.5a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-1.5a.75.75 0 0 1 1.5 0v1.5A1.75 1.75 0 0 1 9.25 16h-7.5A1.75 1.75 0 0 1 0 14.25Z M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0 1 14.25 11h-7.5A1.75 1.75 0 0 1 5 9.25Zm1.75-.25a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-7.5a.25.25 0 0 0-.25-.25Z', 'check': 'M13.78 4.22a.75.75 0 0 1 0 1.06l-7.25 7.25a.75.75 0 0 1-1.06 0L2.22 9.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018L6 10.94l6.72-6.72a.75.75 0 0 1 1.06 0Z'};
+var utterancesLoad=0;
+
+let themeSettings={
+    "dark": ["dark","moon","#00f0ff","dark-blue"],
+    "light": ["light","sun","#ff5000","github-light"],
+    "auto": ["auto","sync","","preferred-color-scheme"]
+};
+function changeTheme(mode, icon, color, utheme){
+    document.documentElement.setAttribute("data-color-mode",mode);
+    document.getElementById("themeSwitch").setAttribute("d",value=IconList[icon]);
+    document.getElementById("themeSwitch").parentNode.style.color=color;
+    if(utterancesLoad==1){utterancesTheme(utheme);}
+}
+function modeSwitch(){
+    let currentMode=document.documentElement.getAttribute('data-color-mode');
+    let newMode = currentMode === "light" ? "dark" : currentMode === "dark" ? "auto" : "light";
+    localStorage.setItem("meek_theme", newMode);
+    if(themeSettings[newMode]){
+        changeTheme(...themeSettings[newMode]);
+    }
+}
+function utterancesTheme(theme){
+    const message={type:'set-theme',theme: theme};
+    const iframe=document.getElementsByClassName('utterances-frame')[0];
+    iframe.contentWindow.postMessage(message,'https://utteranc.es');
+}
+if(themeSettings[theme]){changeTheme(...themeSettings[theme]);}
+console.log("\n %c Gmeek last https://github.com/Meekdai/Gmeek \n","padding:5px 0;background:#02d81d;color:#fff");
+</script>
+
+<script>
+document.getElementById("pathHome").setAttribute("d",IconList["home"]);
+document.getElementById("pathIssue").setAttribute("d",IconList["github"]);
+
+
+
+function openComments(){
+    cm=document.getElementById("comments");
+    cmButton=document.getElementById("cmButton");
+    cmButton.disabled=true;
+    cmButton.innerHTML="loading";
+    span=document.createElement("span");
+    span.setAttribute("class","AnimatedEllipsis");
+    cmButton.appendChild(span);
+
+    script=document.createElement("script");
+    script.setAttribute("src","https://utteranc.es/client.js");
+    script.setAttribute("repo","SistineFibel-2006/SistineFibel-2006.github.io");
+    script.setAttribute("issue-term","title");
+    
+    if(localStorage.getItem("meek_theme")=="dark"){script.setAttribute("theme","dark-blue");}
+    else if(localStorage.getItem("meek_theme")=="light") {script.setAttribute("theme","github-light");}
+    else{script.setAttribute("theme","preferred-color-scheme");}
+    
+    script.setAttribute("crossorigin","anonymous");
+    script.setAttribute("async","");
+    cm.appendChild(script);
+
+    int=self.setInterval("iFrameLoading()",200);
+}
+
+function iFrameLoading(){
+    var utterances=document.getElementsByClassName('utterances');
+    if(utterances.length==1){
+        if(utterances[0].style.height!=""){
+            utterancesLoad=1;
+            int=window.clearInterval(int);
+            document.getElementById("cmButton").style.display="none";
+            console.log("utterances Load OK");
+        }
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    const createClipboardHTML = (codeContent, additionalClasses = '') => `
+        <pre class="notranslate"><code class="notranslate">${codeContent}</code></pre>
+        <div class="clipboard-container position-absolute right-0 top-0 ${additionalClasses}">
+            <clipboard-copy class="ClipboardButton btn m-2 p-0" role="button" style="display: inherit;">
+                <svg height="16" width="16" class="octicon octicon-copy m-2"><path d="${IconList["copy"]}"></path></svg>
+                <svg height="16" width="16" class="octicon octicon-check color-fg-success m-2 d-none"><path d="${IconList["check"]}"></path></svg>
+            </clipboard-copy>
+            <div class="copy-feedback">Copied!</div>
+        </div>
+    `;
+
+    const handleCodeElements = (selector = '') => {
+        document.querySelectorAll(selector).forEach(codeElement => {
+            const codeContent = codeElement.innerHTML;
+            const newStructure = document.createElement('div');
+            newStructure.className = 'snippet-clipboard-content position-relative overflow-auto';
+            newStructure.innerHTML = createClipboardHTML(codeContent);
+
+            const parentElement = codeElement.parentElement;
+            if (selector.includes('highlight')) {
+                parentElement.insertBefore(newStructure, codeElement.nextSibling);
+                parentElement.removeChild(codeElement);
+            } else {
+                parentElement.parentElement.replaceChild(newStructure, parentElement);
+            }
+        });
+    };
+
+    handleCodeElements('pre.notranslate > code.notranslate');
+    handleCodeElements('div.highlight > pre.notranslate');
+
+    let currentFeedback = null;
+    document.querySelectorAll('clipboard-copy').forEach(copyButton => {
+        copyButton.addEventListener('click', () => {
+            const codeContent = copyButton.closest('.snippet-clipboard-content').innerText;
+            const tempTextArea = document.createElement('textarea');
+            tempTextArea.value = codeContent;
+            document.body.appendChild(tempTextArea);
+            tempTextArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempTextArea);
+
+            const copyIcon = copyButton.querySelector('.octicon-copy');
+            const checkIcon = copyButton.querySelector('.octicon-check');
+            const copyFeedback = copyButton.nextElementSibling;
+
+            if (currentFeedback && currentFeedback !== copyFeedback) {currentFeedback.style.display = 'none';}
+            currentFeedback = copyFeedback;
+
+            copyIcon.classList.add('d-none');
+            checkIcon.classList.remove('d-none');
+            copyFeedback.style.display = 'block';
+            copyButton.style.borderColor = 'var(--color-success-fg)';
+
+            setTimeout(() => {
+                copyIcon.classList.remove('d-none');
+                checkIcon.classList.add('d-none');
+                copyFeedback.style.display = 'none';
+                copyButton.style.borderColor = '';
+            }, 2000);
+        });
+    });
+});
+
+</script>
+<script src='https://blog.meekdai.com/Gmeek/plugins/articletoc.js'></script><script>MathJax = {tex: {inlineMath: [["$", "$"]]}};</script><script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+</html>
