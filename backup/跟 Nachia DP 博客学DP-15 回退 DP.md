@@ -110,7 +110,7 @@ auto Mainsol = [](){
 
 [D - Multiset Mean](https://atcoder.jp/contests/arc104/tasks/arc104_d) 2200 ELO 
 
-$\frac{\sum_{a\in S} a}{|S|} = x \Leftrightarrow \sum_{a \in S} |a - x| = 0$
+$\frac{\sum_{a\in S} a}{|S|} = x \Leftrightarrow \sum_{a \in S} (a - x) = 0$
 
 ```cpp
 auto Mainsol = [](){

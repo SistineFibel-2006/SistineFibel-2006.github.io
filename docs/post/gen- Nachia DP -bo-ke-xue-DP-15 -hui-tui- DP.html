@@ -185,7 +185,7 @@ $$<br>
 <h4>例题与参考阅读</h4>
 <h5>MID</h5>
 <p><a href="https://atcoder.jp/contests/arc104/tasks/arc104_d" rel="nofollow">D - Multiset Mean</a> 2200 ELO</p>
-<p>$\frac{\sum_{a\in S} a}{|S|} = x \Leftrightarrow \sum_{a \in S} |a - x| = 0$</p>
+<p>$\frac{\sum_{a\in S} a}{|S|} = x \Leftrightarrow \sum_{a \in S} (a - x) = 0$</p>
 <div class="highlight highlight-source-c++"><pre class="notranslate"><span class="pl-k">auto</span> Mainsol = [](){
   <span class="pl-c1">INT</span>(N, K); <span class="pl-c1">LL</span>(M); mod = M;
   <span class="pl-k">int</span> S = K * N * (N + <span class="pl-c1">1</span>) / <span class="pl-c1">2</span>;
