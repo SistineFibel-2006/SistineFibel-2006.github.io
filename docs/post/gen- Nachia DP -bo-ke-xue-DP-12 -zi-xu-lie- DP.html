@@ -111,7 +111,7 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 <p>所以这里就有我们的状态方程了：$dp[j][i]=$ 最后取出的元素在原序列的区间 $[j,i]$ 内的子序列问题的解</p>
 <p>而为什么是上面那样的逻辑呢？</p>
 <ul>
-<li>假设我们正在考虑把第 $i$ 个元素 $a_i$ 加入子序列。如果 $a_i$ 这个值在前面出现过，且上一次出现的最晚位置是 $j$。如果我们允许 $a_i$ 接在位置 $&amp;lt; j$ 的元素后面，那么这部分结果和“把 $a_j$ 接在位置 $&amp;lt; j$ 的元素后面”是完全一样的，这就产生了重复。 为了强制同一长相的子序列只被计算一次，我们规定：<strong>如果要选当前的 $a_i$，它的前一个元素的下标必须 $\ge j$</strong>。</li>
+<li>假设我们正在考虑把第 $i$ 个元素 $a_i$ 加入子序列。如果 $a_i$ 这个值在前面出现过，且上一次出现的最晚位置是 $j$。如果我们允许 $a_i$ 接在位置 $\lt   j$ 的元素后面，那么这部分结果和“把 $a_j$ 接在位置 $\lt  j$ 的元素后面”是完全一样的，这就产生了重复。 为了强制同一长相的子序列只被计算一次，我们规定：<strong>如果要选当前的 $a_i$，它的前一个元素的下标必须 $\ge j$</strong>。</li>
 </ul>
 <h4>法二</h4>
 <p><strong>容斥定理</strong></p>
@@ -127,13 +127,11 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 <p><strong>自动机 DP</strong></p>
 <p>$dp[i][c]=$ 在 $(a_k)_{k=1}^i$ 的子序列中，以 $c$ 结尾的种类数</p>
 <p>$sum[i] =$ $(a_k)_{k=1}^i$ 的<strong>本质不同</strong>子序列数（含空序列）</p>
-<p>转移就是：<br>
-$$<br>
-\begin{aligned}<br>
-\text{dp}[i + 1][c] &amp;= \begin{cases} \text{sum}[i] &amp; (S_i = c) \ \text{dp}[i][c] &amp; (S_i \neq c) \end{cases} \<br>
-\text{sum}[i + 1] &amp;= 1 + \sum_{c} \text{dp}[i + 1][c] = 2 \cdot \text{sum}[i] - \text{dp}[i][S_i]<br>
-\end{aligned}<br>
-$$</p>
+<p>转移就是：</p>
+<p>$\begin{align}<br>
+\text{dp} \lbrack i + 1 \rbrack \lbrack c \rbrack &amp;= \begin{cases} \text{sum} \lbrack i \rbrack &amp; \quad ( S _ i = c ) \cr \text{dp} \lbrack  i \rbrack \lbrack c \rbrack &amp; \quad ( S _ i \neq c ) \end{cases} \cr<br>
+\text{sum} \lbrack i + 1 \rbrack &amp;= 1 + \sum _ {c} \text{dp} \lbrack  i + 1 \rbrack \lbrack c \rbrack = 2 ~ \text{sum} \lbrack i \rbrack - \text{dp} \lbrack i \rbrack \lbrack S _ i \rbrack<br>
+\end{align}$</p>
 <div class="highlight highlight-source-c++"><pre class="notranslate"><span class="pl-k">int</span> <span class="pl-en">main</span>() {
   <span class="pl-k">int</span> N;
   cin &gt;&gt; N;

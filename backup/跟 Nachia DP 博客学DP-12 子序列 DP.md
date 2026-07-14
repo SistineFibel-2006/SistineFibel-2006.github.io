@@ -27,7 +27,7 @@
 
 而为什么是上面那样的逻辑呢？
 
-- 假设我们正在考虑把第 $i$ 个元素 $a_i$ 加入子序列。如果 $a_i$ 这个值在前面出现过，且上一次出现的最晚位置是 $j$。如果我们允许 $a_i$ 接在位置 $< j$ 的元素后面，那么这部分结果和“把 $a_j$ 接在位置 $< j$ 的元素后面”是完全一样的，这就产生了重复。 为了强制同一长相的子序列只被计算一次，我们规定：**如果要选当前的 $a_i$，它的前一个元素的下标必须 $\ge j$**。
+- 假设我们正在考虑把第 $i$ 个元素 $a_i$ 加入子序列。如果 $a_i$ 这个值在前面出现过，且上一次出现的最晚位置是 $j$。如果我们允许 $a_i$ 接在位置 $\lt   j$ 的元素后面，那么这部分结果和“把 $a_j$ 接在位置 $\lt  j$ 的元素后面”是完全一样的，这就产生了重复。 为了强制同一长相的子序列只被计算一次，我们规定：**如果要选当前的 $a_i$，它的前一个元素的下标必须 $\ge j$**。
 
 #### 法二
 
@@ -51,12 +51,11 @@ $dp[i][c]=$ 在 $(a_k)_{k=1}^i$ 的子序列中，以 $c$ 结尾的种类数
 $sum[i] =$ $(a_k)_{k=1}^i$ 的**本质不同**子序列数（含空序列） 
 
 转移就是：
-$$
-\begin{aligned}
-  \text{dp}[i + 1][c] &= \begin{cases} \text{sum}[i] & (S_i = c) \\ \text{dp}[i][c] & (S_i \neq c) \end{cases} \\
-  \text{sum}[i + 1] &= 1 + \sum_{c} \text{dp}[i + 1][c] = 2 \cdot \text{sum}[i] - \text{dp}[i][S_i]
-\end{aligned}
-$$
+
+$\begin{align}
+  \text{dp} \lbrack i + 1 \rbrack \lbrack c \rbrack &= \begin{cases} \text{sum} \lbrack i \rbrack & \quad ( S _ i = c ) \cr \text{dp} \lbrack  i \rbrack \lbrack c \rbrack & \quad ( S _ i \neq c ) \end{cases} \cr
+  \text{sum} \lbrack i + 1 \rbrack &= 1 + \sum _ {c} \text{dp} \lbrack  i + 1 \rbrack \lbrack c \rbrack = 2 ~ \text{sum} \lbrack i \rbrack - \text{dp} \lbrack i \rbrack \lbrack S _ i \rbrack
+\end{align}$
 
 ```cpp
 int main() {
