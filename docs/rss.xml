@@ -1,5 +1,24 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>SISTINE=Blog</title><link>https://SistineFibel-2006.github.io</link><description>QQ3034019410——Atcoder:SistineFibel</description><copyright>SISTINE=Blog</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://img.cdn1.vip/i/6a3aa678f126b_1782228600.webp</url><title>avatar</title><link>https://SistineFibel-2006.github.io</link></image><lastBuildDate>Tue, 14 Jul 2026 15:46:32 +0000</lastBuildDate><managingEditor>SISTINE=Blog</managingEditor><ttl>60</ttl><webMaster>SISTINE=Blog</webMaster><item><title>跟 Nachia DP 博客学DP-4 区间 DP</title><link>https://SistineFibel-2006.github.io/post/gen-%20Nachia%20DP%20-bo-ke-xue-DP-4%20-qu-jian-%20DP.html</link><description>###  跟 Nachia DP 博客学DP-4 区间 DP
+<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>SISTINE=Blog</title><link>https://SistineFibel-2006.github.io</link><description>QQ3034019410——Atcoder:SistineFibel</description><copyright>SISTINE=Blog</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://img.cdn1.vip/i/6a3aa678f126b_1782228600.webp</url><title>avatar</title><link>https://SistineFibel-2006.github.io</link></image><lastBuildDate>Wed, 22 Jul 2026 15:09:29 +0000</lastBuildDate><managingEditor>SISTINE=Blog</managingEditor><ttl>60</ttl><webMaster>SISTINE=Blog</webMaster><item><title>NowCoder-SummerDay2-L &amp; B solution</title><link>https://SistineFibel-2006.github.io/post/NowCoder-SummerDay2-L%20%26%20B%20solution.html</link><description># NowCoder-SummerDay2-L &amp; B solution
+
+## B : [B-Bitwise Maximization_2026牛客暑期多校训练营2](https://ac.nowcoder.com/acm/contest/133877/B)
+
+&gt; [!note]
+&gt;
+&gt; $N$ 个数，分成两组 $A,B$，最大化 $\bigoplus_{i \in A} a_i + \bigoplus_{i \in B} a_i$ 
+&gt;
+&gt; **「约束」**
+&gt;
+&gt; - $1 \le N \le 5 \times 10^5$
+&gt; - $0 \le a_i \le 2^{30}$
+
+如果我们分别认为前半和后半部分的异或和为 $X, Y$，答案可以写成：
+$$
+X + Y = X \oplus Y + (X \&amp; Y) \times 2
+$$
+于是我们发现，这个新式子的前半是 $\bigoplus_{i \in N} a_i = sum$，所以我们只要最大化后半段即可！
+
+而我们会发现，$sum$ 中是 $1$ 的位一定会被分成 $1$ 和 $0$，而其对第后半的式子贡献总是 $0$；而 $sum$ 中是 $0$ 的位可以被分成 $1$ 和 $1$，或是 $0$ 和 $0$ 。</description><guid isPermaLink="true">https://SistineFibel-2006.github.io/post/NowCoder-SummerDay2-L%20%26%20B%20solution.html</guid><pubDate>Wed, 22 Jul 2026 15:06:48 +0000</pubDate></item><item><title>跟 Nachia DP 博客学DP-4 区间 DP</title><link>https://SistineFibel-2006.github.io/post/gen-%20Nachia%20DP%20-bo-ke-xue-DP-4%20-qu-jian-%20DP.html</link><description>###  跟 Nachia DP 博客学DP-4 区间 DP
 
 如果存在一个长度为 $N$ 的序列，那么将所有连续子序列（子串）作为计算对象的 DP 称为区间 DP。</description><guid isPermaLink="true">https://SistineFibel-2006.github.io/post/gen-%20Nachia%20DP%20-bo-ke-xue-DP-4%20-qu-jian-%20DP.html</guid><pubDate>Tue, 14 Jul 2026 15:46:05 +0000</pubDate></item><item><title>跟 Nachia DP 博客学DP-15 回退 DP</title><link>https://SistineFibel-2006.github.io/post/gen-%20Nachia%20DP%20-bo-ke-xue-DP-15%20-hui-tui-%20DP.html</link><description>### 跟 Nachia DP 博客学DP-15 回退 DP
 
