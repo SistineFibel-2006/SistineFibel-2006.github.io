@@ -1,5 +1,25 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>SISTINE=Blog</title><link>https://SistineFibel-2006.github.io</link><description>QQ3034019410——Atcoder:SistineFibel</description><copyright>SISTINE=Blog</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://img.cdn1.vip/i/6a3aa678f126b_1782228600.webp</url><title>avatar</title><link>https://SistineFibel-2006.github.io</link></image><lastBuildDate>Wed, 22 Jul 2026 15:11:30 +0000</lastBuildDate><managingEditor>SISTINE=Blog</managingEditor><ttl>60</ttl><webMaster>SISTINE=Blog</webMaster><item><title>NowCoder-SummerDay2-L &amp; B solution</title><link>https://SistineFibel-2006.github.io/post/NowCoder-SummerDay2-L%20%26%20B%20solution.html</link><description># NowCoder-SummerDay2-L &amp; B solution
+<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>SISTINE=Blog</title><link>https://SistineFibel-2006.github.io</link><description>QQ3034019410——Atcoder:SistineFibel</description><copyright>SISTINE=Blog</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://img.cdn1.vip/i/6a3aa678f126b_1782228600.webp</url><title>avatar</title><link>https://SistineFibel-2006.github.io</link></image><lastBuildDate>Thu, 23 Jul 2026 15:16:16 +0000</lastBuildDate><managingEditor>SISTINE=Blog</managingEditor><ttl>60</ttl><webMaster>SISTINE=Blog</webMaster><item><title>HDU-SummerDay2- 1011 solution</title><link>https://SistineFibel-2006.github.io/post/HDU-SummerDay2-%201011%20solution.html</link><description># HDU-SummerDay2- 1011
+
+## [1011 键盘杀手](https://acm.hdu.edu.cn/contest/problem?cid=1230&amp;pid=1011)
+
+&gt; [!note]
+&gt;
+&gt; 长度为 $N$ 的序列 $A = (a_1, a_2, \ldots, a_N)$，你可以每次选择一个下标 $i$，然后消耗 $max(a_{i-1}, a_{i+1})$ 来让 $a_i = 0$，问将所有数字变成 $0$ 的最小消耗
+&gt;
+&gt; **「约束」**
+&gt;
+&gt; - $1 \le N \le 10^5$
+&gt; - $1 \le a_i \le 10^9$
+
+首先找到建模，对于一个数字 $a_i$ 而言，每个数字只有一个出度，至多两个入度，于是对于一个点，在考虑拔出顺序后，有下面四种情况：
+
+- $i-1 \rightarrow i \leftarrow i + 1$ ：左右先被拔，$cost = 0$
+- $i-1 \leftarrow i \rightarrow i + 1$ ：左右后被拔，$cost = max(a_{i-1},a_{i+1})$
+- $i-1 \rightarrow i \rightarrow i + 1$ ：左先右后，$cost = a_{i+1}$
+- $i-1 \leftarrow i \leftarrow i + 1$ ：左后右先，$cost = a_{i-1}$
+
+我们可以围绕第 $i$ 个箭头方向来 DP，$f_i$ 表示由 $i - 1 \leftarrow i$，$g_i$ 表示由 $i-1 \rightarrow i$。</description><guid isPermaLink="true">https://SistineFibel-2006.github.io/post/HDU-SummerDay2-%201011%20solution.html</guid><pubDate>Thu, 23 Jul 2026 15:15:31 +0000</pubDate></item><item><title>NowCoder-SummerDay2-L &amp; B solution</title><link>https://SistineFibel-2006.github.io/post/NowCoder-SummerDay2-L%20%26%20B%20solution.html</link><description># NowCoder-SummerDay2-L &amp; B solution
 
 ## B : [B-Bitwise Maximization_2026牛客暑期多校训练营2](https://ac.nowcoder.com/acm/contest/133877/B)
 
