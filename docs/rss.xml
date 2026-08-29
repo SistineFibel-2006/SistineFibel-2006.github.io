@@ -1,5 +1,13 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>SISTINE=Blog</title><link>https://SistineFibel-2006.github.io</link><description>QQ3034019410——Atcoder:SistineFibel</description><copyright>SISTINE=Blog</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://img.cdn1.vip/i/6a3aa678f126b_1782228600.webp</url><title>avatar</title><link>https://SistineFibel-2006.github.io</link></image><lastBuildDate>Thu, 20 Aug 2026 18:01:17 +0000</lastBuildDate><managingEditor>SISTINE=Blog</managingEditor><ttl>60</ttl><webMaster>SISTINE=Blog</webMaster><item><title>2026 上海市赛 E 完美区间</title><link>https://SistineFibel-2006.github.io/post/2026%20-shang-hai-shi-sai-%20E%20-wan-mei-qu-jian.html</link><description># QOJ19007 2026 上海市赛 E 完美区间
+<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>SISTINE=Blog</title><link>https://SistineFibel-2006.github.io</link><description>QQ3034019410——Atcoder:SistineFibel</description><copyright>SISTINE=Blog</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://img.cdn1.vip/i/6a3aa678f126b_1782228600.webp</url><title>avatar</title><link>https://SistineFibel-2006.github.io</link></image><lastBuildDate>Sat, 29 Aug 2026 07:17:55 +0000</lastBuildDate><managingEditor>SISTINE=Blog</managingEditor><ttl>60</ttl><webMaster>SISTINE=Blog</webMaster><item><title>20260826 每日一题：1.5 3.0 4.0</title><link>https://SistineFibel-2006.github.io/post/20260826%20-mei-ri-yi-ti-%EF%BC%9A1.5%203.0%204.0.html</link><description># Yukicoder 20260826 每日
+
+## 1- No.2708 Jewel holder  1.5$
+
+[No.2708 Jewel holder - yukicoder](https://yukicoder.me/problems/no/2708)
+
+### **问题描述**
+
+有一个纵向 $H$ 行、横向 $W$ 列的网格。</description><guid isPermaLink="true">https://SistineFibel-2006.github.io/post/20260826%20-mei-ri-yi-ti-%EF%BC%9A1.5%203.0%204.0.html</guid><pubDate>Sat, 29 Aug 2026 07:17:28 +0000</pubDate></item><item><title>2026 上海市赛 E 完美区间</title><link>https://SistineFibel-2006.github.io/post/2026%20-shang-hai-shi-sai-%20E%20-wan-mei-qu-jian.html</link><description># QOJ19007 2026 上海市赛 E 完美区间
 
 [完美区间 - 题目 - QOJ.ac](https://qoj.ac/contest/3944/problem/19007)
 

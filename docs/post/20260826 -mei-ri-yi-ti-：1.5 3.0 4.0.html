@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html data-color-mode="light" data-dark-theme="dark" data-light-theme="light" lang="zh-CN">
+<head>
+    <meta content="text/html; charset=utf-8" http-equiv="content-type" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link href='https://mirrors.sustech.edu.cn/cdnjs/ajax/libs/Primer/21.0.7/primer.css' rel='stylesheet' />
+    <script src='https://blog.meekdai.com/Gmeek/plugins/GmeekVercount.js'></script>
+    <link rel="icon" href="https://img.cdn1.vip/i/6a3aa678f126b_1782228600.webp"><script>
+        let theme = localStorage.getItem("meek_theme") || "light";
+        document.documentElement.setAttribute("data-color-mode", theme);
+    </script>
+<meta name="description" content="# Yukicoder 20260826 每日
+
+## 1- No.2708 Jewel holder  1.5$
+
+[No.2708 Jewel holder - yukicoder](https://yukicoder.me/problems/no/2708)
+
+### **问题描述**
+
+有一个纵向 $H$ 行、横向 $W$ 列的网格。">
+<meta property="og:title" content="20260826 每日一题：1.5 3.0 4.0">
+<meta property="og:description" content="# Yukicoder 20260826 每日
+
+## 1- No.2708 Jewel holder  1.5$
+
+[No.2708 Jewel holder - yukicoder](https://yukicoder.me/problems/no/2708)
+
+### **问题描述**
+
+有一个纵向 $H$ 行、横向 $W$ 列的网格。">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://SistineFibel-2006.github.io/post/20260826%20-mei-ri-yi-ti-%EF%BC%9A1.5%203.0%204.0.html">
+<meta property="og:image" content="https://img.cdn1.vip/i/6a3aa678f126b_1782228600.webp">
+<title>20260826 每日一题：1.5 3.0 4.0</title>
+<link href="//unpkg.com/@wooorm/starry-night@2.1.1/style/both.css" rel="stylesheet" />
+
+
+</head>
+<style>
+body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;padding: 45px;font-size: 16px;font-family: sans-serif;line-height: 1.25;}
+#header{display:flex;padding-bottom:8px;border-bottom: 1px solid var(--borderColor-muted, var(--color-border-muted));margin-bottom: 16px;}
+#footer {margin-top:64px; text-align: center;font-size: small;}
+
+</style>
+
+<style>
+.postTitle{margin: auto 0;font-size:40px;font-weight:bold;}
+.title-right{display:flex;margin:auto 0 0 auto;}
+.title-right .circle{padding: 14px 16px;margin-right:8px;}
+#postBody{border-bottom: 1px solid var(--color-border-default);padding-bottom:36px;}
+#postBody hr{height:2px;}
+#cmButton{height:48px;margin-top:48px;}
+#comments{margin-top:64px;}
+.g-emoji{font-size:24px;}
+@media (max-width: 600px) {
+    body {padding: 8px;}
+    .postTitle{font-size:24px;}
+}
+.copy-feedback {
+    display: none;
+    position: absolute;
+    top: 10px;
+    right: 50px;
+    color: var(--color-fg-on-emphasis);
+    background-color: var(--color-fg-muted);
+    border-radius: 3px;
+    padding: 5px 8px;
+    font-size: 12px;
+}
+</style>
+
+
+
+
+<body>
+    <div id="header">
+<h1 class="postTitle">20260826 每日一题：1.5 3.0 4.0</h1>
+<div class="title-right">
+    <a href="https://SistineFibel-2006.github.io" id="buttonHome" class="btn btn-invisible circle" title="首页">
+        <svg class="octicon" width="16" height="16">
+            <path id="pathHome" fill-rule="evenodd"></path>
+        </svg>
+    </a>
+    
+    <a href="https://github.com/SistineFibel-2006/SistineFibel-2006.github.io/issues/21" target="_blank" class="btn btn-invisible circle" title="Issue">
+        <svg class="octicon" width="16" height="16">
+            <path id="pathIssue" fill-rule="evenodd"></path>
+        </svg>
+    </a>
+    
+
+    <a class="btn btn-invisible circle" onclick="modeSwitch();" title="切换主题">
+        <svg class="octicon" width="16" height="16" >
+            <path id="themeSwitch" fill-rule="evenodd"></path>
+        </svg>
+    </a>
+
+</div>
+</div>
+    <div id="content">
+<div class="markdown-body" id="postBody"><h1>Yukicoder 20260826 每日</h1>
+<h2>1- No.2708 Jewel holder  1.5$</h2>
+<p><a href="https://yukicoder.me/problems/no/2708" rel="nofollow">No.2708 Jewel holder - yukicoder</a></p>
+<h3><strong>问题描述</strong></h3>
+<p>有一个纵向 $H$ 行、横向 $W$ 列的网格。用 $(i,j)$ 表示从上数第 $i$ 行、从左数第 $j$ 列的格子。</p>
+<p>到达写有 <code class="notranslate">o</code> 的格子时，会获得 1 颗宝石；到达写有 <code class="notranslate">x</code> 的格子时，会被没收 1 颗宝石，<code class="notranslate">#</code> 格子无法通过。</p>
+<p>对于每个 $i,j (1 \leq i \leq H, 1\leq j \leq W)$，格子 $(i,j)$ 的信息由字符 $A_{i,j}$ 给出。</p>
+<p>如果 $A_{i,j}$ 是 <code class="notranslate">o</code>，则到达该格子时必定获得 1 颗宝石；如果 $A_{i,j}$ 是 <code class="notranslate">x</code>，则到达该格子时必定被没收 1 颗宝石。</p>
+<p>保证格子 $(1,1)$ 一定是能获得宝石的 <code class="notranslate">o</code> 格子。<br>
+另外，保证格子 $(1,1)$ 和格子 $(H,W)$ 一定不是 <code class="notranslate">#</code> 格子。</p>
+<p>Nafmo 君在持有 0 颗宝石的状态下，到达格子 $(1,1)$ 并获得了 1 颗宝石。<br>
+Nafmo 君希望通过重复向右和向下移动，从格子 $(1,1)$ 以最短路径到达格子 $(H,W)$。但是，如果在被没收宝石时出现“一颗宝石都没有”的情况，则该路径视为无效。</p>
+<p>请计算满足上述条件的路径有多少种。</p>
+<pre class="notranslate"><code class="notranslate">H W
+A_{1,1}A_{1,2}...A_{1,W}
+  ：
+A_{H,1}A_{H,2}...A_{H,W}
+</code></pre>
+<ul>
+<li>$2 \leq H,W \leq 10$</li>
+<li>
+$H,W$ 是整数</li>
+<li>
+$A_{i,j}$ 是 <code class="notranslate">o</code>、<code class="notranslate">x</code>、<code class="notranslate">#</code> 中的任意一个</li>
+<li>$A_{1,1} = $ <code class="notranslate">o</code>
+</li>
+<li>$A_{H,W} \neq $ <code class="notranslate">#</code>
+</li>
+</ul>
+<hr>
+<h3>题解</h3>
+<p>比较显然的一个想法是搜索，每一次搜下一个点的时候，计算当前宝石数量，所以你搜索过程中要传递两个权值：当前坐标、当前宝石数量。</p>
+<p>直接写就可以：</p>
+<div class="highlight highlight-source-c++"><pre class="notranslate"><span class="pl-k">const</span> <span class="pl-k">int</span> dx[] = {<span class="pl-c1">0</span>, <span class="pl-c1">1</span>};
+<span class="pl-k">const</span> <span class="pl-k">int</span> dy[] = {<span class="pl-c1">1</span>, <span class="pl-c1">0</span>};
+<span class="pl-k">int</span> H, W; 
+<span class="pl-k">char</span> A[<span class="pl-c1">12</span>][<span class="pl-c1">12</span>]{};
+ll ans = <span class="pl-c1">0</span>;
+<span class="pl-k">void</span> <span class="pl-en">dfs</span>(<span class="pl-k">int</span> x, <span class="pl-k">int</span> y, <span class="pl-k">int</span> val) {
+	<span class="pl-k">if</span>(A[x][y] == <span class="pl-s"><span class="pl-pds">'</span>o<span class="pl-pds">'</span></span>) val += <span class="pl-c1">1</span>;
+	<span class="pl-k">else</span> <span class="pl-k">if</span>(A[x][y] == <span class="pl-s"><span class="pl-pds">'</span>x<span class="pl-pds">'</span></span>) val -= <span class="pl-c1">1</span>;
+	<span class="pl-k">if</span>(x == H - <span class="pl-c1">1</span> &amp;&amp; y == W - <span class="pl-c1">1</span> &amp;&amp; val &gt;= <span class="pl-c1">0</span>) ans += <span class="pl-c1">1</span>, <span class="pl-k">return</span>;
+	<span class="pl-k">if</span>(val &gt;= <span class="pl-c1">0</span>) {
+		<span class="pl-c1">rep</span>(i, <span class="pl-c1">2</span>) {
+			<span class="pl-k">int</span> nx = x + dx[i], ny = y + dy[i];
+			<span class="pl-k">if</span>(nx &gt;= <span class="pl-c1">0</span> &amp;&amp; nx &lt; H &amp;&amp; ny &gt;= <span class="pl-c1">0</span> &amp;&amp; ny &lt; W &amp;&amp; A[nx][ny] != <span class="pl-s"><span class="pl-pds">'</span>#<span class="pl-pds">'</span></span>) <span class="pl-c1">dfs</span>(nx, ny, val);
+		}
+	}
+}
+{
+	<span class="pl-c1">rd</span>(H, W, <span class="pl-c1">A</span>(H)(W));
+	<span class="pl-c1">dfs</span>(<span class="pl-c1">0</span>, <span class="pl-c1">0</span>, <span class="pl-c1">0</span>);
+	<span class="pl-c1">wt</span>(ans);
+}</pre></div>
+<p>当然也有一些很厉害的写法，可以用 分层图 DP，来写：<br>
+$$<br>
+dp[i][j][val] = 到达(i,j)点且宝石数刚好是val个的路径数<br>
+$$<br>
+那么答案就是 $\sum_{val&amp;gt;=0} dp[H-1][W-1]$，初始值就是 $dp[0][0][1] = 1$</p>
+<p>当然还要考虑一下 <code class="notranslate">val</code> 层要开多大，不难发现，最多采集 20 个宝石，于是 <code class="notranslate">val</code> 是 20最大</p>
+<div class="highlight highlight-source-c++"><pre class="notranslate"><span class="pl-k">const</span> <span class="pl-k">int</span> dx[] = {<span class="pl-c1">0</span>, <span class="pl-c1">1</span>};
+<span class="pl-k">const</span> <span class="pl-k">int</span> dy[] = {<span class="pl-c1">1</span>, <span class="pl-c1">0</span>};
+ll f[<span class="pl-c1">11</span>][<span class="pl-c1">11</span>][<span class="pl-c1">21</span>]{<span class="pl-c1">0</span>};
+<span class="pl-k">char</span> A[<span class="pl-c1">11</span>][<span class="pl-c1">11</span>]{};
+<span class="pl-k">int</span> @H,@W;
+<span class="pl-en">rd</span>(A(H)(W));
+f[<span class="pl-c1">0</span>][<span class="pl-c1">0</span>][<span class="pl-c1">1</span>] = <span class="pl-c1">1</span>;
+<span class="pl-en">rep</span>(i, H) rep(j, W) {
+	<span class="pl-k">if</span>(A[i][j] == <span class="pl-s"><span class="pl-pds">'</span>#<span class="pl-pds">'</span></span>) <span class="pl-k">continue</span>;
+	<span class="pl-c1">rep</span>(val, <span class="pl-c1">21</span>) {
+		<span class="pl-k">if</span>(f[i][j][val] == <span class="pl-c1">0</span>) <span class="pl-k">continue</span>;
+		<span class="pl-c1">rep</span>(k, <span class="pl-c1">2</span>) {
+			<span class="pl-k">int</span> nx = i + dx[k], ny = j + dy[k];
+			<span class="pl-k">if</span>(nx &gt;= <span class="pl-c1">0</span> &amp;&amp; nx &lt; H &amp;&amp; ny &gt;= <span class="pl-c1">0</span> &amp;&amp; ny &lt; W &amp;&amp; A[nx][ny] != <span class="pl-s"><span class="pl-pds">'</span>#<span class="pl-pds">'</span></span>) {
+				<span class="pl-k">int</span> nval = val + (A[nx][ny] == <span class="pl-s"><span class="pl-pds">'</span>o<span class="pl-pds">'</span></span> ? <span class="pl-c1">1</span> : -<span class="pl-c1">1</span>);
+				<span class="pl-k">if</span>(nval &lt; <span class="pl-c1">0</span>) <span class="pl-k">continue</span>;
+				f[nx][ny][nval] += f[i][j][val];
+			}
+		}
+	}
+}
+ll ans = <span class="pl-c1">0</span>;
+<span class="pl-en">rep</span>(val, <span class="pl-c1">21</span>) ans += f[H - 1][W - 1][val];
+<span class="pl-en">wt</span>(ans);</pre></div>
+<hr>
+<hr>
+<h2>2 - No.132 点到平面距离  3.0$</h2>
+<p><a href="https://yukicoder.me/problems/no/132" rel="nofollow">No.132 点と平面との距離 - yukicoder</a></p>
+<h3><strong>问题描述</strong></h3>
+<p>给定三维空间中的一个点 (P)，以及 (N) 个点 (Q_1,Q_2,\ldots,Q_N)。</p>
+<p>用 ({\rm dist}(i,j,k)) 表示点 (P) 与由点 (Q_i,Q_j,Q_k) 所确定的平面之间的距离。</p>
+<p>请编写一个程序，求点 (P) 与所有由 (Q_i,Q_j,Q_k) 确定的平面之间的距离之和。</p>
+<p>即，求 (\displaystyle \sum_{1 \leq i &lt; j &lt; k \leq N} {\rm dist}(i,j,k)) 的值。</p>
+<p>点 (x) 与平面 (y) 的距离，是指点 (x) 到从点 (x) 向平面 (y) 所作垂线的垂足之间的距离。</p>
+<pre class="notranslate"><code class="notranslate">N
+P_x P_y P_z
+X_1 Y_1 Z_1
+X_2 Y_2 Z_2
+  :
+X_N Y_N Z_N
+</code></pre>
+<ul>
+<li>(N \in {100, 200, 300})</li>
+<li>(-1000 \leq P_x, P_y, P_z \leq 1000)：点 (P) 的坐标</li>
+<li>(-1000 \leq X_k, Y_k, Z_k \leq 1000)：点 (Q_k) 的坐标</li>
+</ul>
+<hr>
+<p>很模板的题目，但是如果第一次写，不是特别好写（</p>
+<p>点到直线的距离公式是众所周知的，直线 $ax+by+c=0$ 与点 $(p,q)$ 的距离是：$\frac{|ap+bq+c|}{\sqrt{p^2+q^2}}$</p>
+<p>于是我们也可以写出三维空间的对应式子，直线 $ax+by+cz+d=0$ 与点 $(p, q, r)$：<br>
+$$<br>
+\frac{|ap+bq+cr+d|}{\sqrt{p^2+q^2+r^2}}<br>
+$$<br>
+还有一个式子：当给定空间内两个点的时候，这两个点与原点所构成的平面 $ax+by+cz=0$的 (a,b,c) 实际上刚好有：<br>
+$$<br>
+(a,b,c) = (x_1,y_1,z_1) \times (x_2,y_2,z_2)<br>
+$$<br>
+这时候刚好有 $(a,b,c)$ 是这个平面的法向量，这是<em>叉乘</em>的定义</p>
+<p>于是可以写出代码</p>
+<div class="highlight highlight-source-c++"><pre class="notranslate"><span class="pl-k">int</span> n;
+<span class="pl-k">double</span> x[<span class="pl-c1">310</span>], y[<span class="pl-c1">310</span>], z[<span class="pl-c1">310</span>];
+{
+	<span class="pl-c1">rd</span>(n);
+	<span class="pl-c1">rd</span>((x, y, z)(n + <span class="pl-c1">1</span>));
+	<span class="pl-k">double</span> s;
+	<span class="pl-c1">rep</span>(i, <span class="pl-c1">1</span>, n + <span class="pl-c1">1</span>) <span class="pl-c1">rep</span>(j, i + <span class="pl-c1">1</span>, n + <span class="pl-c1">1</span>) <span class="pl-c1">rep</span>(k, j + <span class="pl-c1">1</span>, n + <span class="pl-c1">1</span>) {
+		<span class="pl-k">double</span> p=(y[j]-y[i])*(z[k]-z[i])-(z[j]-z[i])*(y[k]-y[i]);
+		<span class="pl-k">double</span> q=(z[j]-z[i])*(x[k]-x[i])-(x[j]-x[i])*(z[k]-z[i]);
+		<span class="pl-k">double</span> r=(x[j]-x[i])*(y[k]-y[i])-(y[j]-y[i])*(x[k]-x[i]);
+		s+=<span class="pl-c1">fabs</span>(p*(x[<span class="pl-c1">0</span>]-x[i])+q*(y[<span class="pl-c1">0</span>]-y[i])+r*(z[<span class="pl-c1">0</span>]-z[i]))/<span class="pl-c1">sqrt</span>(p*p+q*q+r*r);
+	}
+	<span class="pl-c1">wt</span>(s);
+}</pre></div>
+<hr>
+<hr>
+<h2>3 - No.1760 集合互质 4.0$</h2>
+<p><a href="https://yukicoder.me/problems/no/1760" rel="nofollow">No.1760 集合互质 - yukicoder --- No.1760 Setwise Coprime - yukicoder</a></p>
+<h4><strong>题目描述</strong></h4>
+<p>给定 $N$，题目要求统计有序对 $(A,B)$ 的数量，满足：</p>
+<ul>
+<li>$A,B\neq \varnothing$</li>
+<li>$A\cap B=\varnothing$</li>
+<li>$\gcd(A)=1$</li>
+<li>$\gcd(B)=1$</li>
+</ul>
+<p>其中 $A,B\subseteq {1,2,\dots,N}$，答案取模 $998244353$。</p>
+<ul>
+<li>$2 \le N \le 2 \times 10^5$</li>
+</ul>
+<hr>
+<p>好难的题，感觉根本不是4星（</p>
+<p>先分析一下吧，可以先求一下 $\set{1,2,3,\dots,N}$ 中有多少个非空子集合 $S$ ，其 $\gcd(S) = 1$</p>
+<p>我们设 $C = #\set{S \subseteq \set{1,\ldots,N} : S \neq \emptyset, gcd(S) = 1}$</p>
+<p>而还有一个式子可以表示 $C$：<br>
+$$<br>
+C = \sum_{\emptyset \neq S \subseteq[1,N]} [gcd(S) = 1]<br>
+$$<br>
+根据莫反我们有 $[x = 1] = \sum_{d | x} \mu(d)$</p>
+<p>我们令 $x = gcd(S)$，于是 $C$ 就被写成了 ：<br>
+$$<br>
+C =\sum_{\emptyset \neq S \subseteq[1,N]} \sum_{d | gcd(S)} \mu(d)<br>
+$$<br>
+这里涉及一个交换求和次序，需要解释一下，这里实际上是对一个二元组 $(S, d)$ 求和，本身其是：<br>
+$$<br>
+C = \sum_{S \neq \emptyset} \sum_{d | gcd(S)} \mu(d)<br>
+$$<br>
+意思是：<strong>先枚举一个非空集合 $S$，再枚举其所有满足 $d | gcd(S)$ 的 $d$</strong></p>
+<p>而我们可以把它换成先枚举 $d$，后枚举 $S$</p>
+<p>于是写成：<br>
+$$<br>
+\sum_{d = 1} ^N \sum_{S \neq \emptyset \and d|gcd(S)} \mu(d)<br>
+$$<br>
+对于一个固定的 $d$，$\mu(d)$ 与 $S$ 无关，于是提出来：<br>
+$$<br>
+\sum_{d=1}^N \mu(d) \sum_{S \neq \emptyset \and d | gcd(S)} 1<br>
+$$<br>
+现在我们就可以求出第一步 $C$ 了，但是原题还有一个约束 $A \cap B = \emptyset$，也就是两个集合无交，答案其实可以写出来：<br>
+$$<br>
+Ans = \sum_{A \neq \emptyset ; B \neq \emptyset ; A \cap B \neq \emptyset} [gcd(A) = 1][gcd(B) = 1]<br>
+$$<br>
+分别应用莫反： $[gcd(A) = 1] = \sum_{d | gcd(A)} \mu(d)$ 与 $[gcd(B) = 1] = \sum_{e | gcd(B)} \mu(e)$</p>
+<p>于是有：<br>
+$$<br>
+Ans = \sum_{A,B \neq \emptyset; A \cap B \neq \emptyset} \sum_{d | gcd(A)}\sum_{e | gcd(B)} \mu(d)  \mu(e)<br>
+$$<br>
+我们设 $F(d, e) = \sum [A,B \neq \emptyset][A\cap B \neq \emptyset][d | gcd(A)] [e | gcd(B)]$</p>
+<p>上面式子和刚刚一样交换求和次序之后就有：<br>
+$$<br>
+Ans = \sum_{d=1}^N \sum_{e=1}^N \mu(d)\mu(e) F(d,e)<br>
+$$<br>
+现在问题变成了，固定 $d, e$ 之后， $F(d,e)$ 如何计算？</p>
+<p>让我们首先考虑 $A$ 的取值：因为 $d | gcd(A)$，于是 $[1,N]$ 中 $d$ 的倍数有： $x = \lfloor N/d \rfloor$ 个。</p>
+<p>同理 $B$ 只能选 $e$ 的倍数，一共有 $y = \lfloor N /e \rfloor$  个数字。</p>
+<p>如果允许相交的话，能选择的集合数量就是 $2^x \cdot 2 ^y$ 种集合组</p>
+<p>所以这里要考虑能被<strong>同时选</strong>的数字：</p>
+<p>如果一个数字 $v$ 既可以被 $A$ 也可以被 $B$ 选，那么就是：$d |v \and e|v \Rightarrow lcm(d,e) | v$</p>
+<p>就是一共 $z = \lfloor \frac{N}{lcm(d,e)} \rfloor$ 个元素个数</p>
+<p>这样一来 $[1,N]$ 中的数就被分成了三种</p>
+<ul>
+<li>只能给 A 的：
+<ul>
+<li>有 $x - z$ 个，每个元素只有两种状态：进入或不进入A，贡献就是 $2 ^ {x -z}$
+</li>
+</ul>
+</li>
+<li>只能给 B 的：
+<ul>
+<li>有 $y - z$ 个，贡献就是 $2^{y-z}$
+</li>
+</ul>
+</li>
+<li>A，B 都可以选择的：
+<ul>
+<li>有 $z$ 个，每个元素有四个状态：都不进，只进 A 或 B，同时进入 A 和 B。但是最后一种不合法，于是只有三种状态，贡献就是 $3 ^ z$
+</li>
+</ul>
+</li>
+</ul>
+<p>所以当允许空集合的时候，方案数就是 $2^{x-z}2^{y-z}3^{z} = 2^{x+y-2z} 3^z$ 个。</p>
+<p><strong>而这里有个关键的问题，题目中要求 A 与 B 非空！</strong></p>
+<p>刚刚的统计中没有去掉 A 和 B 是空集的情况，于是我们要容斥掉这些情况：</p>
+<p>当 $A = \emptyset$ 的时候，B 的选法有 $2^y$ 个，反过来也是 $2^x$ 种，但是两个都是空的被多减了一次，于是加回来 $1$</p>
+<p>于是我们有了:<br>
+$$<br>
+F(d,e) = 2^{x+y-2z}3^z - 2^x - 2 ^y + 1; x = \lfloor \frac{N}{d}\rfloor;y = \lfloor\frac{N}{e}\rfloor; z = \lfloor\frac{N}{lcm(d,e)}\rfloor<br>
+$$<br>
+我们就有了最终答案完全的一个式子！<br>
+$$<br>
+Ans = \sum_{d=1}^N\sum_{e=1}^N \mu(d)\mu(d)(2^{x+y-2z}3^z - 2^x - 2^y + 1)<br>
+$$<br>
+于是你看了一下数据范围，$N = 2 \times 10^5$，$O(N^2)$ 并不可以通过。</p>
+<p>怎么办呢？这里是一个经典 trick，正难则反！</p>
+<p>还记得我们之前算的 $C$ 么，如果不管相交的话，A 有 C 种， B 也有 C 种，并且 A, B 有序；</p>
+<p>所以 $C^2$ 统计的是 A, B 非空，且 $gcd(A) = gcd(B) = 1$，但是其中允许了 $A \cap B \neq \emptyset$</p>
+<p>于是我们只需要把<strong>允许相交改成不允许相交</strong>。</p>
+<p>我们知道，固定 $d, e$ 之后，如果允许相交，那么有 $2^{x+y}$ 种集合组；如果不允许相交，那么有 $2^{x+y-2z}3^z$ 种集合组。</p>
+<p>其变化量 $\Delta(d,e) = 2^{x+y-2z}3^z - 2^{x+y}$ 种，而这里不考虑空集的原因是，空集不会受到不相交这个限制影响</p>
+<p>于是我们就求出来了新的答案式子：<br>
+$$<br>
+Ans = C^2 + \sum_{d=1}^N \sum_{e=1}^N \mu(d)\mu(e) \Delta(d,e) = C^2 + \sum_{d=1}^N \sum_{e=1}^N \mu(d)\mu(e)(2^{x+y-2z}3^z - 2^{x+y})<br>
+$$<br>
+有人说，这不是还是 $N^2$ 的么。</p>
+<p>但是注意到 $z$ 当 $lcm(d,e) &amp;gt; N$ 的时候一定是 $0$，此时 $\Delta(d,e) = 0$，也就是对于 $lcm(d,e) &amp;gt; N$ 的 $(d, e)$ 对不用计算</p>
+<p>问题就又变成了：</p>
+<p><strong>快速枚举所有满足 $lcm(d,e) \le N$ 的 $(d,e)$</strong></p>
+<p>因为 $\mu(d)\mu(e) \neq 0$，所以对于 $lcm(d,e)$ 的每个质因子只有三种可能 ：只给 $d$，只给 $e$，同时给 $d, e$</p>
+<p>复杂度就是 $O(3^{\omega(L)})$ 的。</p>
+<div class="highlight highlight-source-c++"><pre class="notranslate">#<span class="pl-k">define</span> <span class="pl-en">MD</span> <span class="pl-c1">998244353</span>
+<span class="pl-k">using</span> mm = Mint;
+<span class="pl-k">const</span> <span class="pl-k">int</span> <span class="pl-c1">MAXN</span> = 2d5 + <span class="pl-c1">5</span>;
+
+<span class="pl-k">int</span> mu[<span class="pl-c1">MAXN</span>], lp[<span class="pl-c1">MAXN</span>], p[<span class="pl-c1">MAXN</span>], pc;
+mm pw2[<span class="pl-c1">MAXN</span> * <span class="pl-c1">2</span>], pw3[<span class="pl-c1">MAXN</span>];
+
+{
+	<span class="pl-k">int</span> @N;
+
+	mu[<span class="pl-c1">1</span>] = <span class="pl-c1">1</span>;
+	<span class="pl-c1">rep</span>(i, <span class="pl-c1">2</span>, N + <span class="pl-c1">1</span>) {
+		<span class="pl-k">if</span>(!lp[i]) lp[i] = i, p[pc ++] = i, mu[i] = -<span class="pl-c1">1</span>;
+		<span class="pl-c1">rep</span>(j, pc) {
+			<span class="pl-k">int</span> q = p[j];
+			<span class="pl-k">if</span>(i * q &gt; N) <span class="pl-k">break</span>;
+			lp[i * q] = q;
+			<span class="pl-k">if</span>(i % q == <span class="pl-c1">0</span>) {mu[i * q] = <span class="pl-c1">0</span>; <span class="pl-k">break</span>;}
+			mu[i * q] = -mu[i];
+		}
+	}
+
+	pw2[<span class="pl-c1">0</span>] = <span class="pl-c1">1</span>;
+	<span class="pl-c1">rep</span>(i, <span class="pl-c1">1</span>, <span class="pl-c1">2</span> * N + <span class="pl-c1">1</span>) pw2[i] = pw2[i - <span class="pl-c1">1</span>] * <span class="pl-c1">2</span>;
+	pw3[<span class="pl-c1">0</span>] = <span class="pl-c1">1</span>;
+	<span class="pl-c1">rep</span>(i, <span class="pl-c1">1</span>, N + <span class="pl-c1">1</span>) pw3[i] = pw3[i - <span class="pl-c1">1</span>] * <span class="pl-c1">3</span>;
+
+	mm C = <span class="pl-c1">0</span>;
+	<span class="pl-c1">rep</span>(d, <span class="pl-c1">1</span> , N + <span class="pl-c1">1</span>) C += mu[d] * (pw2[N / d] - <span class="pl-c1">1</span>);
+	mm ans = C * C;
+
+	<span class="pl-c1">rep</span>(L, <span class="pl-c1">1</span>, N + <span class="pl-c1">1</span>) {
+		<span class="pl-k">if</span>(mu[L] == <span class="pl-c1">0</span>) <span class="pl-k">continue</span>;
+
+		<span class="pl-k">int</span> fac[<span class="pl-c1">10</span>], k = <span class="pl-c1">0</span>, x = L;
+		<span class="pl-k">while</span>(x &gt; <span class="pl-c1">1</span>) fac[k ++] = lp[x], x /= lp[x];
+
+		<span class="pl-k">int</span> limit = <span class="pl-c1">1</span>; <span class="pl-c1">rep</span>(i, k) limit *= <span class="pl-c1">3</span>;
+
+		<span class="pl-k">int</span> z = N / L;
+
+		<span class="pl-c1">rep</span>(bit, limit) { <span class="pl-c"><span class="pl-c">//</span> 三进制枚举</span>
+			<span class="pl-k">int</span> d = <span class="pl-c1">1</span>, e = <span class="pl-c1">1</span>, t = bit;
+
+			<span class="pl-c1">rep</span>(i, k) {
+				<span class="pl-k">int</span> s = t % <span class="pl-c1">3</span>; t /= <span class="pl-c1">3</span>;
+				<span class="pl-k">if</span>(s == <span class="pl-c1">0</span>) d *= fac[i];
+				<span class="pl-k">else</span> <span class="pl-k">if</span>(s == <span class="pl-c1">1</span>) e *= fac[i];
+				<span class="pl-k">else</span> d *= fac[i], e *= fac[i];
+			}
+
+			<span class="pl-k">int</span> a = N / d, b = N / e;
+
+			mm delta = pw2[a + b - <span class="pl-c1">2</span> * z] * pw3[z] - pw2[a + b];
+			ans += mu[d] * mu[e] * delta;
+		}
+
+	}
+	<span class="pl-c1">wt</span>(ans);
+}</pre></div></div>
+<div style="font-size:small;margin-top:8px;float:right;"></div>
+
+<button class="btn btn-block" type="button" onclick="openComments()" id="cmButton">评论</button>
+<div class="comments" id="comments"></div>
+
+</div>
+    <div id="footer"><div id="footer1">Copyright © <span id="copyrightYear"></span> <a href="https://SistineFibel-2006.github.io">SISTINE=Blog</a></div>
+<div id="footer2">
+    <span id="runday"></span><span>Powered by <a href="https://meekdai.com/Gmeek.html" target="_blank">Gmeek</a></span>
+</div>
+
+<script>
+var now=new Date();
+document.getElementById("copyrightYear").innerHTML=now.getFullYear();
+
+if(""!=""){
+    var startSite=new Date("");
+    var diff=now.getTime()-startSite.getTime();
+    var diffDay=Math.floor(diff/(1000*60*60*24));
+    document.getElementById("runday").innerHTML="网站运行 "+diffDay+" 天"+" • ";
+}
+</script></div>
+</body>
+<script>
+var IconList={'sun': 'M8 10.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5zM8 12a4 4 0 100-8 4 4 0 000 8zM8 0a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0V.75A.75.75 0 018 0zm0 13a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0v-1.5A.75.75 0 018 13zM2.343 2.343a.75.75 0 011.061 0l1.06 1.061a.75.75 0 01-1.06 1.06l-1.06-1.06a.75.75 0 010-1.06zm9.193 9.193a.75.75 0 011.06 0l1.061 1.06a.75.75 0 01-1.06 1.061l-1.061-1.06a.75.75 0 010-1.061zM16 8a.75.75 0 01-.75.75h-1.5a.75.75 0 010-1.5h1.5A.75.75 0 0116 8zM3 8a.75.75 0 01-.75.75H.75a.75.75 0 010-1.5h1.5A.75.75 0 013 8zm10.657-5.657a.75.75 0 010 1.061l-1.061 1.06a.75.75 0 11-1.06-1.06l1.06-1.06a.75.75 0 011.06 0zm-9.193 9.193a.75.75 0 010 1.06l-1.06 1.061a.75.75 0 11-1.061-1.06l1.06-1.061a.75.75 0 011.061 0z', 'moon': 'M9.598 1.591a.75.75 0 01.785-.175 7 7 0 11-8.967 8.967.75.75 0 01.961-.96 5.5 5.5 0 007.046-7.046.75.75 0 01.175-.786zm1.616 1.945a7 7 0 01-7.678 7.678 5.5 5.5 0 107.678-7.678z', 'sync': 'M1.705 8.005a.75.75 0 0 1 .834.656 5.5 5.5 0 0 0 9.592 2.97l-1.204-1.204a.25.25 0 0 1 .177-.427h3.646a.25.25 0 0 1 .25.25v3.646a.25.25 0 0 1-.427.177l-1.38-1.38A7.002 7.002 0 0 1 1.05 8.84a.75.75 0 0 1 .656-.834ZM8 2.5a5.487 5.487 0 0 0-4.131 1.869l1.204 1.204A.25.25 0 0 1 4.896 6H1.25A.25.25 0 0 1 1 5.75V2.104a.25.25 0 0 1 .427-.177l1.38 1.38A7.002 7.002 0 0 1 14.95 7.16a.75.75 0 0 1-1.49.178A5.5 5.5 0 0 0 8 2.5Z', 'home': 'M6.906.664a1.749 1.749 0 0 1 2.187 0l5.25 4.2c.415.332.657.835.657 1.367v7.019A1.75 1.75 0 0 1 13.25 15h-3.5a.75.75 0 0 1-.75-.75V9H7v5.25a.75.75 0 0 1-.75.75h-3.5A1.75 1.75 0 0 1 1 13.25V6.23c0-.531.242-1.034.657-1.366l5.25-4.2Zm1.25 1.171a.25.25 0 0 0-.312 0l-5.25 4.2a.25.25 0 0 0-.094.196v7.019c0 .138.112.25.25.25H5.5V8.25a.75.75 0 0 1 .75-.75h3.5a.75.75 0 0 1 .75.75v5.25h2.75a.25.25 0 0 0 .25-.25V6.23a.25.25 0 0 0-.094-.195Z', 'github': 'M8 0c4.42 0 8 3.58 8 8a8.013 8.013 0 0 1-5.45 7.59c-.4.08-.55-.17-.55-.38 0-.27.01-1.13.01-2.2 0-.75-.25-1.23-.54-1.48 1.78-.2 3.65-.88 3.65-3.95 0-.88-.31-1.59-.82-2.15.08-.2.36-1.02-.08-2.12 0 0-.67-.22-2.2.82-.64-.18-1.32-.27-2-.27-.68 0-1.36.09-2 .27-1.53-1.03-2.2-.82-2.2-.82-.44 1.1-.16 1.92-.08 2.12-.51.56-.82 1.28-.82 2.15 0 3.06 1.86 3.75 3.64 3.95-.23.2-.44.55-.51 1.07-.46.21-1.61.55-2.33-.66-.15-.24-.6-.83-1.23-.82-.67.01-.27.38.01.53.34.19.73.9.82 1.13.16.45.68 1.31 2.69.94 0 .67.01 1.3.01 1.49 0 .21-.15.45-.55.38A7.995 7.995 0 0 1 0 8c0-4.42 3.58-8 8-8Z', 'copy': 'M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 0 1 0 1.5h-1.5a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-1.5a.75.75 0 0 1 1.5 0v1.5A1.75 1.75 0 0 1 9.25 16h-7.5A1.75 1.75 0 0 1 0 14.25Z M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0 1 14.25 11h-7.5A1.75 1.75 0 0 1 5 9.25Zm1.75-.25a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-7.5a.25.25 0 0 0-.25-.25Z', 'check': 'M13.78 4.22a.75.75 0 0 1 0 1.06l-7.25 7.25a.75.75 0 0 1-1.06 0L2.22 9.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018L6 10.94l6.72-6.72a.75.75 0 0 1 1.06 0Z'};
+var utterancesLoad=0;
+
+let themeSettings={
+    "dark": ["dark","moon","#00f0ff","dark-blue"],
+    "light": ["light","sun","#ff5000","github-light"],
+    "auto": ["auto","sync","","preferred-color-scheme"]
+};
+function changeTheme(mode, icon, color, utheme){
+    document.documentElement.setAttribute("data-color-mode",mode);
+    document.getElementById("themeSwitch").setAttribute("d",value=IconList[icon]);
+    document.getElementById("themeSwitch").parentNode.style.color=color;
+    if(utterancesLoad==1){utterancesTheme(utheme);}
+}
+function modeSwitch(){
+    let currentMode=document.documentElement.getAttribute('data-color-mode');
+    let newMode = currentMode === "light" ? "dark" : currentMode === "dark" ? "auto" : "light";
+    localStorage.setItem("meek_theme", newMode);
+    if(themeSettings[newMode]){
+        changeTheme(...themeSettings[newMode]);
+    }
+}
+function utterancesTheme(theme){
+    const message={type:'set-theme',theme: theme};
+    const iframe=document.getElementsByClassName('utterances-frame')[0];
+    iframe.contentWindow.postMessage(message,'https://utteranc.es');
+}
+if(themeSettings[theme]){changeTheme(...themeSettings[theme]);}
+console.log("\n %c Gmeek last https://github.com/Meekdai/Gmeek \n","padding:5px 0;background:#02d81d;color:#fff");
+</script>
+
+<script>
+document.getElementById("pathHome").setAttribute("d",IconList["home"]);
+document.getElementById("pathIssue").setAttribute("d",IconList["github"]);
+
+
+
+function openComments(){
+    cm=document.getElementById("comments");
+    cmButton=document.getElementById("cmButton");
+    cmButton.disabled=true;
+    cmButton.innerHTML="loading";
+    span=document.createElement("span");
+    span.setAttribute("class","AnimatedEllipsis");
+    cmButton.appendChild(span);
+
+    script=document.createElement("script");
+    script.setAttribute("src","https://utteranc.es/client.js");
+    script.setAttribute("repo","SistineFibel-2006/SistineFibel-2006.github.io");
+    script.setAttribute("issue-term","title");
+    
+    if(localStorage.getItem("meek_theme")=="dark"){script.setAttribute("theme","dark-blue");}
+    else if(localStorage.getItem("meek_theme")=="light") {script.setAttribute("theme","github-light");}
+    else{script.setAttribute("theme","preferred-color-scheme");}
+    
+    script.setAttribute("crossorigin","anonymous");
+    script.setAttribute("async","");
+    cm.appendChild(script);
+
+    int=self.setInterval("iFrameLoading()",200);
+}
+
+function iFrameLoading(){
+    var utterances=document.getElementsByClassName('utterances');
+    if(utterances.length==1){
+        if(utterances[0].style.height!=""){
+            utterancesLoad=1;
+            int=window.clearInterval(int);
+            document.getElementById("cmButton").style.display="none";
+            console.log("utterances Load OK");
+        }
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    const createClipboardHTML = (codeContent, additionalClasses = '') => `
+        <pre class="notranslate"><code class="notranslate">${codeContent}</code></pre>
+        <div class="clipboard-container position-absolute right-0 top-0 ${additionalClasses}">
+            <clipboard-copy class="ClipboardButton btn m-2 p-0" role="button" style="display: inherit;">
+                <svg height="16" width="16" class="octicon octicon-copy m-2"><path d="${IconList["copy"]}"></path></svg>
+                <svg height="16" width="16" class="octicon octicon-check color-fg-success m-2 d-none"><path d="${IconList["check"]}"></path></svg>
+            </clipboard-copy>
+            <div class="copy-feedback">Copied!</div>
+        </div>
+    `;
+
+    const handleCodeElements = (selector = '') => {
+        document.querySelectorAll(selector).forEach(codeElement => {
+            const codeContent = codeElement.innerHTML;
+            const newStructure = document.createElement('div');
+            newStructure.className = 'snippet-clipboard-content position-relative overflow-auto';
+            newStructure.innerHTML = createClipboardHTML(codeContent);
+
+            const parentElement = codeElement.parentElement;
+            if (selector.includes('highlight')) {
+                parentElement.insertBefore(newStructure, codeElement.nextSibling);
+                parentElement.removeChild(codeElement);
+            } else {
+                parentElement.parentElement.replaceChild(newStructure, parentElement);
+            }
+        });
+    };
+
+    handleCodeElements('pre.notranslate > code.notranslate');
+    handleCodeElements('div.highlight > pre.notranslate');
+
+    let currentFeedback = null;
+    document.querySelectorAll('clipboard-copy').forEach(copyButton => {
+        copyButton.addEventListener('click', () => {
+            const codeContent = copyButton.closest('.snippet-clipboard-content').innerText;
+            const tempTextArea = document.createElement('textarea');
+            tempTextArea.value = codeContent;
+            document.body.appendChild(tempTextArea);
+            tempTextArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempTextArea);
+
+            const copyIcon = copyButton.querySelector('.octicon-copy');
+            const checkIcon = copyButton.querySelector('.octicon-check');
+            const copyFeedback = copyButton.nextElementSibling;
+
+            if (currentFeedback && currentFeedback !== copyFeedback) {currentFeedback.style.display = 'none';}
+            currentFeedback = copyFeedback;
+
+            copyIcon.classList.add('d-none');
+            checkIcon.classList.remove('d-none');
+            copyFeedback.style.display = 'block';
+            copyButton.style.borderColor = 'var(--color-success-fg)';
+
+            setTimeout(() => {
+                copyIcon.classList.remove('d-none');
+                checkIcon.classList.add('d-none');
+                copyFeedback.style.display = 'none';
+                copyButton.style.borderColor = '';
+            }, 2000);
+        });
+    });
+});
+
+</script>
+<script src='https://blog.meekdai.com/Gmeek/plugins/articletoc.js'></script><script>MathJax = {tex: {inlineMath: [["$", "$"]]}};</script><script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+</html>
