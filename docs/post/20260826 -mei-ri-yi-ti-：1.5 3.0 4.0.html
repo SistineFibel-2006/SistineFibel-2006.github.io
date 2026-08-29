@@ -341,7 +341,7 @@ $$<br>
 Ans = C^2 + \sum_{d=1}^N \sum_{e=1}^N \mu(d)\mu(e) \Delta(d,e) = C^2 + \sum_{d=1}^N \sum_{e=1}^N \mu(d)\mu(e)(2^{x+y-2z}3^z - 2^{x+y})<br>
 $$<br>
 有人说，这不是还是 $N^2$ 的么。</p>
-<p>但是注意到 $z$ 当 $lcm(d,e) &amp;gt; N$ 的时候一定是 $0$，此时 $\Delta(d,e) = 0$，也就是对于 $lcm(d,e) &amp;gt; N$ 的 $(d, e)$ 对不用计算</p>
+<p>但是注意到 $z$ 当 $lcm(d,e) \gt N$ 的时候一定是 $0$，此时 $\Delta(d,e) = 0$，也就是对于 $lcm(d,e) \gt N$ 的 $(d, e)$ 对不用计算</p>
 <p>问题就又变成了：</p>
 <p><strong>快速枚举所有满足 $lcm(d,e) \le N$ 的 $(d,e)$</strong></p>
 <p>因为 $\mu(d)\mu(e) \neq 0$，所以对于 $lcm(d,e)$ 的每个质因子只有三种可能 ：只给 $d$，只给 $e$，同时给 $d, e$</p>
