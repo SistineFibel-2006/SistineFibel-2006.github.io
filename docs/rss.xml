@@ -1,5 +1,56 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>SISTINE=Blog</title><link>https://SistineFibel-2006.github.io</link><description>QQ3034019410——Atcoder:SistineFibel</description><copyright>SISTINE=Blog</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://img.cdn1.vip/i/6a3aa678f126b_1782228600.webp</url><title>avatar</title><link>https://SistineFibel-2006.github.io</link></image><lastBuildDate>Sat, 29 Aug 2026 07:17:55 +0000</lastBuildDate><managingEditor>SISTINE=Blog</managingEditor><ttl>60</ttl><webMaster>SISTINE=Blog</webMaster><item><title>20260826 每日一题：1.5 3.0 4.0</title><link>https://SistineFibel-2006.github.io/post/20260826%20-mei-ri-yi-ti-%EF%BC%9A1.5%203.0%204.0.html</link><description># Yukicoder 20260826 每日
+<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>SISTINE=Blog</title><link>https://SistineFibel-2006.github.io</link><description>QQ3034019410——Atcoder:SistineFibel</description><copyright>SISTINE=Blog</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://img.cdn1.vip/i/6a3aa678f126b_1782228600.webp</url><title>avatar</title><link>https://SistineFibel-2006.github.io</link></image><lastBuildDate>Mon, 31 Aug 2026 12:24:40 +0000</lastBuildDate><managingEditor>SISTINE=Blog</managingEditor><ttl>60</ttl><webMaster>SISTINE=Blog</webMaster><item><title>20260831 每日 2.0 2.5 4.0</title><link>https://SistineFibel-2006.github.io/post/20260831%20-mei-ri-%202.0%202.5%204.0.html</link><description># 20260831 每日 2.0 2.5 4.0
+
+---
+
+## No.741 AscNumber 不下降数字 2.0$
+
+https://yukicoder.me/problems/no/741
+
+&gt; [!note]
+&gt;
+&gt; 给定正整数 $1 \le N \le 10^6$ ，找出所有比 $10^N$ 小的**不下降数字$^1$**
+&gt;
+&gt; **不下降数字**：一个非负整数，其十进制表示数各个数位从左往右读不下降
+
+比较显然的一个数位 DP，两星还挺合适的
+
+定义 $dp[i][j] :=$ 长度为 $i$ 且最后一位是 $j$ 的不下降数字方案数
+
+转移方程显然是 $dp[i][j] = \sum_{k \le j} dp[i - 1][k]$
+
+初始值就是 $i \in[0, 9],$ $dp[1][i] = 1$
+
+统计结果就是 $\sum_{i = 0}^9 dp[N][i]$
+
+可以使用滚动数组优化，空间复杂度是常数，时间复杂度是 $O(10N)$
+
+```cpp
+//no-unlocked
+ll f[1d6 + 2][10];
+{
+	ll @N;
+	rep(i, 10) f[1][i] = 1;
+	rep(i, 1, N + 1) {
+		rep(j, 10) rep(k, j + 1) (f[i + 1][j] += f[i][k]) %= MD;
+	}
+	ll ans = 0;
+	rep(i, 10) (ans += f[N][i]) %= MD;
+	wt(ans);
+}
+```
+
+---
+
+---
+
+## No.3159 Just Answer 10 Integers! 2.5$
+
+https://yukicoder.me/problems/no/3159
+
+&gt; [!note]
+&gt;
+&gt; 给定 $2 \le N \le10$，请你构造一个大小是 $N$ 的正整数不可重集合 $S$，使得其分数$^1$最小。</description><guid isPermaLink="true">https://SistineFibel-2006.github.io/post/20260831%20-mei-ri-%202.0%202.5%204.0.html</guid><pubDate>Mon, 31 Aug 2026 12:24:04 +0000</pubDate></item><item><title>20260826 每日一题：1.5 3.0 4.0</title><link>https://SistineFibel-2006.github.io/post/20260826%20-mei-ri-yi-ti-%EF%BC%9A1.5%203.0%204.0.html</link><description># Yukicoder 20260826 每日
 
 ## 1- No.2708 Jewel holder  1.5$
 
