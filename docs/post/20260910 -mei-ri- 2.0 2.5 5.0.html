@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html data-color-mode="light" data-dark-theme="dark" data-light-theme="light" lang="zh-CN">
+<head>
+    <meta content="text/html; charset=utf-8" http-equiv="content-type" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link href='https://mirrors.sustech.edu.cn/cdnjs/ajax/libs/Primer/21.0.7/primer.css' rel='stylesheet' />
+    <script src='https://blog.meekdai.com/Gmeek/plugins/GmeekVercount.js'></script>
+    <link rel="icon" href="https://img.cdn1.vip/i/6a3aa678f126b_1782228600.webp"><script>
+        let theme = localStorage.getItem("meek_theme") || "light";
+        document.documentElement.setAttribute("data-color-mode", theme);
+    </script>
+<meta name="description" content="# 20260910 每日 2.0 2.5 5.0
+
+---
+
+---
+
+## No.1623 三角形的制作 2.0$
+
+https://yukicoder.me/problems/no/1623
+
+> [!note]
+>
+> 红色，绿色，蓝色棒子各 $N$ 根，第 $i$ 根长度为 $r_i, g_i, b_i$
+>
+> 求使用第 $i$ 个红棒，第 $j$ 个绿棒，第 $k$ 个蓝棒制作三角形且满足，$r_i=max(r_i, g_i, b_k)$ 的整数对数量
+>
+> - $1 \le N \le 2 \times 10^5$  $1 \le r_i,g_i,b_i \le 3 \times 10^3$
+
+显然枚举两组然后二分第三组是不能通过的，于是考虑值域
+
+看到了值域可以满足平方复杂度，于是考虑枚举绿和蓝的数量，然后对红棒前缀和，直接相减后统计计数即可。">
+<meta property="og:title" content="20260910 每日 2.0 2.5 5.0">
+<meta property="og:description" content="# 20260910 每日 2.0 2.5 5.0
+
+---
+
+---
+
+## No.1623 三角形的制作 2.0$
+
+https://yukicoder.me/problems/no/1623
+
+> [!note]
+>
+> 红色，绿色，蓝色棒子各 $N$ 根，第 $i$ 根长度为 $r_i, g_i, b_i$
+>
+> 求使用第 $i$ 个红棒，第 $j$ 个绿棒，第 $k$ 个蓝棒制作三角形且满足，$r_i=max(r_i, g_i, b_k)$ 的整数对数量
+>
+> - $1 \le N \le 2 \times 10^5$  $1 \le r_i,g_i,b_i \le 3 \times 10^3$
+
+显然枚举两组然后二分第三组是不能通过的，于是考虑值域
+
+看到了值域可以满足平方复杂度，于是考虑枚举绿和蓝的数量，然后对红棒前缀和，直接相减后统计计数即可。">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://SistineFibel-2006.github.io/post/20260910%20-mei-ri-%202.0%202.5%205.0.html">
+<meta property="og:image" content="https://img.cdn1.vip/i/6a3aa678f126b_1782228600.webp">
+<title>20260910 每日 2.0 2.5 5.0</title>
+<link href="//unpkg.com/@wooorm/starry-night@2.1.1/style/both.css" rel="stylesheet" />
+
+
+</head>
+<style>
+body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;padding: 45px;font-size: 16px;font-family: sans-serif;line-height: 1.25;}
+#header{display:flex;padding-bottom:8px;border-bottom: 1px solid var(--borderColor-muted, var(--color-border-muted));margin-bottom: 16px;}
+#footer {margin-top:64px; text-align: center;font-size: small;}
+
+</style>
+
+<style>
+.postTitle{margin: auto 0;font-size:40px;font-weight:bold;}
+.title-right{display:flex;margin:auto 0 0 auto;}
+.title-right .circle{padding: 14px 16px;margin-right:8px;}
+#postBody{border-bottom: 1px solid var(--color-border-default);padding-bottom:36px;}
+#postBody hr{height:2px;}
+#cmButton{height:48px;margin-top:48px;}
+#comments{margin-top:64px;}
+.g-emoji{font-size:24px;}
+@media (max-width: 600px) {
+    body {padding: 8px;}
+    .postTitle{font-size:24px;}
+}
+.copy-feedback {
+    display: none;
+    position: absolute;
+    top: 10px;
+    right: 50px;
+    color: var(--color-fg-on-emphasis);
+    background-color: var(--color-fg-muted);
+    border-radius: 3px;
+    padding: 5px 8px;
+    font-size: 12px;
+}
+</style>
+<style>.markdown-alert{padding:0.5rem 1rem;margin-bottom:1rem;border-left:.25em solid var(--borderColor-default,var(--color-border-default));}.markdown-alert .markdown-alert-title {display:flex;font-weight:var(--base-text-weight-medium,500);align-items:center;line-height:1;}.markdown-alert>:first-child {margin-top:0;}.markdown-alert>:last-child {margin-bottom:0;}</style><style>.markdown-alert.markdown-alert-note {border-left-color:var(--borderColor-accent-emphasis, var(--color-accent-emphasis));background-color:var(--color-accent-subtle);}.markdown-alert.markdown-alert-note .markdown-alert-title {color: var(--fgColor-accent,var(--color-accent-fg));}</style>
+
+
+
+<body>
+    <div id="header">
+<h1 class="postTitle">20260910 每日 2.0 2.5 5.0</h1>
+<div class="title-right">
+    <a href="https://SistineFibel-2006.github.io" id="buttonHome" class="btn btn-invisible circle" title="首页">
+        <svg class="octicon" width="16" height="16">
+            <path id="pathHome" fill-rule="evenodd"></path>
+        </svg>
+    </a>
+    
+    <a href="https://github.com/SistineFibel-2006/SistineFibel-2006.github.io/issues/24" target="_blank" class="btn btn-invisible circle" title="Issue">
+        <svg class="octicon" width="16" height="16">
+            <path id="pathIssue" fill-rule="evenodd"></path>
+        </svg>
+    </a>
+    
+
+    <a class="btn btn-invisible circle" onclick="modeSwitch();" title="切换主题">
+        <svg class="octicon" width="16" height="16" >
+            <path id="themeSwitch" fill-rule="evenodd"></path>
+        </svg>
+    </a>
+
+</div>
+</div>
+    <div id="content">
+<div class="markdown-body" id="postBody"><h1>20260910 每日 2.0 2.5 5.0</h1>
+<hr>
+<hr>
+<h2>No.1623 三角形的制作 2.0$</h2>
+<p><a href="https://yukicoder.me/problems/no/1623" rel="nofollow">https://yukicoder.me/problems/no/1623</a></p>
+<div class="markdown-alert markdown-alert-note"><p class="markdown-alert-title"><svg data-component="Octicon" class="octicon octicon-info mr-2" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8Zm8-6.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13ZM6.5 7.75A.75.75 0 0 1 7.25 7h1a.75.75 0 0 1 .75.75v2.75h.25a.75.75 0 0 1 0 1.5h-2a.75.75 0 0 1 0-1.5h.25v-2h-.25a.75.75 0 0 1-.75-.75ZM8 6a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"></path></svg>Note</p>
+<p>红色，绿色，蓝色棒子各 $N$ 根，第 $i$ 根长度为 $r_i, g_i, b_i$</p>
+<p>求使用第 $i$ 个红棒，第 $j$ 个绿棒，第 $k$ 个蓝棒制作三角形且满足，$r_i=max(r_i, g_i, b_k)$ 的整数对数量</p>
+<ul>
+<li>
+$1 \le N \le 2 \times 10^5$  $1 \le r_i,g_i,b_i \le 3 \times 10^3$
+</li>
+</ul>
+</div>
+<p>显然枚举两组然后二分第三组是不能通过的，于是考虑值域</p>
+<p>看到了值域可以满足平方复杂度，于是考虑枚举绿和蓝的数量，然后对红棒前缀和，直接相减后统计计数即可。</p>
+<div class="highlight highlight-source-c++"><pre class="notranslate"><span class="pl-k">namespace</span> <span class="pl-en">XK</span> {
+	<span class="pl-k">const</span> <span class="pl-k">int</span> <span class="pl-c1">MAXN</span> = <span class="pl-c1">3e3</span> + <span class="pl-c1">1</span>;
+  <span class="pl-k">void</span> <span class="pl-en">solve</span>() {
+  	<span class="pl-k">int</span> N; <span class="pl-c1">in</span>(N);
+  	V&lt;<span class="pl-k">int</span>&gt; <span class="pl-c1">A</span>(<span class="pl-c1">MAXN</span> + <span class="pl-c1">1</span>), <span class="pl-c1">B</span>(<span class="pl-c1">MAXN</span> + <span class="pl-c1">1</span>), <span class="pl-c1">C</span>(<span class="pl-c1">MAXN</span> + <span class="pl-c1">1</span>);
+  	<span class="pl-c1">rep</span>(i, N) {<span class="pl-k">int</span> x; <span class="pl-c1">in</span>(x); A[x] ++;}
+  	<span class="pl-c1">rep</span>(i, N) {<span class="pl-k">int</span> x; <span class="pl-c1">in</span>(x); B[x] ++;}
+  	<span class="pl-c1">rep</span>(i, N) {<span class="pl-k">int</span> x; <span class="pl-c1">in</span>(x); C[x] ++;}
+  	V&lt;<span class="pl-k">int</span>&gt; <span class="pl-c1">pre</span>(<span class="pl-c1">MAXN</span> + <span class="pl-c1">1</span>);
+  	<span class="pl-c1">rep</span>(i, <span class="pl-c1">MAXN</span>) <span class="pl-k">pre</span>[i + <span class="pl-c1">1</span>] = <span class="pl-k">pre</span>[i] + A[i];
+  	ll ans = <span class="pl-c1">0</span>;
+  	<span class="pl-c1">rep</span>(i, <span class="pl-c1">MAXN</span> + <span class="pl-c1">1</span>) <span class="pl-c1">rep</span>(j, <span class="pl-c1">MAXN</span> + <span class="pl-c1">1</span>) {
+  		<span class="pl-k">if</span>(i == <span class="pl-c1">0</span> &amp;&amp; j == <span class="pl-c1">0</span>) <span class="pl-k">continue</span>;
+  		<span class="pl-k">int</span> cnta = <span class="pl-k">pre</span>[<span class="pl-c1">min</span>(i + j + <span class="pl-c1">1</span>, <span class="pl-c1">MAXN</span> + <span class="pl-c1">1</span>) - <span class="pl-c1">1</span>] - <span class="pl-k">pre</span>[<span class="pl-c1">max</span>(i, j)];
+  		ans += cnta * B[i] * C[j];
+  	}
+  	<span class="pl-c1">out</span>(ans);
+  }
+};</pre></div>
+<hr>
+<h2>No.2462 七人卡农 2.5$</h2>
+<p><a href="https://yukicoder.me/problems/no/2462" rel="nofollow">https://yukicoder.me/problems/no/2462</a></p>
+<div class="markdown-alert markdown-alert-note"><p class="markdown-alert-title"><svg data-component="Octicon" class="octicon octicon-info mr-2" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8Zm8-6.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13ZM6.5 7.75A.75.75 0 0 1 7.25 7h1a.75.75 0 0 1 .75.75v2.75h.25a.75.75 0 0 1 0 1.5h-2a.75.75 0 0 1 0-1.5h.25v-2h-.25a.75.75 0 0 1-.75-.75ZM8 6a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"></path></svg>Note</p>
+<p>一共有 $N$ 个演奏者，给出 $Q$ 个三元组 $(I_i,S_i,T_i)$ 表示第 $I_i$ 个演奏者在 $[S_i, T_i]$ 时间内演奏。</p>
+<p>如果在第 $T$ 秒的时候有 $X$ 个人演奏，那么演奏中的每个人都会在这一秒获得 $\frac{1}{X}$ 的<strong>醒目度</strong>，求每个人的<strong>醒目度</strong>之和。</p>
+<ul>
+<li>保证给出的三元组满足 $I_i = I_j$ 时，$[S_i,T_i]$ 区间与 $[S_j,T_j]$ 区间不交</li>
+<li>$1 \le I_i \le N, Q \le 10^5$</li>
+<li>$0 \le S_i \lt T_i \le 10^5$</li>
+</ul>
+</div>
+<p>可以尝试预处理出每一秒的时候，如果在演奏的话，贡献是多少，因为这个部分是不变量，如果可以预处理出每一秒的 $val_i$ 的话，那么每个人的贡献就可以写成：<br>
+$$<br>
+\sum_{t=0}^{10^5} val_i [vis_t = 1]<br>
+$$<br>
+而这一部分可以直接暴力，因为总区间数最大是 $10^5$ 的，可以前缀和搞定。</p>
+<p>因为要做两次前缀和，注意下标即可，复杂度 $O(N + Q + \text{max}(T))$</p>
+<div class="highlight highlight-source-c++"><pre class="notranslate"><span class="pl-k">namespace</span> <span class="pl-en">XK</span> {
+	<span class="pl-k">const</span> <span class="pl-k">int</span> <span class="pl-c1">MAXT</span> = <span class="pl-c1">1e5</span>;
+  <span class="pl-k">void</span> <span class="pl-en">solve</span>() {
+  	<span class="pl-k">int</span> N, Q; <span class="pl-c1">in</span>(N, Q);
+  	V&lt;<span class="pl-k">double</span>&gt; <span class="pl-c1">val</span>(<span class="pl-c1">MAXT</span> + <span class="pl-c1">1</span>, <span class="pl-c1">0</span>);
+  	V&lt;V&lt;pair&lt;<span class="pl-k">int</span>, <span class="pl-k">int</span>&gt;&gt;&gt; <span class="pl-c1">Seg</span>(N);
+  	<span class="pl-c1">rep</span>(_, Q) {
+  		<span class="pl-k">int</span> I, S, T; <span class="pl-c1">in</span>(I, S, T); I --;
+  		Seg[I].<span class="pl-c1">pb</span>({S, T});
+  		val[S] ++, val[T] --;
+  	}
+  	<span class="pl-c1">rep</span>(i, <span class="pl-c1">MAXT</span>) val[i + <span class="pl-c1">1</span>] += val[i];
+  	<span class="pl-c1">rep</span>(i, <span class="pl-c1">MAXT</span> + <span class="pl-c1">1</span>) <span class="pl-k">if</span>(val[i]) val[i] = <span class="pl-c1">1</span>.<span class="pl-c1">0f</span> / val[i];
+  	<span class="pl-c1">rep</span>(i, <span class="pl-c1">MAXT</span>) val[i + <span class="pl-c1">1</span>] += val[i];
+  	<span class="pl-c1">rep</span>(i, N) {
+  		<span class="pl-k">double</span> ans = <span class="pl-c1">0</span>.<span class="pl-c1">0f</span>;
+  		<span class="pl-k">for</span>(<span class="pl-k">auto</span> [x, y] : Seg[i]) {
+  			ans += val[y - <span class="pl-c1">1</span>] - (x &gt; <span class="pl-c1">0</span> ? val[x - <span class="pl-c1">1</span>] : <span class="pl-c1">0</span>.<span class="pl-c1">0f</span>);
+  		}
+  		<span class="pl-c1">out</span>(ans);
+  	}
+  }
+};</pre></div>
+<hr>
+<h1>No.981 一般幂乘根 5.0$</h1>
+<p><a href="https://yukicoder.me/problems/no/981" rel="nofollow">https://yukicoder.me/problems/no/981</a></p>
+<div class="markdown-alert markdown-alert-note"><p class="markdown-alert-title"><svg data-component="Octicon" class="octicon octicon-info mr-2" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8Zm8-6.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13ZM6.5 7.75A.75.75 0 0 1 7.25 7h1a.75.75 0 0 1 .75.75v2.75h.25a.75.75 0 0 1 0 1.5h-2a.75.75 0 0 1 0-1.5h.25v-2h-.25a.75.75 0 0 1-.75-.75ZM8 6a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"></path></svg>Note</p>
+<p>设 $p$ 是质数，求 $x^k \equiv a \pmod p$ 的一个解，如果不存在，输出 $-1$</p>
+</div>
+<p>题解我真的看不懂，ごめなさい~</p>
+<p>请各位自行理解吧😂<a href="https://yukicoder.me/problems/no/981/editorial" rel="nofollow">https://yukicoder.me/problems/no/981/editorial</a></p></div>
+<div style="font-size:small;margin-top:8px;float:right;"></div>
+
+<button class="btn btn-block" type="button" onclick="openComments()" id="cmButton">评论</button>
+<div class="comments" id="comments"></div>
+
+</div>
+    <div id="footer"><div id="footer1">Copyright © <span id="copyrightYear"></span> <a href="https://SistineFibel-2006.github.io">SISTINE=Blog</a></div>
+<div id="footer2">
+    <span id="runday"></span><span>Powered by <a href="https://meekdai.com/Gmeek.html" target="_blank">Gmeek</a></span>
+</div>
+
+<script>
+var now=new Date();
+document.getElementById("copyrightYear").innerHTML=now.getFullYear();
+
+if(""!=""){
+    var startSite=new Date("");
+    var diff=now.getTime()-startSite.getTime();
+    var diffDay=Math.floor(diff/(1000*60*60*24));
+    document.getElementById("runday").innerHTML="网站运行 "+diffDay+" 天"+" • ";
+}
+</script></div>
+</body>
+<script>
+var IconList={'sun': 'M8 10.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5zM8 12a4 4 0 100-8 4 4 0 000 8zM8 0a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0V.75A.75.75 0 018 0zm0 13a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0v-1.5A.75.75 0 018 13zM2.343 2.343a.75.75 0 011.061 0l1.06 1.061a.75.75 0 01-1.06 1.06l-1.06-1.06a.75.75 0 010-1.06zm9.193 9.193a.75.75 0 011.06 0l1.061 1.06a.75.75 0 01-1.06 1.061l-1.061-1.06a.75.75 0 010-1.061zM16 8a.75.75 0 01-.75.75h-1.5a.75.75 0 010-1.5h1.5A.75.75 0 0116 8zM3 8a.75.75 0 01-.75.75H.75a.75.75 0 010-1.5h1.5A.75.75 0 013 8zm10.657-5.657a.75.75 0 010 1.061l-1.061 1.06a.75.75 0 11-1.06-1.06l1.06-1.06a.75.75 0 011.06 0zm-9.193 9.193a.75.75 0 010 1.06l-1.06 1.061a.75.75 0 11-1.061-1.06l1.06-1.061a.75.75 0 011.061 0z', 'moon': 'M9.598 1.591a.75.75 0 01.785-.175 7 7 0 11-8.967 8.967.75.75 0 01.961-.96 5.5 5.5 0 007.046-7.046.75.75 0 01.175-.786zm1.616 1.945a7 7 0 01-7.678 7.678 5.5 5.5 0 107.678-7.678z', 'sync': 'M1.705 8.005a.75.75 0 0 1 .834.656 5.5 5.5 0 0 0 9.592 2.97l-1.204-1.204a.25.25 0 0 1 .177-.427h3.646a.25.25 0 0 1 .25.25v3.646a.25.25 0 0 1-.427.177l-1.38-1.38A7.002 7.002 0 0 1 1.05 8.84a.75.75 0 0 1 .656-.834ZM8 2.5a5.487 5.487 0 0 0-4.131 1.869l1.204 1.204A.25.25 0 0 1 4.896 6H1.25A.25.25 0 0 1 1 5.75V2.104a.25.25 0 0 1 .427-.177l1.38 1.38A7.002 7.002 0 0 1 14.95 7.16a.75.75 0 0 1-1.49.178A5.5 5.5 0 0 0 8 2.5Z', 'home': 'M6.906.664a1.749 1.749 0 0 1 2.187 0l5.25 4.2c.415.332.657.835.657 1.367v7.019A1.75 1.75 0 0 1 13.25 15h-3.5a.75.75 0 0 1-.75-.75V9H7v5.25a.75.75 0 0 1-.75.75h-3.5A1.75 1.75 0 0 1 1 13.25V6.23c0-.531.242-1.034.657-1.366l5.25-4.2Zm1.25 1.171a.25.25 0 0 0-.312 0l-5.25 4.2a.25.25 0 0 0-.094.196v7.019c0 .138.112.25.25.25H5.5V8.25a.75.75 0 0 1 .75-.75h3.5a.75.75 0 0 1 .75.75v5.25h2.75a.25.25 0 0 0 .25-.25V6.23a.25.25 0 0 0-.094-.195Z', 'github': 'M8 0c4.42 0 8 3.58 8 8a8.013 8.013 0 0 1-5.45 7.59c-.4.08-.55-.17-.55-.38 0-.27.01-1.13.01-2.2 0-.75-.25-1.23-.54-1.48 1.78-.2 3.65-.88 3.65-3.95 0-.88-.31-1.59-.82-2.15.08-.2.36-1.02-.08-2.12 0 0-.67-.22-2.2.82-.64-.18-1.32-.27-2-.27-.68 0-1.36.09-2 .27-1.53-1.03-2.2-.82-2.2-.82-.44 1.1-.16 1.92-.08 2.12-.51.56-.82 1.28-.82 2.15 0 3.06 1.86 3.75 3.64 3.95-.23.2-.44.55-.51 1.07-.46.21-1.61.55-2.33-.66-.15-.24-.6-.83-1.23-.82-.67.01-.27.38.01.53.34.19.73.9.82 1.13.16.45.68 1.31 2.69.94 0 .67.01 1.3.01 1.49 0 .21-.15.45-.55.38A7.995 7.995 0 0 1 0 8c0-4.42 3.58-8 8-8Z', 'copy': 'M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 0 1 0 1.5h-1.5a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-1.5a.75.75 0 0 1 1.5 0v1.5A1.75 1.75 0 0 1 9.25 16h-7.5A1.75 1.75 0 0 1 0 14.25Z M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0 1 14.25 11h-7.5A1.75 1.75 0 0 1 5 9.25Zm1.75-.25a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-7.5a.25.25 0 0 0-.25-.25Z', 'check': 'M13.78 4.22a.75.75 0 0 1 0 1.06l-7.25 7.25a.75.75 0 0 1-1.06 0L2.22 9.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018L6 10.94l6.72-6.72a.75.75 0 0 1 1.06 0Z'};
+var utterancesLoad=0;
+
+let themeSettings={
+    "dark": ["dark","moon","#00f0ff","dark-blue"],
+    "light": ["light","sun","#ff5000","github-light"],
+    "auto": ["auto","sync","","preferred-color-scheme"]
+};
+function changeTheme(mode, icon, color, utheme){
+    document.documentElement.setAttribute("data-color-mode",mode);
+    document.getElementById("themeSwitch").setAttribute("d",value=IconList[icon]);
+    document.getElementById("themeSwitch").parentNode.style.color=color;
+    if(utterancesLoad==1){utterancesTheme(utheme);}
+}
+function modeSwitch(){
+    let currentMode=document.documentElement.getAttribute('data-color-mode');
+    let newMode = currentMode === "light" ? "dark" : currentMode === "dark" ? "auto" : "light";
+    localStorage.setItem("meek_theme", newMode);
+    if(themeSettings[newMode]){
+        changeTheme(...themeSettings[newMode]);
+    }
+}
+function utterancesTheme(theme){
+    const message={type:'set-theme',theme: theme};
+    const iframe=document.getElementsByClassName('utterances-frame')[0];
+    iframe.contentWindow.postMessage(message,'https://utteranc.es');
+}
+if(themeSettings[theme]){changeTheme(...themeSettings[theme]);}
+console.log("\n %c Gmeek last https://github.com/Meekdai/Gmeek \n","padding:5px 0;background:#02d81d;color:#fff");
+</script>
+
+<script>
+document.getElementById("pathHome").setAttribute("d",IconList["home"]);
+document.getElementById("pathIssue").setAttribute("d",IconList["github"]);
+
+
+
+function openComments(){
+    cm=document.getElementById("comments");
+    cmButton=document.getElementById("cmButton");
+    cmButton.disabled=true;
+    cmButton.innerHTML="loading";
+    span=document.createElement("span");
+    span.setAttribute("class","AnimatedEllipsis");
+    cmButton.appendChild(span);
+
+    script=document.createElement("script");
+    script.setAttribute("src","https://utteranc.es/client.js");
+    script.setAttribute("repo","SistineFibel-2006/SistineFibel-2006.github.io");
+    script.setAttribute("issue-term","title");
+    
+    if(localStorage.getItem("meek_theme")=="dark"){script.setAttribute("theme","dark-blue");}
+    else if(localStorage.getItem("meek_theme")=="light") {script.setAttribute("theme","github-light");}
+    else{script.setAttribute("theme","preferred-color-scheme");}
+    
+    script.setAttribute("crossorigin","anonymous");
+    script.setAttribute("async","");
+    cm.appendChild(script);
+
+    int=self.setInterval("iFrameLoading()",200);
+}
+
+function iFrameLoading(){
+    var utterances=document.getElementsByClassName('utterances');
+    if(utterances.length==1){
+        if(utterances[0].style.height!=""){
+            utterancesLoad=1;
+            int=window.clearInterval(int);
+            document.getElementById("cmButton").style.display="none";
+            console.log("utterances Load OK");
+        }
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    const createClipboardHTML = (codeContent, additionalClasses = '') => `
+        <pre class="notranslate"><code class="notranslate">${codeContent}</code></pre>
+        <div class="clipboard-container position-absolute right-0 top-0 ${additionalClasses}">
+            <clipboard-copy class="ClipboardButton btn m-2 p-0" role="button" style="display: inherit;">
+                <svg height="16" width="16" class="octicon octicon-copy m-2"><path d="${IconList["copy"]}"></path></svg>
+                <svg height="16" width="16" class="octicon octicon-check color-fg-success m-2 d-none"><path d="${IconList["check"]}"></path></svg>
+            </clipboard-copy>
+            <div class="copy-feedback">Copied!</div>
+        </div>
+    `;
+
+    const handleCodeElements = (selector = '') => {
+        document.querySelectorAll(selector).forEach(codeElement => {
+            const codeContent = codeElement.innerHTML;
+            const newStructure = document.createElement('div');
+            newStructure.className = 'snippet-clipboard-content position-relative overflow-auto';
+            newStructure.innerHTML = createClipboardHTML(codeContent);
+
+            const parentElement = codeElement.parentElement;
+            if (selector.includes('highlight')) {
+                parentElement.insertBefore(newStructure, codeElement.nextSibling);
+                parentElement.removeChild(codeElement);
+            } else {
+                parentElement.parentElement.replaceChild(newStructure, parentElement);
+            }
+        });
+    };
+
+    handleCodeElements('pre.notranslate > code.notranslate');
+    handleCodeElements('div.highlight > pre.notranslate');
+
+    let currentFeedback = null;
+    document.querySelectorAll('clipboard-copy').forEach(copyButton => {
+        copyButton.addEventListener('click', () => {
+            const codeContent = copyButton.closest('.snippet-clipboard-content').innerText;
+            const tempTextArea = document.createElement('textarea');
+            tempTextArea.value = codeContent;
+            document.body.appendChild(tempTextArea);
+            tempTextArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempTextArea);
+
+            const copyIcon = copyButton.querySelector('.octicon-copy');
+            const checkIcon = copyButton.querySelector('.octicon-check');
+            const copyFeedback = copyButton.nextElementSibling;
+
+            if (currentFeedback && currentFeedback !== copyFeedback) {currentFeedback.style.display = 'none';}
+            currentFeedback = copyFeedback;
+
+            copyIcon.classList.add('d-none');
+            checkIcon.classList.remove('d-none');
+            copyFeedback.style.display = 'block';
+            copyButton.style.borderColor = 'var(--color-success-fg)';
+
+            setTimeout(() => {
+                copyIcon.classList.remove('d-none');
+                checkIcon.classList.add('d-none');
+                copyFeedback.style.display = 'none';
+                copyButton.style.borderColor = '';
+            }, 2000);
+        });
+    });
+});
+
+</script>
+<script src='https://blog.meekdai.com/Gmeek/plugins/articletoc.js'></script><script>MathJax = {tex: {inlineMath: [["$", "$"]]}};</script><script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+</html>
