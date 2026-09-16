@@ -1,5 +1,61 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>SISTINE=Blog</title><link>https://SistineFibel-2006.github.io</link><description>QQ3034019410——Atcoder:SistineFibel</description><copyright>SISTINE=Blog</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://img.cdn1.vip/i/6a3aa678f126b_1782228600.webp</url><title>avatar</title><link>https://SistineFibel-2006.github.io</link></image><lastBuildDate>Mon, 14 Sep 2026 11:46:48 +0000</lastBuildDate><managingEditor>SISTINE=Blog</managingEditor><ttl>60</ttl><webMaster>SISTINE=Blog</webMaster><item><title>20260914 每日 2.0 3.0 4.5</title><link>https://SistineFibel-2006.github.io/post/20260914%20-mei-ri-%202.0%203.0%204.5.html</link><description># 20260914 每日 2.0 3.0 4.5
+<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>SISTINE=Blog</title><link>https://SistineFibel-2006.github.io</link><description>QQ3034019410——Atcoder:SistineFibel</description><copyright>SISTINE=Blog</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://img.cdn1.vip/i/6a3aa678f126b_1782228600.webp</url><title>avatar</title><link>https://SistineFibel-2006.github.io</link></image><lastBuildDate>Wed, 16 Sep 2026 15:28:52 +0000</lastBuildDate><managingEditor>SISTINE=Blog</managingEditor><ttl>60</ttl><webMaster>SISTINE=Blog</webMaster><item><title>20260915 每日 2.0 2.5 4.0</title><link>https://SistineFibel-2006.github.io/post/20260915%20-mei-ri-%202.0%202.5%204.0.html</link><description># 20260915 每日 2.0 2.5 4.0
+
+---
+
+---
+
+## No.1110 好听的歌
+
+https://yukicoder.me/problems/no/1110
+
+&gt; [!note]
+&gt;
+&gt; 给你一个长度为 $N$ 的数组 $\set{A}_{i=1}^N$ 表示歌的好感度，对于每一个歌，如果存在一个 $j$，有$A_i - A_j &lt; D$，那么 $A_i$ 对 $A_j$ 有好感，问每个 $A_i$ 的好感数量
+&gt;
+&gt; - $1 \le N \le 2 \times 10^5, 1 \le D \le 10^9$
+
+这是 两星？
+
+直接排序后二分，存一个答案，然后再输出就行
+
+```cpp
+namespace XK {
+  void solve() {
+  	int N, D; in(N, D);
+  	V&lt;int&gt; A(N); in(A);
+  	auto B = A;
+  	map&lt;int, int&gt; mp;
+  	sort(all(A));
+  	rep(i, N) {
+  		auto it = upper_bound(all(A), A[i] - D) - A.begin();
+  		mp[A[i]] = it;
+  	}
+  	rep(i, N) {
+  		out(mp[B[i]]);
+  	}
+  }
+};
+```
+
+---
+
+## No.3198 单调查询
+
+https://yukicoder.me/problems/no/3198
+
+&gt; [!note]
+&gt;
+&gt; 空数组 $\set{A}$，给定 $Q$ 种操作：
+&gt;
+&gt; - `1 x` 在 $\set{A}$ 末尾添加 `x`
+&gt; - `2 k` 查找现在数组最后 $k$ 位的最大值
+&gt;
+&gt; $1 \le Q \le 2 \times 10^5$
+
+这是 2.5 ？
+
+直接线段树就行了。</description><guid isPermaLink="true">https://SistineFibel-2006.github.io/post/20260915%20-mei-ri-%202.0%202.5%204.0.html</guid><pubDate>Wed, 16 Sep 2026 15:28:27 +0000</pubDate></item><item><title>20260914 每日 2.0 3.0 4.5</title><link>https://SistineFibel-2006.github.io/post/20260914%20-mei-ri-%202.0%203.0%204.5.html</link><description># 20260914 每日 2.0 3.0 4.5
 
 ---
 
