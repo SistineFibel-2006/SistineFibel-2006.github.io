@@ -1,5 +1,21 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>SISTINE=Blog</title><link>https://SistineFibel-2006.github.io</link><description>QQ3034019410——Atcoder:SistineFibel</description><copyright>SISTINE=Blog</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://img.cdn1.vip/i/6a3aa678f126b_1782228600.webp</url><title>avatar</title><link>https://SistineFibel-2006.github.io</link></image><lastBuildDate>Wed, 16 Sep 2026 15:28:52 +0000</lastBuildDate><managingEditor>SISTINE=Blog</managingEditor><ttl>60</ttl><webMaster>SISTINE=Blog</webMaster><item><title>20260915 每日 2.0 2.5 4.0</title><link>https://SistineFibel-2006.github.io/post/20260915%20-mei-ri-%202.0%202.5%204.0.html</link><description># 20260915 每日 2.0 2.5 4.0
+<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>SISTINE=Blog</title><link>https://SistineFibel-2006.github.io</link><description>QQ3034019410——Atcoder:SistineFibel</description><copyright>SISTINE=Blog</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://img.cdn1.vip/i/6a3aa678f126b_1782228600.webp</url><title>avatar</title><link>https://SistineFibel-2006.github.io</link></image><lastBuildDate>Thu, 17 Sep 2026 12:58:37 +0000</lastBuildDate><managingEditor>SISTINE=Blog</managingEditor><ttl>60</ttl><webMaster>SISTINE=Blog</webMaster><item><title>20260916 每日 2.0 3.5 4.0</title><link>https://SistineFibel-2006.github.io/post/20260916%20-mei-ri-%202.0%203.5%204.0.html</link><description># 20260916 每日 2.0 3.5 4.0
+
+---
+
+---
+
+## No.3658 Darumake Number 2
+
+https://yukicoder.me/problems/no/3658
+
+&gt; [!note]
+&gt;
+&gt; 给定整数 $N$，求比 $N$ 小的，只由 `4` 和 `5`，组成的最大的数字
+&gt;
+&gt; - $4 \le N \le 10^{100000}$
+
+一个构造，其实考虑 $N$ 如果出现了 大于 `5` 的数位，那么可以前面一样，后面全是 `5`；如果出现了小于 $4$ 的数位，那么可以这个位置及之后是 `5`，这个位置前一个是 `4` 即可；如果前面没有 `5`，那么只能删一位。</description><guid isPermaLink="true">https://SistineFibel-2006.github.io/post/20260916%20-mei-ri-%202.0%203.5%204.0.html</guid><pubDate>Thu, 17 Sep 2026 09:21:04 +0000</pubDate></item><item><title>20260915 每日 2.0 2.5 4.0</title><link>https://SistineFibel-2006.github.io/post/20260915%20-mei-ri-%202.0%202.5%204.0.html</link><description># 20260915 每日 2.0 2.5 4.0
 
 ---
 
