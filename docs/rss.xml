@@ -1,5 +1,38 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>SISTINE=Blog</title><link>https://SistineFibel-2006.github.io</link><description>QQ3034019410——Atcoder:SistineFibel</description><copyright>SISTINE=Blog</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://img.cdn1.vip/i/6a3aa678f126b_1782228600.webp</url><title>avatar</title><link>https://SistineFibel-2006.github.io</link></image><lastBuildDate>Thu, 17 Sep 2026 12:58:37 +0000</lastBuildDate><managingEditor>SISTINE=Blog</managingEditor><ttl>60</ttl><webMaster>SISTINE=Blog</webMaster><item><title>20260916 每日 2.0 3.5 4.0</title><link>https://SistineFibel-2006.github.io/post/20260916%20-mei-ri-%202.0%203.5%204.0.html</link><description># 20260916 每日 2.0 3.5 4.0
+<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>SISTINE=Blog</title><link>https://SistineFibel-2006.github.io</link><description>QQ3034019410——Atcoder:SistineFibel</description><copyright>SISTINE=Blog</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://img.cdn1.vip/i/6a3aa678f126b_1782228600.webp</url><title>avatar</title><link>https://SistineFibel-2006.github.io</link></image><lastBuildDate>Fri, 18 Sep 2026 09:01:06 +0000</lastBuildDate><managingEditor>SISTINE=Blog</managingEditor><ttl>60</ttl><webMaster>SISTINE=Blog</webMaster><item><title>20260918 每日 1.0 3.0 4.0</title><link>https://SistineFibel-2006.github.io/post/20260918%20-mei-ri-%201.0%203.0%204.0.html</link><description># 20260918 每日 1.0 3.0 4.0
+
+---
+
+----
+
+## No.3279 Dhole vs Monster
+
+https://yukicoder.me/problems/no/3279
+
+&gt; [!note]
+&gt;
+&gt; 模拟
+
+```cpp
+namespace XK {
+  void solve() {
+  	int f[] = {0, 390,429,468,507,546};
+  	int x; string t; cin &gt;&gt; x &gt;&gt; t;
+  	if(t == 'Beat') cout &lt;&lt; f[x + 1];
+  	else cout &lt;&lt; f[x];
+  }
+};
+```
+
+---
+
+## No.2899 Taffy Permutation
+
+https://yukicoder.me/problems/no/2899
+
+&gt; [!note]
+&gt;
+&gt; 给定一个由 `0` 和 `1` 构成的长度为 $N$ 的字符串 $S$，求满足下面条件的长度为 $N$ 的排列数量。</description><guid isPermaLink="true">https://SistineFibel-2006.github.io/post/20260918%20-mei-ri-%201.0%203.0%204.0.html</guid><pubDate>Fri, 18 Sep 2026 09:00:28 +0000</pubDate></item><item><title>20260916 每日 2.0 3.5 4.0</title><link>https://SistineFibel-2006.github.io/post/20260916%20-mei-ri-%202.0%203.5%204.0.html</link><description># 20260916 每日 2.0 3.5 4.0
 
 ---
 
