@@ -1,5 +1,17 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>SISTINE=Blog</title><link>https://SistineFibel-2006.github.io</link><description>QQ3034019410——Atcoder:SistineFibel</description><copyright>SISTINE=Blog</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://img.cdn1.vip/i/6a3aa678f126b_1782228600.webp</url><title>avatar</title><link>https://SistineFibel-2006.github.io</link></image><lastBuildDate>Fri, 18 Sep 2026 09:01:06 +0000</lastBuildDate><managingEditor>SISTINE=Blog</managingEditor><ttl>60</ttl><webMaster>SISTINE=Blog</webMaster><item><title>20260918 每日 1.0 3.0 4.0</title><link>https://SistineFibel-2006.github.io/post/20260918%20-mei-ri-%201.0%203.0%204.0.html</link><description># 20260918 每日 1.0 3.0 4.0
+<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>SISTINE=Blog</title><link>https://SistineFibel-2006.github.io</link><description>QQ3034019410——Atcoder:SistineFibel</description><copyright>SISTINE=Blog</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://img.cdn1.vip/i/6a3aa678f126b_1782228600.webp</url><title>avatar</title><link>https://SistineFibel-2006.github.io</link></image><lastBuildDate>Mon, 21 Sep 2026 12:28:17 +0000</lastBuildDate><managingEditor>SISTINE=Blog</managingEditor><ttl>60</ttl><webMaster>SISTINE=Blog</webMaster><item><title>20260921 每日 1.5 3.0 4.0</title><link>https://SistineFibel-2006.github.io/post/20260921%20-mei-ri-%201.5%203.0%204.0.html</link><description># 20260921 每日 1.5 3.0 4.0
+
+## No.2196 Pair Bonus
+
+https://yukicoder.me/problems/no/2196
+
+分类讨论，线性贪心贪过去即可
+
+## No.1780 [Cherry Anniversary] 真冬に咲く26の櫻の木
+
+https://yukicoder.me/problems/no/1780
+
+倍增思考转移，考虑 $f_{d, j, k} :=$ 从 $j$ 到 $k$ 颜色经过 $2^d$ 步转移之后的最大分数，然后分别对 每颗树考虑。</description><guid isPermaLink="true">https://SistineFibel-2006.github.io/post/20260921%20-mei-ri-%201.5%203.0%204.0.html</guid><pubDate>Mon, 21 Sep 2026 12:27:51 +0000</pubDate></item><item><title>20260918 每日 1.0 3.0 4.0</title><link>https://SistineFibel-2006.github.io/post/20260918%20-mei-ri-%201.0%203.0%204.0.html</link><description># 20260918 每日 1.0 3.0 4.0
 
 ---
 
