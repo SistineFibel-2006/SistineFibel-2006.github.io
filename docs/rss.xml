@@ -1,5 +1,17 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>SISTINE=Blog</title><link>https://SistineFibel-2006.github.io</link><description>QQ3034019410——Atcoder:SistineFibel</description><copyright>SISTINE=Blog</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://img.cdn1.vip/i/6a3aa678f126b_1782228600.webp</url><title>avatar</title><link>https://SistineFibel-2006.github.io</link></image><lastBuildDate>Mon, 21 Sep 2026 12:28:17 +0000</lastBuildDate><managingEditor>SISTINE=Blog</managingEditor><ttl>60</ttl><webMaster>SISTINE=Blog</webMaster><item><title>20260921 每日 1.5 3.0 4.0</title><link>https://SistineFibel-2006.github.io/post/20260921%20-mei-ri-%201.5%203.0%204.0.html</link><description># 20260921 每日 1.5 3.0 4.0
+<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>SISTINE=Blog</title><link>https://SistineFibel-2006.github.io</link><description>QQ3034019410——Atcoder:SistineFibel</description><copyright>SISTINE=Blog</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://img.cdn1.vip/i/6a3aa678f126b_1782228600.webp</url><title>avatar</title><link>https://SistineFibel-2006.github.io</link></image><lastBuildDate>Wed, 23 Sep 2026 15:50:45 +0000</lastBuildDate><managingEditor>SISTINE=Blog</managingEditor><ttl>60</ttl><webMaster>SISTINE=Blog</webMaster><item><title>20260923 每日 2.0 2.5 4.0</title><link>https://SistineFibel-2006.github.io/post/20260923%20-mei-ri-%202.0%202.5%204.0.html</link><description># 20260923 每日 2.0 2.5 4.0
+
+## No.2409 Strange Werewolves
+
+是0的那个必须留到最后，所以剩下的选法就是 $(X + Y - Z - 1)!$
+
+然后考虑剩下的 Z 个和 最后剩下那个，选法就是 $\binom{X}{Z} \times Y$
+
+当然如果不是 W 是 0 的话，swap 一下就行
+
+## No.1596 Distance Sum in 2D Plane （2D平面上距离和）
+
+首先是经典的如何算无约束下的结果，就是 从 `2N` 中方案里选择 `N` 步向上，也就是 $\binom{2N}{N} \times 2N$ 元。</description><guid isPermaLink="true">https://SistineFibel-2006.github.io/post/20260923%20-mei-ri-%202.0%202.5%204.0.html</guid><pubDate>Wed, 23 Sep 2026 15:50:17 +0000</pubDate></item><item><title>20260921 每日 1.5 3.0 4.0</title><link>https://SistineFibel-2006.github.io/post/20260921%20-mei-ri-%201.5%203.0%204.0.html</link><description># 20260921 每日 1.5 3.0 4.0
 
 ## No.2196 Pair Bonus
 
