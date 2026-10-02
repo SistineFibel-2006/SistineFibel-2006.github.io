@@ -1,5 +1,20 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>SISTINE=Blog</title><link>https://SistineFibel-2006.github.io</link><description>QQ3034019410——Atcoder:SistineFibel</description><copyright>SISTINE=Blog</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://img.cdn1.vip/i/6a3aa678f126b_1782228600.webp</url><title>avatar</title><link>https://SistineFibel-2006.github.io</link></image><lastBuildDate>Wed, 30 Sep 2026 12:43:15 +0000</lastBuildDate><managingEditor>SISTINE=Blog</managingEditor><ttl>60</ttl><webMaster>SISTINE=Blog</webMaster><item><title>跟 Nachia 博客学 DP-17 耳 DP （状态 DP）</title><link>https://SistineFibel-2006.github.io/post/gen-%20Nachia%20-bo-ke-xue-%20DP-17%20-er-%20DP%20%EF%BC%88-zhuang-tai-%20DP%EF%BC%89.html</link><description># 跟 Nachia 博客学 DP-17 耳 DP （状态 DP）
+<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>SISTINE=Blog</title><link>https://SistineFibel-2006.github.io</link><description>QQ3034019410——Atcoder:SistineFibel</description><copyright>SISTINE=Blog</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://img.cdn1.vip/i/6a3aa678f126b_1782228600.webp</url><title>avatar</title><link>https://SistineFibel-2006.github.io</link></image><lastBuildDate>Fri, 02 Oct 2026 13:56:33 +0000</lastBuildDate><managingEditor>SISTINE=Blog</managingEditor><ttl>60</ttl><webMaster>SISTINE=Blog</webMaster><item><title>每日 20260930 &amp;&amp; 1002</title><link>https://SistineFibel-2006.github.io/post/mei-ri-%2020260930%20%26%26%201002.html</link><description># 每日 20260930 &amp;&amp; 1002
+
+---
+
+## No.1731 Product of Subsequence
+
+K 很大，于是考虑按约数 DP，因为非约束不会提供贡献：
+$$
+f_{i+1,j} := f_{i+1,j} + f_{i, j}
+$$
+
+$$
+f_{i+1, \gcd(K, j \times A_i)} := f_{i+1, \gcd(K, j \times A_i)} + f_{i,j}
+$$
+
+就可以了，其中 $f_{i,j}$ 表示到第 i 个数字时候，选择的子序列的积的最大约数是 j 时候的子序列数目。</description><guid isPermaLink="true">https://SistineFibel-2006.github.io/post/mei-ri-%2020260930%20%26%26%201002.html</guid><pubDate>Fri, 02 Oct 2026 13:56:01 +0000</pubDate></item><item><title>跟 Nachia 博客学 DP-17 耳 DP （状态 DP）</title><link>https://SistineFibel-2006.github.io/post/gen-%20Nachia%20-bo-ke-xue-%20DP-17%20-er-%20DP%20%EF%BC%88-zhuang-tai-%20DP%EF%BC%89.html</link><description># 跟 Nachia 博客学 DP-17 耳 DP （状态 DP）
 
 ---
 
