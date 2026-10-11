@@ -1,5 +1,49 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>SISTINE=Blog</title><link>https://SistineFibel-2006.github.io</link><description>QQ3034019410——Atcoder:SistineFibel</description><copyright>SISTINE=Blog</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://img.cdn1.vip/i/6a3aa678f126b_1782228600.webp</url><title>avatar</title><link>https://SistineFibel-2006.github.io</link></image><lastBuildDate>Fri, 02 Oct 2026 13:56:33 +0000</lastBuildDate><managingEditor>SISTINE=Blog</managingEditor><ttl>60</ttl><webMaster>SISTINE=Blog</webMaster><item><title>每日 20260930 &amp;&amp; 1002</title><link>https://SistineFibel-2006.github.io/post/mei-ri-%2020260930%20%26%26%201002.html</link><description># 每日 20260930 &amp;&amp; 1002
+<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>SISTINE=Blog</title><link>https://SistineFibel-2006.github.io</link><description>QQ3034019410——Atcoder:SistineFibel</description><copyright>SISTINE=Blog</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://img.cdn1.vip/i/6a3aa678f126b_1782228600.webp</url><title>avatar</title><link>https://SistineFibel-2006.github.io</link></image><lastBuildDate>Sun, 11 Oct 2026 16:07:16 +0000</lastBuildDate><managingEditor>SISTINE=Blog</managingEditor><ttl>60</ttl><webMaster>SISTINE=Blog</webMaster><item><title>GAME-24 problem A B C</title><link>https://SistineFibel-2006.github.io/post/GAME-24%20problem%20A%20B%20C.html</link><description># GAME-24 problem A B C
+
+## A-Nim
+
+https://atcoder.jp/contests/game-24/tasks/game_a
+
+裸nim板子
+
+## B-巧克力
+
+https://atcoder.jp/contests/game-24/tasks/game_b
+
+可以想到你不能切由 minx, maxx, miny, maxy 组成的巧克力，以外的行和列满足取石头的 Nim 模型，于是维护 minx, H - maxx, miny, W - maxy 组成的四个堆即可
+
+```cpp
+namespace XK {
+  void solve() {
+  	INT H, W, N; rd(H, W, N); -- H, -- W;
+  	ll minx = LINF, maxx = -1, miny = LINF, maxy = -1;
+  	rep(i, N) {
+  		ll x, y; rd(x, y); -- x, -- y;
+  		chmin(minx, x); chmin(miny, y);
+  		chmax(maxx, x); chmax(maxy, y);
+  	}
+  	debug(minx, (H - maxx), miny, (W - maxy));
+  	ll ans = minx ^ (H - maxx) ^ miny ^ (W - maxy);
+  	if(ans) wt('Alice'); else wt('Bob');
+  }
+};
+```
+
+## C - 四格骨牌的多米诺 1
+
+https://atcoder.jp/contests/game-24/tasks/game_c
+
+可以按照博弈值的角度来理解，表格如下
+Alice = 0, 2, 1/0, 1/1
+
+Bob = 2, 0, 1/1, 0/1
+
+所以博弈值分别是 -2, 2, -0.5, 0.5
+
+于是只要满足 -2 * a + 2 * b - 0.5 * c + 0.5 * d &gt; 0 的就是 Alice ，反之是 Bob
+
+。</description><guid isPermaLink="true">https://SistineFibel-2006.github.io/post/GAME-24%20problem%20A%20B%20C.html</guid><pubDate>Mon, 05 Oct 2026 17:23:45 +0000</pubDate></item><item><title>每日 20260930 &amp;&amp; 1002</title><link>https://SistineFibel-2006.github.io/post/mei-ri-%2020260930%20%26%26%201002.html</link><description># 每日 20260930 &amp;&amp; 1002
 
 ---
 
