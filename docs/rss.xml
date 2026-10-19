@@ -1,5 +1,43 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>SISTINE=Blog</title><link>https://SistineFibel-2006.github.io</link><description>QQ3034019410——Atcoder:SistineFibel</description><copyright>SISTINE=Blog</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://img.cdn1.vip/i/6a3aa678f126b_1782228600.webp</url><title>avatar</title><link>https://SistineFibel-2006.github.io</link></image><lastBuildDate>Sun, 11 Oct 2026 16:09:30 +0000</lastBuildDate><managingEditor>SISTINE=Blog</managingEditor><ttl>60</ttl><webMaster>SISTINE=Blog</webMaster><item><title>GAME-24 J K</title><link>https://SistineFibel-2006.github.io/post/GAME-24%20J%20K.html</link><description># GAME-24 J K
+<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>SISTINE=Blog</title><link>https://SistineFibel-2006.github.io</link><description>QQ3034019410——Atcoder:SistineFibel</description><copyright>SISTINE=Blog</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://img.cdn1.vip/i/6a3aa678f126b_1782228600.webp</url><title>avatar</title><link>https://SistineFibel-2006.github.io</link></image><lastBuildDate>Mon, 19 Oct 2026 16:12:50 +0000</lastBuildDate><managingEditor>SISTINE=Blog</managingEditor><ttl>60</ttl><webMaster>SISTINE=Blog</webMaster><item><title>ARC214 **C - Divide into 4 Teams**</title><link>https://SistineFibel-2006.github.io/post/ARC214%20--C%20-%20Divide%20into%204%20Teams--.html</link><description># 20261019
+
+---
+
+## ARC214 **C - Divide into 4 Teams**
+
+https://atcoder.jp/contests/arc214/tasks/arc214_c
+
+$N$ 个数字的序列 $P$，分成四个组，要求每个人必须有一个组，所有组至少一个人，且满足：
+
+- $\sum_{i\in A} P_i = \sum_{i \in B} P_i$
+- $\sum_{i\in C} P_i = \sum_{i \in D} P_i$
+
+约束：$4 \le N \le 500$ $\sum P \le 10^5$
+
+观察到 $\sum P$ 不是偶数一定无解，然后列方程：答案一定满足 $2(K+X) = \sum P$.
+
+等价于从能构成 $\frac{1}{2}P$ 选法的情况里分割，就是 $K^2 - 2K$ 种，于是有：
+
+```cpp
+void solve() {
+  ll N; rd(N);
+  V&lt;ll&gt; A(N); rd(A);
+  ll S = 0;
+  rep(i, N) S += A[i];
+  debug(S);
+  if(S &amp; 1) return wt(0);
+  V&lt;mm&gt; f(S + 1, (mm)0);
+  f[0] = 1;
+  for(auto x : A) {
+    rrep(i, x, S + 1) {
+      f[i] += f[i - x];
+    }
+  }
+  wt((f[S/2].pow(2) - f[S/2] * (mm)2).x);
+}
+```
+
+。</description><guid isPermaLink="true">https://SistineFibel-2006.github.io/post/ARC214%20--C%20-%20Divide%20into%204%20Teams--.html</guid><pubDate>Mon, 19 Oct 2026 16:12:22 +0000</pubDate></item><item><title>GAME-24 J K</title><link>https://SistineFibel-2006.github.io/post/GAME-24%20J%20K.html</link><description># GAME-24 J K
 
 ## J-受限制 Nim 2
 
