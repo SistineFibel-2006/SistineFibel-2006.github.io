@@ -1,5 +1,15 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>SISTINE=Blog</title><link>https://SistineFibel-2006.github.io</link><description>QQ3034019410——Atcoder:SistineFibel</description><copyright>SISTINE=Blog</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://img.cdn1.vip/i/6a3aa678f126b_1782228600.webp</url><title>avatar</title><link>https://SistineFibel-2006.github.io</link></image><lastBuildDate>Mon, 19 Oct 2026 16:12:50 +0000</lastBuildDate><managingEditor>SISTINE=Blog</managingEditor><ttl>60</ttl><webMaster>SISTINE=Blog</webMaster><item><title>ARC214 **C - Divide into 4 Teams**</title><link>https://SistineFibel-2006.github.io/post/ARC214%20--C%20-%20Divide%20into%204%20Teams--.html</link><description># 20261019
+<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>SISTINE=Blog</title><link>https://SistineFibel-2006.github.io</link><description>QQ3034019410——Atcoder:SistineFibel</description><copyright>SISTINE=Blog</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://img.cdn1.vip/i/6a3aa678f126b_1782228600.webp</url><title>avatar</title><link>https://SistineFibel-2006.github.io</link></image><lastBuildDate>Tue, 20 Oct 2026 09:15:18 +0000</lastBuildDate><managingEditor>SISTINE=Blog</managingEditor><ttl>60</ttl><webMaster>SISTINE=Blog</webMaster><item><title>20261020</title><link>https://SistineFibel-2006.github.io/post/20261020.html</link><description># 20261020
+
+---
+
+## ABC369 **G - As far as possible** 黄
+
+https://atcoder.jp/contests/abc369/tasks/abc369_g
+
+其实等价于选择 i 个点，最大化最短走法路径
+
+所以我们可以考虑一棵树，显然先选长链总是不亏的，而选完长链后，再选与之前选过的链上的支链，产生的贡献应该是除去原本选过部分的。</description><guid isPermaLink="true">https://SistineFibel-2006.github.io/post/20261020.html</guid><pubDate>Tue, 20 Oct 2026 09:14:50 +0000</pubDate></item><item><title>ARC214 **C - Divide into 4 Teams**</title><link>https://SistineFibel-2006.github.io/post/ARC214%20--C%20-%20Divide%20into%204%20Teams--.html</link><description># 20261019
 
 ---
 
