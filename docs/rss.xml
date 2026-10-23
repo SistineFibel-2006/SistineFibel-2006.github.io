@@ -1,5 +1,13 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>SISTINE=Blog</title><link>https://SistineFibel-2006.github.io</link><description>QQ3034019410——Atcoder:SistineFibel</description><copyright>SISTINE=Blog</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://img.cdn1.vip/i/6a3aa678f126b_1782228600.webp</url><title>avatar</title><link>https://SistineFibel-2006.github.io</link></image><lastBuildDate>Tue, 20 Oct 2026 09:15:18 +0000</lastBuildDate><managingEditor>SISTINE=Blog</managingEditor><ttl>60</ttl><webMaster>SISTINE=Blog</webMaster><item><title>20261020</title><link>https://SistineFibel-2006.github.io/post/20261020.html</link><description># 20261020
+<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>SISTINE=Blog</title><link>https://SistineFibel-2006.github.io</link><description>QQ3034019410——Atcoder:SistineFibel</description><copyright>SISTINE=Blog</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://img.cdn1.vip/i/6a3aa678f126b_1782228600.webp</url><title>avatar</title><link>https://SistineFibel-2006.github.io</link></image><lastBuildDate>Fri, 23 Oct 2026 14:14:28 +0000</lastBuildDate><managingEditor>SISTINE=Blog</managingEditor><ttl>60</ttl><webMaster>SISTINE=Blog</webMaster><item><title>20261023</title><link>https://SistineFibel-2006.github.io/post/20261023.html</link><description># 20261023
+
+---
+
+## VP:ARC189 (Division 2)
+
+### [A - Reversi 2](https://atcoder.jp/contests/arc189/tasks/arc189_a)
+
+注意观察，首先首位是 0，末位得相同，其余肯定是一个 $[10...01]$ 或者 $[01...10]$ 的结构，然后考虑内部的修改次数。</description><guid isPermaLink="true">https://SistineFibel-2006.github.io/post/20261023.html</guid><pubDate>Fri, 23 Oct 2026 14:13:51 +0000</pubDate></item><item><title>20261020</title><link>https://SistineFibel-2006.github.io/post/20261020.html</link><description># 20261020
 
 ---
 
