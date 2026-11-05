@@ -1,5 +1,17 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>SISTINE=Blog</title><link>https://SistineFibel-2006.github.io</link><description>QQ3034019410——Atcoder:SistineFibel</description><copyright>SISTINE=Blog</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://img.cdn1.vip/i/6a3aa678f126b_1782228600.webp</url><title>avatar</title><link>https://SistineFibel-2006.github.io</link></image><lastBuildDate>Fri, 23 Oct 2026 14:14:28 +0000</lastBuildDate><managingEditor>SISTINE=Blog</managingEditor><ttl>60</ttl><webMaster>SISTINE=Blog</webMaster><item><title>20261023</title><link>https://SistineFibel-2006.github.io/post/20261023.html</link><description># 20261023
+<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>SISTINE=Blog</title><link>https://SistineFibel-2006.github.io</link><description>QQ3034019410——Atcoder:SistineFibel</description><copyright>SISTINE=Blog</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://img.cdn1.vip/i/6a3aa678f126b_1782228600.webp</url><title>avatar</title><link>https://SistineFibel-2006.github.io</link></image><lastBuildDate>Thu, 05 Nov 2026 12:23:03 +0000</lastBuildDate><managingEditor>SISTINE=Blog</managingEditor><ttl>60</ttl><webMaster>SISTINE=Blog</webMaster><item><title>浅谈线段树与幺半群 —— 通过 SegT-24 一起学习吧</title><link>https://SistineFibel-2006.github.io/post/qian-tan-xian-duan-shu-yu-yao-ban-qun-%20%E2%80%94%E2%80%94%20-tong-guo-%20SegT-24%20-yi-qi-xue-xi-ba.html</link><description># 浅谈线段树与幺半群 —— 通过 SegT-24 一起学习吧
+
+---
+
+---
+
+参考资料：https://info.atcoder.jp/entry/algorithm_lectures/range_query_monoid_design
+
+---
+
+## 什么是线段树？
+
+通常来讲，可以理解为“能够处理幺半群区间积”的数据结构就是线段树。</description><guid isPermaLink="true">https://SistineFibel-2006.github.io/post/qian-tan-xian-duan-shu-yu-yao-ban-qun-%20%E2%80%94%E2%80%94%20-tong-guo-%20SegT-24%20-yi-qi-xue-xi-ba.html</guid><pubDate>Thu, 05 Nov 2026 12:22:23 +0000</pubDate></item><item><title>20261023</title><link>https://SistineFibel-2006.github.io/post/20261023.html</link><description># 20261023
 
 ---
 
