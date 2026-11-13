@@ -1,5 +1,99 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>SISTINE=Blog</title><link>https://SistineFibel-2006.github.io</link><description>QQ3034019410——Atcoder:SistineFibel</description><copyright>SISTINE=Blog</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://img.cdn1.vip/i/6a3aa678f126b_1782228600.webp</url><title>avatar</title><link>https://SistineFibel-2006.github.io</link></image><lastBuildDate>Sun, 08 Nov 2026 13:21:55 +0000</lastBuildDate><managingEditor>SISTINE=Blog</managingEditor><ttl>60</ttl><webMaster>SISTINE=Blog</webMaster><item><title>跟 Nachia 博客学 DP-18 插入 DP</title><link>https://SistineFibel-2006.github.io/post/gen-%20Nachia%20-bo-ke-xue-%20DP-18%20-cha-ru-%20DP.html</link><description># 跟 Nachia 博客学 DP-18 插入 DP
+<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>SISTINE=Blog</title><link>https://SistineFibel-2006.github.io</link><description>QQ3034019410——Atcoder:SistineFibel</description><copyright>SISTINE=Blog</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://img.cdn1.vip/i/6a3aa678f126b_1782228600.webp</url><title>avatar</title><link>https://SistineFibel-2006.github.io</link></image><lastBuildDate>Fri, 13 Nov 2026 08:41:15 +0000</lastBuildDate><managingEditor>SISTINE=Blog</managingEditor><ttl>60</ttl><webMaster>SISTINE=Blog</webMaster><item><title>好题一则：ARC-063 **E - 木と整数**</title><link>https://SistineFibel-2006.github.io/post/hao-ti-yi-ze-%EF%BC%9AARC-063%20--E%20-%20-mu-%E3%81%A8-zheng-shu---.html</link><description># 好题一则：ARC-063 **E - 木と整数**
+
+---
+
+https://atcoder.jp/contests/arc063/tasks/arc063_c
+
+2198 ELO 相当
+
+---
+
+给定 $N$ 个点的一棵树，有 $K$ 个点上有数字，构造一种数字填写法，使得所有相临的点数字相差刚好 $\pm 1$.
+
+---
+
+可以很容易看出有 \(\text{dis}(u,v) &lt; \text{abs}(u - v)\) 无解，并且满足奇偶性.
+
+如果每一个点扩张之后都可以扩展自己的值域，那么其扩展的范围就是 $[L - 1, R + 1]$.
+
+如果两个值域在某个点相遇，考虑合并其即可，因为是取小.
+
+树上 DP 即可，但是细节有些多.
+
+```cpp
+void solve() {
+  LL(N);
+  V&lt;V&lt;ll&gt;&gt; E(N);
+  rep(i, N - 1) {
+    LL(u, v); -- u, -- v;
+    E[u].push(v);
+    E[v].push(u);
+  }
+  LL(K);
+  V&lt;pll&gt; D(N, {-INF, INF});
+  V&lt;bool&gt; vis(N, 0);
+  ll root;
+  rep(K) {
+    LL(v, P); -- v;
+    D[v] = {P, P};
+    vis[v] = true;
+    root = v;
+  }
+
+  auto meg = [&amp;](int u, int v) -&gt; bool { // fa, son
+    D[u].fst = max(D[u].fst, D[v].fst - 1);
+    D[u].snd = min(D[u].snd, D[v].snd + 1);
+    return D[u].fst &lt;= D[u].snd;
+  };
+
+  auto dfs = [&amp;](auto&amp;&amp;dfs, int u, int fa, int p) -&gt; void {
+    if(vis[u]) {
+      if(D[u].fst % 2 != p) {
+        wt('No'); exit(0);
+      }
+    } else {
+      if(p == 1) { // INF = 1 &lt;&lt; 60, 转成奇数所以 + - 1
+        D[u].fst ++;
+        D[u].snd --;
+      }
+    }
+
+
+    each(v, E[u]) if(v != fa) {
+      dfs(dfs, v, u, p ^ 1);
+      if(!meg(u, v)) {
+        wt('No'); exit(0);
+      }
+    }
+  };
+
+  dfs(dfs, root, -1, D[root].fst % 2);
+  debug(D); debug(root); debug(D[root]);
+  wt('Yes');
+  V&lt;ll&gt; ans(N, -1);
+  ans[root] = D[root].fst;
+
+  auto dfs1 = [&amp;](auto&amp;&amp;dfs1, int u, int fa, int p) -&gt; void {
+    each(v, E[u]) if(v != fa) {
+      if(p + 1 &gt;= D[v].fst &amp;&amp; p + 1 &lt;= D[v].snd) {
+        ans[v] = p + 1;
+        dfs1(dfs1, v, u, p + 1);
+      } else {
+        ans[v] = p - 1;
+        dfs1(dfs1, v, u, p - 1);
+      }
+    }
+  };
+
+  dfs1(dfs1, root, -1, ans[root]);
+  each(x, ans) wt(x);
+  debug(ans);
+
+}
+```
+
+。</description><guid isPermaLink="true">https://SistineFibel-2006.github.io/post/hao-ti-yi-ze-%EF%BC%9AARC-063%20--E%20-%20-mu-%E3%81%A8-zheng-shu---.html</guid><pubDate>Fri, 13 Nov 2026 08:40:43 +0000</pubDate></item><item><title>跟 Nachia 博客学 DP-18 插入 DP</title><link>https://SistineFibel-2006.github.io/post/gen-%20Nachia%20-bo-ke-xue-%20DP-18%20-cha-ru-%20DP.html</link><description># 跟 Nachia 博客学 DP-18 插入 DP
 
 ---
 
